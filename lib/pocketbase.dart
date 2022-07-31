@@ -29,5 +29,6 @@ export "src/services/base_crud_service.dart";
 export "src/services/collection_service.dart";
 export "src/services/log_service.dart";
 export "src/services/realtime_service.dart";
+export "src/services/record_service.dart";
 export "src/services/settings_service.dart";
 export "src/services/user_service.dart";

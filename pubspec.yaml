@@ -3,7 +3,7 @@ description: Multi-platform Dart SDK for PocketBase, an open source realtime bac
 homepage: https://pocketbase.io
 repository: https://github.com/pocketbase/dart-sdk
 
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: '>=2.14.0 <3.0.0'
