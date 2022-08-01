@@ -37,8 +37,9 @@ class AuthStore {
       return false;
     }
 
-    final data =
-        jsonDecode(utf8.decode(base64Decode(parts[1]))) as Map<String, dynamic>;
+    final tokenPart = base64.normalize(parts[1]);
+    final data = jsonDecode(utf8.decode(base64Decode(tokenPart)))
+        as Map<String, dynamic>;
 
     final exp = data["exp"] is int
         ? data["exp"] as int
