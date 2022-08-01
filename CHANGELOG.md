@@ -1,3 +1,8 @@
+## 0.1.1
+
+- Fixed base64.decode exception when `AuthStore.isValid` is used (related to [dart-lang/sdk #39510](https://github.com/dart-lang/sdk/issues/39510); thanks @irmhonde).
+
+
 ## 0.1.0+4
 
 - This release just removes the `homepage` directive from the `pubspec.yaml`.
