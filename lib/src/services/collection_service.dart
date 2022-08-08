@@ -19,7 +19,7 @@ class CollectionService extends CrudService<CollectionModel> {
   /// Imports the provided collections.
   Future<void> import(
     List<CollectionModel> collections, {
-    bool deleteMissing = true,
+    bool deleteMissing = false,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},

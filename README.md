@@ -303,7 +303,7 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 🔐 client.collections.delete(id, {query, body, headers});
 
 // Imports the provided collections.
-🔐 client.collections.import(collections, {deleteMissing=true, query, body, headers});
+🔐 client.collections.import(collections, {deleteMissing=false, query, body, headers});
 ```
 
 ---

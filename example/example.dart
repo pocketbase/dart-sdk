@@ -7,6 +7,21 @@ import "package:pocketbase/pocketbase.dart";
 void main() {
   final client = PocketBase("http://127.0.0.1:8090");
 
+  final importData = [
+    CollectionModel(
+      name: "collection1",
+      schema: [
+        SchemaField(name: "status", type: "bool"),
+      ],
+    ),
+    CollectionModel(
+      name: "collection2",
+      schema: [
+        SchemaField(name: "title", type: "text"),
+      ],
+    ),
+  ];
+
   // fetch a paginated list with "example" records
   client.records.getList("example", page: 1, perPage: 50).then((result) {
     // success...

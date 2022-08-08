@@ -45,6 +45,7 @@ void main() {
 
       await client.collections.import(
         collections,
+        deleteMissing: true,
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
