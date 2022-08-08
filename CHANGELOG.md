@@ -1,3 +1,9 @@
+## 0.2.0
+
+- Added `CollectionService.import()`.
+- Added `totalPages` to the `ResultList<M>` dto.
+
+
 ## 0.1.1
 
 - Fixed base64.decode exception when `AuthStore.isValid` is used (related to [dart-lang/sdk #39510](https://github.com/dart-lang/sdk/issues/39510); thanks @irmhonde).

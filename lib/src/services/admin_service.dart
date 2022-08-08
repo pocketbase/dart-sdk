@@ -17,7 +17,7 @@ class AdminService extends CrudService<AdminModel> {
   AdminModel itemFactoryFunc(Map<String, dynamic> json) =>
       AdminModel.fromJson(json);
 
-  /// Prepare successfull admin authentication response.
+  /// Prepare successful admin authentication response.
   AdminAuth _authResponse(Map<String, dynamic> data) {
     final auth = AdminAuth.fromJson(data);
 

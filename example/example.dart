@@ -5,7 +5,7 @@ import "dart:async";
 import "package:pocketbase/pocketbase.dart";
 
 void main() {
-  final client = PocketBase("http://localhost:8090");
+  final client = PocketBase("http://127.0.0.1:8090");
 
   // fetch a paginated list with "example" records
   client.records.getList("example", page: 1, perPage: 50).then((result) {

@@ -12,6 +12,7 @@ ResultList<M> _$ResultListFromJson<M extends Jsonable>(
       page: json['page'] as int? ?? 0,
       perPage: json['perPage'] as int? ?? 0,
       totalItems: json['totalItems'] as int? ?? 0,
+      totalPages: json['totalPages'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$ResultListToJson<M extends Jsonable>(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$ResultListToJson<M extends Jsonable>(
       'page': instance.page,
       'perPage': instance.perPage,
       'totalItems': instance.totalItems,
+      'totalPages': instance.totalPages,
     };

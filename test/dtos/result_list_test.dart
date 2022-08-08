@@ -8,6 +8,7 @@ void main() {
         "page": 2,
         "perPage": 20,
         "totalItems": 200,
+        "totalPages": 10,
         "items": [
           {
             "id": "test_id",

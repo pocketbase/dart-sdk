@@ -21,6 +21,7 @@ void main() {
               "page": 2,
               "perPage": 15,
               "totalItems": 17,
+              "totalPages": 2,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -48,6 +49,7 @@ void main() {
       expect(result.page, 2);
       expect(result.perPage, 15);
       expect(result.totalItems, 17);
+      expect(result.totalPages, 2);
       expect(result.items, isA<List<LogRequestModel>>());
       expect(result.items.length, 2);
     });

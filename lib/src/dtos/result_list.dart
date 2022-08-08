@@ -18,6 +18,7 @@ class ResultList<M extends Jsonable> implements Jsonable {
   int page;
   int perPage;
   int totalItems;
+  int totalPages;
 
   @JsonKey(ignore: true)
   List<M> items;
@@ -26,6 +27,7 @@ class ResultList<M extends Jsonable> implements Jsonable {
     this.page = 0,
     this.perPage = 0,
     this.totalItems = 0,
+    this.totalPages = 0,
     this.items = const [],
   });
 

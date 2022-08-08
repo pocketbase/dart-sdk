@@ -26,7 +26,7 @@ Import it in your Dart code:
 ```dart
 import 'package:pocketbase/pocketbase.dart';
 
-final client = PocketBase('http://localhost:8090');
+final client = PocketBase('http://127.0.0.1:8090');
 
 ...
 
@@ -67,7 +67,7 @@ Here is a simple example of uploading a single text file together with some othe
 import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 
-final client = PocketBase("http://localhost:8090");
+final client = PocketBase("http://127.0.0.1:8090");
 
 client.records.create(
   'example',
@@ -174,7 +174,7 @@ class CustomAuthStore extends AuthStore {
   ...
 }
 
-final client = PocketBase("http://localhost:8090", authStore: CustomAuthStore());
+final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore());
 ```
 
 
@@ -301,6 +301,9 @@ final client = PocketBase("http://localhost:8090", authStore: CustomAuthStore())
 
 // Deletes a single collection by its id.
 🔐 client.collections.delete(id, {query, body, headers});
+
+// Imports the provided collections.
+🔐 client.collections.import(collections, {deleteMissing=true, query, body, headers});
 ```
 
 ---

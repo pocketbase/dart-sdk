@@ -15,4 +15,25 @@ class CollectionService extends CrudService<CollectionModel> {
   @override
   CollectionModel itemFactoryFunc(Map<String, dynamic> json) =>
       CollectionModel.fromJson(json);
+
+  /// Imports the provided collections.
+  Future<void> import(
+    List<CollectionModel> collections, {
+    bool deleteMissing = true,
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["collections"] = collections;
+    enrichedBody["deleteMissing"] = deleteMissing;
+
+    return client.send(
+      "$basePath/import",
+      method: "PUT",
+      body: enrichedBody,
+      query: query,
+      headers: headers,
+    );
+  }
 }

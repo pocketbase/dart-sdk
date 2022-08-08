@@ -5,7 +5,6 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:http/testing.dart";
 import "package:pocketbase/pocketbase.dart";
-import "package:pocketbase/src/services/base_crud_service.dart";
 import "package:test/test.dart";
 
 void crudServiceTests<M extends Jsonable>(
@@ -30,6 +29,7 @@ void crudServiceTests<M extends Jsonable>(
               "page": 1,
               "perPage": 2,
               "totalItems": 3,
+              "totalPages": 2,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -50,6 +50,7 @@ void crudServiceTests<M extends Jsonable>(
             "page": 2,
             "perPage": 2,
             "totalItems": 3,
+            "totalPages": 2,
             "items": [
               {"id": "3"},
             ],
@@ -91,6 +92,7 @@ void crudServiceTests<M extends Jsonable>(
               "page": 2,
               "perPage": 15,
               "totalItems": 17,
+              "totalPages": 2,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -118,6 +120,7 @@ void crudServiceTests<M extends Jsonable>(
       expect(result.page, 2);
       expect(result.perPage, 15);
       expect(result.totalItems, 17);
+      expect(result.totalPages, 2);
       expect(result.items, isA<List<M>>());
       expect(result.items.length, 2);
     });
@@ -293,6 +296,7 @@ void subCrudServiceTests<M extends Jsonable>(
               "page": 1,
               "perPage": 2,
               "totalItems": 3,
+              "totalPages": 2,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -313,6 +317,7 @@ void subCrudServiceTests<M extends Jsonable>(
             "page": 2,
             "perPage": 2,
             "totalItems": 3,
+            "totalPages": 2,
             "items": [
               {"id": "3"},
             ],
@@ -355,6 +360,7 @@ void subCrudServiceTests<M extends Jsonable>(
               "page": 2,
               "perPage": 15,
               "totalItems": 17,
+              "totalPages": 2,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -383,6 +389,7 @@ void subCrudServiceTests<M extends Jsonable>(
       expect(result.page, 2);
       expect(result.perPage, 15);
       expect(result.totalItems, 17);
+      expect(result.totalPages, 2);
       expect(result.items, isA<List<M>>());
       expect(result.items.length, 2);
     });

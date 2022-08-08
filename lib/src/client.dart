@@ -16,7 +16,7 @@ import "services/user_service.dart";
 
 /// The main PocketBase API client.
 class PocketBase {
-  /// The PocketBase backend base url address (eg. 'http://localhost.8090').
+  /// The PocketBase backend base url address (eg. 'http://127.0.0.1:8090').
   String baseUrl;
 
   /// Optional language code (default to `en-US`) that will be sent

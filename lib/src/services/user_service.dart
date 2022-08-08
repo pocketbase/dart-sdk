@@ -18,7 +18,7 @@ class UserService extends CrudService<UserModel> {
   UserModel itemFactoryFunc(Map<String, dynamic> json) =>
       UserModel.fromJson(json);
 
-  /// Prepare successfull user authentication response.
+  /// Prepare successful user authentication response.
   UserAuth _authResponse(Map<String, dynamic> data) {
     final auth = UserAuth.fromJson(data);
 
