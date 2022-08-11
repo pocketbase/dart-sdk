@@ -17,6 +17,10 @@ class CollectionService extends CrudService<CollectionModel> {
       CollectionModel.fromJson(json);
 
   /// Imports the provided collections.
+  ///
+  /// If [deleteMissing] is `true`, all local collections and schema fields,
+  /// that are not present in the imported configuration, WILL BE DELETED
+  /// (including their related records data)!
   Future<void> import(
     List<CollectionModel> collections, {
     bool deleteMissing = false,
