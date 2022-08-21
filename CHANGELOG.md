@@ -1,3 +1,11 @@
+## 0.3.0
+
+- Renamed `LogRequestModel.ip` to `LogRequestModel.remoteIp`.
+- Added `LogRequestModel.userIp` (the "real" user ip when behind a reverse proxy).
+- Added `SettingsService.testS3()` to test the S3 storage connection.
+- Added `SettingsService.testEmail()` to send a test email.
+
+
 ## 0.2.0
 
 - Added `CollectionService.import()`.

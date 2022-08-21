@@ -76,5 +76,77 @@ void main() {
         equals({"a": 1, "b": false, "c": "test"}),
       );
     });
+
+    test("testS3()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(request.body, jsonEncode({"test_body": 123}));
+        expect(
+          request.url.toString(),
+          "/base/api/settings/test/s3?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode({"a": 1, "b": false, "c": "test"}),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.settings.testS3(
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+    });
+
+    test("testEmail()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+            request.body,
+            jsonEncode({
+              "test_body": 123,
+              "email": "test@example.com",
+              "template": "test_template",
+            }));
+        expect(
+          request.url.toString(),
+          "/base/api/settings/test/email?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode({"a": 1, "b": false, "c": "test"}),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.settings.testEmail(
+        "test@example.com",
+        "test_template",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+    });
   });
 }

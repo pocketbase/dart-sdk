@@ -16,7 +16,8 @@ class LogRequestModel implements Jsonable {
   String method;
   int status;
   String auth;
-  String ip;
+  String remoteIp;
+  String userIp;
   String referer;
   String userAgent;
   Map<String, dynamic> meta;
@@ -29,7 +30,8 @@ class LogRequestModel implements Jsonable {
     this.method = "",
     this.status = 0,
     this.auth = "",
-    this.ip = "",
+    this.remoteIp = "",
+    this.userIp = "",
     this.referer = "",
     this.userAgent = "",
     this.meta = const {},

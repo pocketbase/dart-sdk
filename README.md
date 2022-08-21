@@ -352,6 +352,12 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 
 // Bulk updates app settings.
 🔐 client.settings.update({body, query, headers});
+
+// Performs a S3 storage connection test.
+🔐 client.settings.testS3({body, query, headers});
+
+// Sends a test email (verification, password-reset, email-change).
+🔐 client.settings.testEmail(toEmail, template, {body, query, headers});
 ```
 
 
