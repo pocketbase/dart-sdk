@@ -3,7 +3,6 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:http/testing.dart";
 import "package:pocketbase/pocketbase.dart";
-import "package:pocketbase/src/services/user_service.dart";
 import "package:test/test.dart";
 
 import "crud_suite.dart";
@@ -467,6 +466,78 @@ void main() {
       expect(client.authStore.model, isA<UserModel>());
       // ignore: avoid_dynamic_calls
       expect(client.authStore.model.id, "test_id");
+    });
+
+    test("listExternalAuths()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "GET");
+        expect(
+          request.url.toString(),
+          "/base/api/users/%40test_userId/external-auths?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode([
+            {"id": "1", "provider": "google"},
+            {"id": "2", "provider": "github"},
+          ]),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      final result = await client.users.listExternalAuths(
+        "@test_userId",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+
+      expect(result.length, 2);
+      expect(result[0].provider, "google");
+      expect(result[1].provider, "github");
+    });
+
+    test("unlinkExternalAuth()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "DELETE");
+        expect(
+          request.url.toString(),
+          "/base/api/users/%40test_userId/external-auths/%40test_provider?a=1&a=2&b=%40demo",
+        );
+        expect(
+          request.body,
+          jsonEncode({
+            "test_body": 123,
+          }),
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response("", 204);
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.users.unlinkExternalAuth(
+        "@test_userId",
+        "@test_provider",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
     });
   });
 }

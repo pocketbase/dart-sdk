@@ -265,6 +265,12 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 
 // Deletes a single user by their id.
 🔐 client.users.delete(id, {query, body, headers});
+
+// Lists all linked external auth providers for the specified user.
+🔐 client.users.listExternalAuths(id, {query, headers});
+
+// Unlinks a single external auth provider relation from the specified user.
+🔐 client.users.unlinkExternalAuth(id, provider, {query, body headers});
 ```
 
 ---

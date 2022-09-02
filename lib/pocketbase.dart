@@ -13,6 +13,7 @@ export "src/dtos/admin_model.dart";
 export "src/dtos/auth_method_provider.dart";
 export "src/dtos/auth_methods_list.dart";
 export "src/dtos/collection_model.dart";
+export "src/dtos/external_auth_model.dart";
 export "src/dtos/jsonable.dart";
 export "src/dtos/log_request_model.dart";
 export "src/dtos/log_request_stat.dart";

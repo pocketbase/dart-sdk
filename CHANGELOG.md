@@ -1,3 +1,9 @@
+## 0.4.0
+
+- Added `UserService.listExternalAuths()` to list all linked external auth providers for a single user.
+- Added `UserService.unlinkExternalAuth()` to delete a single user external auth provider relation.
+
+
 ## 0.3.0
 
 - Renamed `LogRequestModel.ip` to `LogRequestModel.remoteIp`.

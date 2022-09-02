@@ -2,6 +2,7 @@ import "../client.dart";
 import "../dtos/auth_methods_list.dart";
 import "../dtos/user_auth.dart";
 import "../dtos/user_model.dart";
+import "../dtos/external_auth_model.dart";
 import "base_crud_service.dart";
 
 /// The service that handles the **User APIs**.
@@ -254,5 +255,44 @@ class UserService extends CrudService<UserModel> {
           headers: headers,
         )
         .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+  }
+
+  /// Lists all linked external auth providers for the specified user.
+  Future<List<ExternalAuthModel>> listExternalAuths(
+    String userId, {
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client
+        .send(
+      "$basePath/${Uri.encodeComponent(userId)}/external-auths",
+      query: query,
+      headers: headers,
+    )
+        .then((data) {
+      return (data as List<dynamic>)
+          .map(
+            (item) => ExternalAuthModel.fromJson(item as Map<String, dynamic>),
+          )
+          .toList()
+          .cast<ExternalAuthModel>();
+    });
+  }
+
+  /// Unlinks a single external auth provider relation from the specified user.
+  Future<void> unlinkExternalAuth(
+    String userId,
+    String provider, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client.send(
+      "$basePath/${Uri.encodeComponent(userId)}/external-auths/${Uri.encodeComponent(provider)}",
+      method: "DELETE",
+      query: query,
+      body: body,
+      headers: headers,
+    );
   }
 }
