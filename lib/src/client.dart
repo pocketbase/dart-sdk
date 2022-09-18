@@ -172,9 +172,15 @@ class PocketBase {
     Map<String, String> headers = const {},
     Map<String, dynamic> body = const {},
   }) {
-    final request = http.Request(method, url)
-      ..body = jsonEncode(body)
-      ..headers.addAll(headers);
+    final request = http.Request(method, url);
+
+    if (headers.isNotEmpty) {
+      request.headers.addAll(headers);
+    }
+
+    if (body.isNotEmpty) {
+      request.body = jsonEncode(body);
+    }
 
     if (!headers.containsKey("Content-Type")) {
       request.headers["Content-Type"] = "application/json";
@@ -190,9 +196,15 @@ class PocketBase {
     Map<String, dynamic> body = const {},
     List<http.MultipartFile> files = const [],
   }) {
-    final request = http.MultipartRequest(method, url)
-      ..files.addAll(files)
-      ..headers.addAll(headers);
+    final request = http.MultipartRequest(method, url);
+
+    if (headers.isNotEmpty) {
+      request.headers.addAll(headers);
+    }
+
+    if (files.isNotEmpty) {
+      request.files.addAll(files);
+    }
 
     body.forEach((key, value) {
       if (value is Iterable) {
