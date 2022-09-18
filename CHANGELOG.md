@@ -1,3 +1,9 @@
+## 0.4.1
+
+- Stop sending empty JSON map as body (thanks @rodydavis) [[#7](https://github.com/pocketbase/dart-sdk/issues/7)].
+- Changed the default  `ClientException.statusCode` from `500` to `0`.
+
+
 ## 0.4.0
 
 - Added `UserService.listExternalAuths()` to list all linked external auth providers for a single user.

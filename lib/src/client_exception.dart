@@ -18,7 +18,7 @@ class ClientException implements Exception {
   ClientException({
     this.url,
     this.isAbort = false,
-    this.statusCode = 500,
+    this.statusCode = 0,
     this.response = const {},
     this.originalError,
   });

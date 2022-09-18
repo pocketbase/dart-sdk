@@ -172,9 +172,15 @@ class PocketBase {
     Map<String, String> headers = const {},
     Map<String, dynamic> body = const {},
   }) {
-    final request = http.Request(method, url)
-      ..body = jsonEncode(body)
-      ..headers.addAll(headers);
+    final request = http.Request(method, url);
+
+    if (body.isNotEmpty) {
+      request.body = jsonEncode(body);
+    }
+
+    if (headers.isNotEmpty) {
+      request.headers.addAll(headers);
+    }
 
     if (!headers.containsKey("Content-Type")) {
       request.headers["Content-Type"] = "application/json";

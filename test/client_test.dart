@@ -186,10 +186,10 @@ void main() {
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(request.url.toString(), "/base/test");
-        expect(request.body, "{}");
+        expect(request.body, "");
         expect(request.headers, {
           "Accept-Language": "en-US",
-          "content-type": "application/json",
+          "Content-Type": "application/json",
         });
 
         return http.Response("", 204);
