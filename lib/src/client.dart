@@ -102,6 +102,8 @@ class PocketBase {
 
     final url = buildUrl(path, query);
 
+    print("pocketbase fetch $url");
+
     if (files.isEmpty) {
       request = _jsonRequest(method, url, headers: headers, body: body);
     } else {
@@ -196,15 +198,9 @@ class PocketBase {
     Map<String, dynamic> body = const {},
     List<http.MultipartFile> files = const [],
   }) {
-    final request = http.MultipartRequest(method, url);
-
-    if (headers.isNotEmpty) {
-      request.headers.addAll(headers);
-    }
-
-    if (files.isNotEmpty) {
-      request.files.addAll(files);
-    }
+    final request = http.MultipartRequest(method, url)
+      ..files.addAll(files)
+      ..headers.addAll(headers);
 
     body.forEach((key, value) {
       if (value is Iterable) {
