@@ -131,6 +131,7 @@ abstract class SubCrudService<M extends Jsonable> extends _BaseCrudService<M> {
     String? sort,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    String? expand,
   }) {
     return _getFullList(
       basePath(sub),
@@ -139,6 +140,7 @@ abstract class SubCrudService<M extends Jsonable> extends _BaseCrudService<M> {
       sort: sort,
       query: query,
       headers: headers,
+      expand: expand,
     );
   }
 
@@ -151,6 +153,7 @@ abstract class SubCrudService<M extends Jsonable> extends _BaseCrudService<M> {
     String? sort,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    String? expand,
   }) {
     return _getList(
       basePath(sub),
@@ -160,6 +163,7 @@ abstract class SubCrudService<M extends Jsonable> extends _BaseCrudService<M> {
       sort: sort,
       query: query,
       headers: headers,
+      expand: expand,
     );
   }
 
@@ -245,6 +249,7 @@ abstract class _BaseCrudService<M extends Jsonable> extends BaseService {
     String? sort,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    String? expand,
   }) {
     final result = <M>[];
 
@@ -257,6 +262,7 @@ abstract class _BaseCrudService<M extends Jsonable> extends BaseService {
         sort: sort,
         query: query,
         headers: headers,
+        expand: expand,
       ).then((list) {
         result.addAll(list.items);
 
@@ -279,12 +285,14 @@ abstract class _BaseCrudService<M extends Jsonable> extends BaseService {
     String? sort,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    String? expand,
   }) {
     final params = Map<String, dynamic>.of(query);
     params["page"] = page;
     params["perPage"] = perPage;
     params["filter"] ??= filter;
     params["sort"] ??= sort;
+    params["expand"] ??= expand;
 
     return client.send(path, query: params, headers: headers).then((data) {
       return ResultList<M>.fromJson(
