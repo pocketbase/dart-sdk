@@ -12,7 +12,6 @@ void main() {
           "updated": "test_updated",
           "avatar": 123,
           "email": "test_email",
-          "lastResetSentAt": "",
         },
       };
 

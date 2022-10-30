@@ -5,14 +5,13 @@ import "package:http/http.dart" as http;
 
 import "auth_store.dart";
 import "client_exception.dart";
-import "dtos/admin_model.dart";
+import "dtos/record_model.dart";
 import "services/admin_service.dart";
 import "services/collection_service.dart";
 import "services/log_service.dart";
 import "services/realtime_service.dart";
 import "services/record_service.dart";
 import "services/settings_service.dart";
-import "services/user_service.dart";
 
 /// The main PocketBase API client.
 class PocketBase {
@@ -29,16 +28,14 @@ class PocketBase {
   /// An instance of the service that handles the **Admin APIs**.
   late final AdminService admins;
 
-  /// An instance of the service that handles the **User APIs**.
-  late final UserService users;
-
   /// An instance of the service that handles the **Collection APIs**.
   late final CollectionService collections;
 
-  /// An instance of the service that handles the **Record APIs**.
-  late final RecordService records;
-
   /// An instance of the service that handles the **Realtime APIs**.
+  ///
+  /// This service is usually used with custom realtime actions.
+  /// For records realtime subscriptions you can use the subscribe/unsubscribe
+  /// methods available in the `collection()` RecordService.
   late final RealtimeService realtime;
 
   /// An instance of the service that handles the **Settings APIs**.
@@ -51,6 +48,9 @@ class PocketBase {
   /// This is used primarily for the unit tests.
   late final http.Client Function() _httpClientFactory;
 
+  /// Cache of all created RecordService instances.
+  final _recordServices = <String, RecordService>{};
+
   PocketBase(
     this.baseUrl, {
     this.lang = "en-US",
@@ -62,12 +62,39 @@ class PocketBase {
     _httpClientFactory = httpClientFactory ?? () => http.Client();
 
     admins = AdminService(this);
-    users = UserService(this);
     collections = CollectionService(this);
-    records = RecordService(this);
     realtime = RealtimeService(this);
     settings = SettingsService(this);
     logs = LogService(this);
+  }
+
+  /// Returns the RecordService associated to the specified collection.
+  RecordService collection(String collectionIdOrName) {
+    var service = _recordServices[collectionIdOrName];
+
+    if (service == null) {
+      // create and cache the service
+      service = RecordService(this, collectionIdOrName);
+      _recordServices[collectionIdOrName] = service;
+    }
+
+    return service;
+  }
+
+  /// Builds and returns an absolute record file url.
+  Uri getFileUrl(
+    RecordModel record,
+    String filename, {
+    String? thumb,
+    Map<String, dynamic> query = const {},
+  }) {
+    final params = Map<String, dynamic>.of(query);
+    params["thumb"] ??= thumb;
+
+    return buildUrl(
+      "/api/files/${Uri.encodeComponent(record.collectionId)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
+      params,
+    );
   }
 
   /// Builds and returns a full request url by safely concatenating
@@ -115,11 +142,7 @@ class PocketBase {
     }
 
     if (!headers.containsKey("Authorization") && authStore.isValid) {
-      if (authStore.model is AdminModel) {
-        request.headers["Authorization"] = "Admin ${authStore.token}";
-      } else {
-        request.headers["Authorization"] = "User ${authStore.token}";
-      }
+      request.headers["Authorization"] = authStore.token;
     }
 
     if (!headers.containsKey("Accept-Language")) {

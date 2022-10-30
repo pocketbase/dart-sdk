@@ -8,7 +8,8 @@ void main() {
         "id": "test_id",
         "created": "test_created",
         "updated": "test_updated",
-        "userId": "test_userId",
+        "recordId": "test_recordId",
+        "collectionId": "test_collectionId",
         "provider": "test_provider",
         "providerId": "test_providerId",
       };

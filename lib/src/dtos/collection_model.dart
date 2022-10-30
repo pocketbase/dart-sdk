@@ -11,29 +11,33 @@ part "collection_model.g.dart";
 @JsonSerializable(explicitToJson: true)
 class CollectionModel implements Jsonable {
   String id;
+  String type;
   String created;
   String updated;
   String name;
-  List<SchemaField> schema;
   bool system;
   String? listRule;
   String? viewRule;
   String? createRule;
   String? updateRule;
   String? deleteRule;
+  List<SchemaField> schema;
+  Map<String, dynamic> options;
 
   CollectionModel({
     this.id = "",
+    this.type = "base",
     this.created = "",
     this.updated = "",
     this.name = "",
-    this.schema = const [],
     this.system = false,
     this.listRule,
     this.viewRule,
     this.createRule,
     this.updateRule,
     this.deleteRule,
+    this.schema = const [],
+    this.options = const {},
   });
 
   static CollectionModel fromJson(Map<String, dynamic> json) =>

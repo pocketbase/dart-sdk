@@ -7,13 +7,15 @@ import "jsonable.dart";
 
 part "auth_methods_list.g.dart";
 
-/// Response DTO of the allowed user authentication methods.
+/// Response DTO of the allowed authentication methods.
 @JsonSerializable(explicitToJson: true)
 class AuthMethodsList implements Jsonable {
+  bool usernamePassword;
   bool emailPassword;
   List<AuthMethodProvider> authProviders;
 
   AuthMethodsList({
+    this.usernamePassword = false,
     this.emailPassword = false,
     this.authProviders = const [],
   });

@@ -6,6 +6,7 @@ void main() {
     test("fromJson() and toJson()", () {
       final json = {
         "id": "test_id",
+        "type": "test_type",
         "created": "test_created",
         "updated": "test_updated",
         "name": "test_name",
@@ -26,6 +27,7 @@ void main() {
         "createRule": "test_createRule",
         "updateRule": "",
         "deleteRule": "test_deleteRule",
+        "options": {"b": 123},
       };
 
       final model = CollectionModel.fromJson(json);

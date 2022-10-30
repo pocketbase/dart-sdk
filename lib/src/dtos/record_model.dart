@@ -12,15 +12,14 @@ class RecordModel implements Jsonable {
   String id;
   String created;
   String updated;
-
-  @JsonKey(name: "@collectionId")
   String collectionId;
-
-  @JsonKey(name: "@collectionName")
   String collectionName;
 
-  @JsonKey(name: "@expand")
-  Map<String, dynamic> expand;
+  List<String> singleExpandKeys = [];
+  List<String> multiExpandKeys = [];
+
+  @JsonKey(ignore: true) // manually serialized
+  Map<String, List<RecordModel>> expand;
 
   @JsonKey(ignore: true) // manually serialized
   Map<String, dynamic> data;
@@ -36,7 +35,26 @@ class RecordModel implements Jsonable {
   });
 
   static RecordModel fromJson(Map<String, dynamic> json) {
-    final model = _$RecordModelFromJson(json);
+    final model = _$RecordModelFromJson(json)..expand = {};
+
+    // resolve and normalize the expand item(s) recursively
+    (json["expand"] as Map<String, dynamic>? ?? {}).forEach((key, value) {
+      final result = <RecordModel>[];
+
+      if (value is Iterable) {
+        model.multiExpandKeys.add(key);
+        for (final item in value) {
+          result.add(RecordModel.fromJson(item as Map<String, dynamic>? ?? {}));
+        }
+      }
+
+      if (value is Map) {
+        model.singleExpandKeys.add(key);
+        result.add(RecordModel.fromJson(value as Map<String, dynamic>? ?? {}));
+      }
+
+      model.expand[key] = result;
+    });
 
     // attach the dynamic json fields to the model"s `data`
     // ---
@@ -44,9 +62,9 @@ class RecordModel implements Jsonable {
       "id",
       "created",
       "updated",
-      "@collectionId",
-      "@collectionName",
-      "@expand",
+      "collectionId",
+      "collectionName",
+      "expand",
     ];
 
     final rest = Map<String, dynamic>.from(json)
@@ -215,6 +233,14 @@ class RecordModel implements Jsonable {
   @override
   Map<String, dynamic> toJson() {
     final json = _$RecordModelToJson(this);
+
+    // revert the expand format to the original
+    json["expand"] = expand.map((k, v) {
+      if (singleExpandKeys.contains(k)) {
+        return MapEntry(k, v.isEmpty ? null : v.first.toJson());
+      }
+      return MapEntry(k, v.map((e) => e.toJson()).toList());
+    });
 
     // flatten the data map
     data.forEach((key, value) {

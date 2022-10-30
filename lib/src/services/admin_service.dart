@@ -1,3 +1,5 @@
+import "package:http/http.dart" as http;
+
 import "../client.dart";
 import "../dtos/admin_auth.dart";
 import "../dtos/admin_model.dart";
@@ -7,15 +9,85 @@ import "base_crud_service.dart";
 ///
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.admins] should be used.
-class AdminService extends CrudService<AdminModel> {
+class AdminService extends BaseCrudService<AdminModel> {
   AdminService(PocketBase client) : super(client);
 
   @override
-  String get basePath => "/api/admins";
+  String get baseCrudPath => "/api/admins";
 
   @override
   AdminModel itemFactoryFunc(Map<String, dynamic> json) =>
       AdminModel.fromJson(json);
+
+  // ---------------------------------------------------------------
+  // Post update/delete AuthStore sync
+  // ---------------------------------------------------------------
+
+  /// Updates a single admin model by its id.
+  ///
+  /// If the current AuthStore.model matches with the updated id, then
+  /// on success the client AuthStore will be updated with the result model.
+  @override
+  Future<AdminModel> update(
+    String id, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    List<http.MultipartFile> files = const [],
+    Map<String, String> headers = const {},
+    String? expand,
+  }) {
+    return super
+        .update(
+      id,
+      body: body,
+      query: query,
+      files: files,
+      headers: headers,
+      expand: expand,
+    )
+        .then((item) {
+      if (client.authStore.model != null &&
+          client.authStore.model is AdminModel &&
+          (client.authStore.model as AdminModel).id == item.id) {
+        client.authStore.save(client.authStore.token, item);
+      }
+
+      return item;
+    });
+  }
+
+  /// Deletes a single admin model by its id.
+  ///
+  /// If the current AuthStore.model matches with the deleted id,
+  /// then on success the client AuthStore will be also cleared.
+  @override
+  Future<void> delete(
+    String id, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return super
+        .delete(
+      id,
+      body: body,
+      query: query,
+      headers: headers,
+    )
+        .then((_) {
+      if (client.authStore.model != null &&
+          client.authStore.model is AdminModel &&
+          (client.authStore.model as AdminModel).id == id) {
+        client.authStore.clear();
+      }
+
+      return;
+    });
+  }
+
+  // -----------------------------------------------------------------
+  // Auth collection handlers
+  // -----------------------------------------------------------------
 
   /// Prepare successful admin authentication response.
   AdminAuth _authResponse(Map<String, dynamic> data) {
@@ -30,7 +102,7 @@ class AdminService extends CrudService<AdminModel> {
   /// and returns a new auth token and admin data.
   ///
   /// On success this method automatically updates the client"s AuthStore.
-  Future<AdminAuth> authViaEmail(
+  Future<AdminAuth> authWithPassword(
     String email,
     String password, {
     Map<String, dynamic> body = const {},
@@ -38,7 +110,7 @@ class AdminService extends CrudService<AdminModel> {
     Map<String, String> headers = const {},
   }) {
     final enrichedBody = Map<String, dynamic>.of(body);
-    enrichedBody["email"] = email;
+    enrichedBody["identity"] = email;
     enrichedBody["password"] = password;
 
     final enrichedHeaders = Map<String, String>.of(headers);
@@ -46,7 +118,7 @@ class AdminService extends CrudService<AdminModel> {
 
     return client
         .send(
-          "$basePath/auth-via-email",
+          "$baseCrudPath/auth-with-password",
           method: "POST",
           body: enrichedBody,
           query: query,
@@ -66,7 +138,7 @@ class AdminService extends CrudService<AdminModel> {
   }) {
     return client
         .send(
-          "$basePath/refresh",
+          "$baseCrudPath/auth-refresh",
           method: "POST",
           body: body,
           query: query,
@@ -86,7 +158,7 @@ class AdminService extends CrudService<AdminModel> {
     enrichedBody["email"] = email;
 
     return client.send(
-      "$basePath/request-password-reset",
+      "$baseCrudPath/request-password-reset",
       method: "POST",
       body: enrichedBody,
       query: query,
@@ -112,7 +184,7 @@ class AdminService extends CrudService<AdminModel> {
 
     return client
         .send(
-          "$basePath/confirm-password-reset",
+          "$baseCrudPath/confirm-password-reset",
           method: "POST",
           body: enrichedBody,
           query: query,

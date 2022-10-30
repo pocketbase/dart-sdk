@@ -26,24 +26,24 @@ Import it in your Dart code:
 ```dart
 import 'package:pocketbase/pocketbase.dart';
 
-final client = PocketBase('http://127.0.0.1:8090');
+final pb = PocketBase('http://127.0.0.1:8090');
 
 ...
 
 // authenticate as regular user
-final userData = await client.users.authViaEmail("test@example.com", "123456");
+final userData = await pb.collection('users').authWithPassword('test@example.com', '123456');
 
 // list and filter "example" collection records
-final result = await client.records.getList(
-  "example",
-  page: 1,
+final result = await pb.collection('example').getList(
+  page:    1,
   perPage: 20,
-  filter: "status = true && created >= '2022-08-01'",
-  sort: "-created",
+  filter:  'status = true && created >= "2022-08-01"',
+  sort:    '-created',
+  expand:  'someRelField',
 );
 
 // subscribe to realtime "example" collection changes
-client.realtime.subscribe("example", (e) {
+pb.collection('example').subscribe((e) {
   print(e.action); // create, update, delete
   print(e.record); // the changed record
 });
@@ -67,10 +67,9 @@ Here is a simple example of uploading a single text file together with some othe
 import 'package:http/http.dart' as http;
 import 'package:pocketbase/pocketbase.dart';
 
-final client = PocketBase("http://127.0.0.1:8090");
+final pb = PocketBase('http://127.0.0.1:8090');
 
-client.records.create(
-  'example',
+pb.collection('example').create(
   body: {
     'title': 'Hello world!',
     // ... any other regular field
@@ -95,35 +94,69 @@ You could find more detailed documentation in the [`RecordModel` class reference
 but here are some examples:
 
 ```dart
-final record = await client.records.getOne("example", "RECORD_ID");
+final record = await pb.collection('example').getOne('RECORD_ID');
 
 ...
 
-final title   = record.getStringValue("title");
-final options = record.getListValue<String>("options");
-final status  = record.getBoolValue("status");
-final total   = record.getIntValue("total");
-final price   = record.getDoubleValue("price");
+final email   = record.getStringValue('email');
+final options = record.getListValue<String>('options');
+final status  = record.getBoolValue('status');
+final total   = record.getIntValue('total');
+final price   = record.getDoubleValue('price');
 ```
 
-#### Errors handling
+Alternatively, you can also create your own typed DTO data classes and use for example the `record.toJson()` to populate your object, eg:
+
+```dart
+import "package:pocketbase/pocketbase.dart";
+import 'package:json_annotation/json_annotation.dart';
+
+part 'task.g.dart';
+
+@JsonSerializable()
+class Task {
+  Task({this.id = '', this.description = ''});
+
+  // type the collection fields you want to use...
+  final String id;
+  final String description;
+
+  /// Creates a new Task instance form the provided RecordModel.
+  factory Task.fromRecord(record RecordModel) => Task.fromJson(record.toJson());
+
+  /// Connect the generated [_$Task] function to the `fromJson` factory.
+  factory Task.fromJson(Map<String, dynamic> json) => _$Task(json);
+
+  /// Connect the generated [_$Task] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$Task(this);
+}
+
+...
+
+// fetch your raw record model
+final record = await pb.collection('tasks').getOne('TASK_ID');
+
+final task = Task.fromRecord(record);
+```
+
+#### Error handling
 
 All services return a standard Future-based response, so the error handling is straightforward:
 
 ```dart
-client.records.getList("example", page: 1, perPage: 50).then((result) {
+pb.collection('example').getList(page: 1, perPage: 50).then((result) {
   // success...
-  print("Result: $result");
+  print('Result: $result');
 }).catchError((error) {
   // error...
-  print("Error: $error");
+  print('Error: $error');
 });
 
 // OR if you are using the async/await syntax:
 try {
-  final result = await client.records.getList("example", page: 1, perPage: 50);
+  final result = await pb.collection('example').getList(page: 1, perPage: 50);
 } catch (error) {
-  print("Error: $error");
+  print('Error: $error');
 }
 ```
 
@@ -141,15 +174,15 @@ ClientException {
 
 #### AuthStore
 
-The SDK keeps track of the authenticated token and auth model for you via the `client.authStore` service.
+The SDK keeps track of the authenticated token and auth model for you via the `pb.authStore` service.
 The default `AuthStore` class has the following public members that you could use:
 
 ```dart
 AuthStore {
-    token:    String               // Getter for the stored auth token
-    model:    UserModel|AdminModel // Getter for the stored auth User or Admin model
-    isValid   bool                 // Getter to loosely check if the store has an existing and unexpired token
-    onChange  Stream               // Stream that gets triggered on each auth store change
+    token:    String                      // Getter for the stored auth token
+    model:    RecordModel|AdminModel|null // Getter for the stored auth User or Admin model
+    isValid   bool                        // Getter to loosely check if the store has an existing and unexpired token
+    onChange  Stream                      // Stream that gets triggered on each auth store change
 
     // methods
     save(token, model)             // update the store with the new auth data
@@ -157,11 +190,11 @@ AuthStore {
 }
 ```
 
-To _"logout"_ an authenticated user or admin, you can just call `client.authStore.clear()`.
+To _"logout"_ an authenticated user or admin, you can just call `pb.authStore.clear()`.
 
 To _"listen"_ for changes in the auth store, you can _listen_ to the `onChange` broadcast stream:
 ```dart
-client.authStore.onChange.listen((e) {
+pb.authStore.onChange.listen((e) {
   print(e.token);
   print(e.model);
 });
@@ -174,115 +207,132 @@ class CustomAuthStore extends AuthStore {
   ...
 }
 
-final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore());
+final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 ```
 
 
 ## Services
 
+#### RecordService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RecordService-class.html), [API docs](https://pocketbase.io/docs/api-records))
+
+###### _Crud handlers_
+
+```dart
+// Returns a paginated records list.
+🔓 pb.collection(collectionIdOrName).getList({page = 1, perPage = 30, filter?, sort?, expand?, query, headers});
+
+// Returns a list with all records batch fetched at once.
+🔓 pb.collection(collectionIdOrName).getFullList({batch = 100, filter?, sort?, expand?, query, headers});
+
+// Returns the first found record matching the specified filter.
+🔓 pb.collection(collectionIdOrName).getFirstListItem(filter, {expand?, query, headers});
+
+// Returns a single record by its id.
+🔓 pb.collection(collectionIdOrName).getOne(recordId, {expand?, query, headers});
+
+// Creates (aka. register) a new record.
+🔓 pb.collection(collectionIdOrName).create({body, files, expand?, query, headers});
+
+// Updates an existing record by its id.
+🔓 pb.collection(collectionIdOrName).update(recordId, {body, files, expand?, query, headers});
+
+// Deletes a single record by its id.
+🔓 pb.collection(collectionIdOrName).delete(recordId, {query, body, headers});
+
+```
+
+###### _Realtime handlers_
+
+```dart
+// Subscribe to realtime changes of any record from the collection.
+🔓 pb.collection(collectionIdOrName).subscribe(callback);
+
+// Subscribe to the realtime changes of a single record in the collection.
+🔓 pb.collection(collectionIdOrName).subscribeOne(recordId, callback);
+
+// Unsubscribe from the collection record subscription(s).
+🔓 pb.collection(collectionIdOrName).unsubscribe([recordId]);
+```
+
+###### _Auth handlers_
+
+> Available only for "auth" type collections.
+
+```dart
+// Returns all available application auth methods.
+🔓 pb.collection(collectionIdOrName).listAuthMethods({query, headers});
+
+// Authenticates a record with their username/email and password.
+🔓 pb.collection(collectionIdOrName).authWithPassword(usernameOrEmail, password, {expand?, query, body, headers});
+
+// Authenticates a record with OAuth2 client provider.
+🔓 pb.collection(collectionIdOrName).authWithOAuth2(provider, code, codeVerifier, redirectUrl, {createData?, expand?, query, body, headers});
+
+// Refreshes the current authenticated record model and auth token.
+🔐 pb.collection(collectionIdOrName).authRefresh({expand?, query, body, headers});
+
+// Sends a user password reset email.
+🔓 pb.collection(collectionIdOrName).requestPasswordReset(email, {query, body, headers});
+
+// Confirms a record password reset request.
+🔓 pb.collection(collectionIdOrName).confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {expand?, query, body, headers});
+
+// Sends a record verification email request.
+🔓 pb.collection(collectionIdOrName).requestVerification(email, {query, body, headers});
+
+// Confirms a record email verification request.
+🔓 pb.collection(collectionIdOrName).confirmVerification(verificationToken, {expand?, query, body, headers});
+
+// Sends a record email change request to the provider email.
+🔐 pb.collection(collectionIdOrName).requestEmailChange(newEmail, {query, body, headers});
+
+// Confirms record new email address.
+🔓 pb.collection(collectionIdOrName).confirmEmailChange(emailChangeToken, userPassword, {expand?, query, body, headers});
+
+// Lists all linked external auth providers for the specified record.
+🔐 pb.collection(collectionIdOrName).listExternalAuths(recordId, {query, headers});
+
+// Unlinks a single external auth provider relation from the specified record.
+🔐 pb.collection(collectionIdOrName).unlinkExternalAuth(recordId, provider, {query, body headers});
+```
+
+---
+
 #### AdminService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/AdminService-class.html), [API docs](https://pocketbase.io/docs/api-admins))
 
 ```dart
 // Authenticates an admin account by its email and password.
-🔓 client.admins.authViaEmail(email, password, {query, body, headers});
+🔓 pb.admins.authWithPassword(email, password, {query, body, headers});
 
 // Refreshes the current admin authenticated model and token.
-🔐 client.admins.refresh({query, body, headers});
+🔐 pb.admins.authRefresh({query, body, headers});
 
 // Sends an admin password reset email.
-🔓 client.admins.requestPasswordReset(email, {query, body, headers});
+🔓 pb.admins.requestPasswordReset(email, {query, body, headers});
 
 // Confirms an admin password reset request.
-🔓 client.admins.confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {query, body, headers});
-
-// Returns a list with all admins batch fetched at once.
-🔐 client.admins.getFullList({batch = 100, filter?, sort?, query, headers});
+🔓 pb.admins.confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {query, body, headers});
 
 // Returns a paginated admins list.
-🔐 client.admins.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
+🔐 pb.admins.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
+
+// Returns a list with all admins batch fetched at once.
+🔐 pb.admins.getFullList({batch = 100, filter?, sort?, query, headers});
+
+// Returns the first found admin matching the specified filter.
+🔐 pb.admins.getFirstListItem(filter, {query, headers});
 
 // Returns a single admin by their id.
-🔐 client.admins.getOne(id, {query, headers});
+🔐 pb.admins.getOne(id, {query, headers});
 
 // Creates a new admin.
-🔐 client.admins.create({body, files, query, headers});
+🔐 pb.admins.create({body, files, query, headers});
 
 // Updates an existing admin by their id.
-🔐 client.admins.update(id, {body, files, query, headers});
+🔐 pb.admins.update(id, {body, files, query, headers});
 
 // Deletes a single admin by their id.
-🔐 client.admins.delete(id, {query, body, headers});
-```
-
----
-
-#### UserService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/UserService-class.html), [API docs](https://pocketbase.io/docs/api-users))
-
-```dart
-🔓 client.users.listAuthMethods({query, headers});
-
-// Authenticates a user by their email and password.
-🔓 client.users.authViaEmail(email, password, {query, body, headers});
-
-// Authenticates a user by OAuth2 client provider.
-🔓 client.users.authViaOAuth2(provider, code, codeVerifier, redirectUrl, {query, body, headers});
-
-// Refreshes the current user authenticated model and token.
-🔐 client.users.refresh({query, body, headers});
-
-// Sends a user password reset email.
-🔓 client.users.requestPasswordReset(email, {query, body, headers});
-
-// Confirms a user password reset request.
-🔓 client.users.confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {query, body, headers});
-
-// Sends a user verification email request.
-🔓 client.users.requestVerification(email, {query, body, headers});
-
-// Confirms a user email verification request.
-🔓 client.users.confirmVerification(verificationToken, {query, body, headers});
-
-// Sends a user email change request to the provider email.
-🔐 client.users.requestEmailChange(newEmail, {query, body, headers});
-
-// Confirms user new email address.
-🔓 client.users.confirmEmailChange(emailChangeToken, userPassword, {query, body, headers});
-
-// Returns a list with all users batch fetched at once.
-🔐 client.users.getFullList({batch = 100, filter?, sort?, query, headers});
-
-// Returns a paginated users list.
-🔐 client.users.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
-
-// Returns a single user by their id.
-🔐 client.users.getOne(id, {query, headers});
-
-// Creates (aka. register) a new user.
-🔓 client.users.create({body, files, query, headers});
-
-// Updates an existing user by their id.
-🔐 client.users.update(id, {body, files, query, headers});
-
-// Deletes a single user by their id.
-🔐 client.users.delete(id, {query, body, headers});
-
-// Lists all linked external auth providers for the specified user.
-🔐 client.users.listExternalAuths(id, {query, headers});
-
-// Unlinks a single external auth provider relation from the specified user.
-🔐 client.users.unlinkExternalAuth(id, provider, {query, body headers});
-```
-
----
-
-#### RealtimeService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RealtimeService-class.html), [API docs](https://pocketbase.io/docs/api-realtime))
-
-```dart
-// Initialize the realtime connection (if not already) and register the subscription.
-🔓 client.realtime.subscribe(subscription, callback);
-
-// Unsubscribe from a subscription (if empty - unsubscibe from all registered subscriptions).
-🔓 client.realtime.unsubscribe([subscription = '']);
+🔐 pb.admins.delete(id, {query, body, headers});
 ```
 
 ---
@@ -290,50 +340,29 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 #### CollectionService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/CollectionService-class.html), [API docs](https://pocketbase.io/docs/api-collections))
 
 ```dart
-// Returns a list with all collections batch fetched at once.
-🔐 client.collections.getFullList({batch = 100, filter?, sort?, query, headers});
-
 // Returns a paginated collections list.
-🔐 client.collections.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
+🔐 pb.collections.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
+
+// Returns a list with all collections batch fetched at once.
+🔐 pb.collections.getFullList({batch = 100, filter?, sort?, query, headers});
+
+// Returns the first found collection matching the specified filter.
+🔐 pb.collections.getFirstListItem(filter, {query, headers});
 
 // Returns a single collection by its id.
-🔐 client.collections.getOne(id, {query, headers});
+🔐 pb.collections.getOne(id, {query, headers});
 
 // Creates (aka. register) a new collection.
-🔐 client.collections.create({body, files, query, headers});
+🔐 pb.collections.create({body, files, query, headers});
 
 // Updates an existing collection by its id.
-🔐 client.collections.update(id, {body, files, query, headers});
+🔐 pb.collections.update(id, {body, files, query, headers});
 
 // Deletes a single collection by its id.
-🔐 client.collections.delete(id, {query, body, headers});
+🔐 pb.collections.delete(id, {query, body, headers});
 
 // Imports the provided collections.
-🔐 client.collections.import(collections, {deleteMissing=false, query, body, headers});
-```
-
----
-
-#### RecordService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RecordService-class.html), [API docs](https://pocketbase.io/docs/api-records))
-
-```dart
-// Returns a list with all records batch fetched at once.
-🔓 client.records.getFullList(collectionIdOrName, {batch = 100, filter?, sort?, query, headers});
-
-// Returns a paginated records list.
-🔓 client.records.getList(collectionIdOrName, {page = 1, perPage = 30, filter?, sort?, query, headers});
-
-// Returns a single record by its id.
-🔓 client.records.getOne(collectionIdOrName, recordId, {query, headers});
-
-// Creates (aka. register) a new record.
-🔓 client.records.create(collectionIdOrName, {body, files, query, headers});
-
-// Updates an existing record by its id.
-🔓 client.records.update(collectionIdOrName, recordId, {body, files, query, headers});
-
-// Deletes a single record by its id.
-🔓 client.records.delete(collectionIdOrName, recordId, {query, body, headers});
+🔐 pb.collections.import(collections, {deleteMissing=false, query, body, headers});
 ```
 
 ---
@@ -342,10 +371,10 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 
 ```dart
 // Returns a paginated log requests list.
-🔐 client.logs.getRequestsList({page = 1, perPage = 30, filter?, sort?, query, headers});
+🔐 pb.logs.getRequestsList({page = 1, perPage = 30, filter?, sort?, query, headers});
 
 // Returns a single log request by its id.
-🔐 client.logs.getRequest(id, {query, headers});
+🔐 pb.logs.getRequest(id, {query, headers});
 ```
 
 ---
@@ -354,16 +383,35 @@ final client = PocketBase("http://127.0.0.1:8090", authStore: CustomAuthStore())
 
 ```dart
 // Returns a map with all available app settings.
-🔐 client.settings.getAll({query, headers});
+🔐 pb.settings.getAll({query, headers});
 
 // Bulk updates app settings.
-🔐 client.settings.update({body, query, headers});
+🔐 pb.settings.update({body, query, headers});
 
 // Performs a S3 storage connection test.
-🔐 client.settings.testS3({body, query, headers});
+🔐 pb.settings.testS3({body, query, headers});
 
 // Sends a test email (verification, password-reset, email-change).
-🔐 client.settings.testEmail(toEmail, template, {body, query, headers});
+🔐 pb.settings.testEmail(toEmail, template, {body, query, headers});
+```
+
+---
+
+#### RealtimeService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RealtimeService-class.html), [API docs](https://pocketbase.io/docs/api-realtime))
+
+> This service is usually used with custom realtime actions.
+> For records realtime subscriptions you can use the subscribe/unsubscribe
+> methods available in the `pb.collection()` RecordService.
+
+```dart
+// Initialize the realtime connection (if not already) and register the subscription.
+🔓 pb.realtime.subscribe(subscription, callback);
+
+// Unsubscribe from a subscription (if empty - unsubscibe from all registered subscriptions).
+🔓 pb.realtime.unsubscribe([subscription = '']);
+
+// Unsubscribe from all subscriptions starting with the provided prefix.
+🔓 pb.realtime.unsubscribeByPrefix(subscriptionsPrefix);
 ```
 
 

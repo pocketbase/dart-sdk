@@ -1,20 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'subscription_event.dart';
+part of 'record_subscription_event.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SubscriptionEvent _$SubscriptionEventFromJson(Map<String, dynamic> json) =>
-    SubscriptionEvent(
+RecordSubscriptionEvent _$RecordSubscriptionEventFromJson(
+        Map<String, dynamic> json) =>
+    RecordSubscriptionEvent(
       action: json['action'] as String? ?? "",
       record: json['record'] == null
           ? null
           : RecordModel.fromJson(json['record'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$SubscriptionEventToJson(SubscriptionEvent instance) =>
+Map<String, dynamic> _$RecordSubscriptionEventToJson(
+        RecordSubscriptionEvent instance) =>
     <String, dynamic>{
       'action': instance.action,
       'record': instance.record?.toJson(),

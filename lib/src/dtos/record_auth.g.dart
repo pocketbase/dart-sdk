@@ -1,21 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_auth.dart';
+part of 'record_auth.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserAuth _$UserAuthFromJson(Map<String, dynamic> json) => UserAuth(
+RecordAuth _$RecordAuthFromJson(Map<String, dynamic> json) => RecordAuth(
       token: json['token'] as String? ?? "",
-      user: json['user'] == null
+      record: json['record'] == null
           ? null
-          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
+          : RecordModel.fromJson(json['record'] as Map<String, dynamic>),
       meta: json['meta'] as Map<String, dynamic>? ?? const {},
     );
 
-Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
+Map<String, dynamic> _$RecordAuthToJson(RecordAuth instance) =>
+    <String, dynamic>{
       'token': instance.token,
-      'user': instance.user?.toJson(),
+      'record': instance.record?.toJson(),
       'meta': instance.meta,
     };

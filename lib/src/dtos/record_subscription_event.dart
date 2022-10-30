@@ -5,24 +5,24 @@ import "package:json_annotation/json_annotation.dart";
 import "jsonable.dart";
 import "record_model.dart";
 
-part "subscription_event.g.dart";
+part "record_subscription_event.g.dart";
 
 /// Response DTO of a single realtime subscription event.
 @JsonSerializable(explicitToJson: true)
-class SubscriptionEvent implements Jsonable {
+class RecordSubscriptionEvent implements Jsonable {
   String action;
   RecordModel? record;
 
-  SubscriptionEvent({
+  RecordSubscriptionEvent({
     this.action = "",
     this.record,
   });
 
-  static SubscriptionEvent fromJson(Map<String, dynamic> json) =>
-      _$SubscriptionEventFromJson(json);
+  static RecordSubscriptionEvent fromJson(Map<String, dynamic> json) =>
+      _$RecordSubscriptionEventFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => _$SubscriptionEventToJson(this);
+  Map<String, dynamic> toJson() => _$RecordSubscriptionEventToJson(this);
 
   @override
   String toString() => jsonEncode(toJson());

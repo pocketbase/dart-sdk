@@ -11,7 +11,8 @@ ExternalAuthModel _$ExternalAuthModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String? ?? "",
       created: json['created'] as String? ?? "",
       updated: json['updated'] as String? ?? "",
-      userId: json['userId'] as String? ?? "",
+      recordId: json['recordId'] as String? ?? "",
+      collectionId: json['collectionId'] as String? ?? "",
       provider: json['provider'] as String? ?? "",
       providerId: json['providerId'] as String? ?? "",
     );
@@ -21,7 +22,8 @@ Map<String, dynamic> _$ExternalAuthModelToJson(ExternalAuthModel instance) =>
       'id': instance.id,
       'created': instance.created,
       'updated': instance.updated,
-      'userId': instance.userId,
+      'recordId': instance.recordId,
+      'collectionId': instance.collectionId,
       'provider': instance.provider,
       'providerId': instance.providerId,
     };

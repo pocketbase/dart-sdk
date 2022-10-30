@@ -12,7 +12,8 @@ class ExternalAuthModel implements Jsonable {
   String id;
   String created;
   String updated;
-  String userId;
+  String recordId;
+  String collectionId;
   String provider;
   String providerId;
 
@@ -20,7 +21,8 @@ class ExternalAuthModel implements Jsonable {
     this.id = "",
     this.created = "",
     this.updated = "",
-    this.userId = "",
+    this.recordId = "",
+    this.collectionId = "",
     this.provider = "",
     this.providerId = "",
   });

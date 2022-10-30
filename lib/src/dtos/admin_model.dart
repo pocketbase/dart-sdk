@@ -14,7 +14,6 @@ class AdminModel implements Jsonable {
   String updated;
   int avatar;
   String email;
-  String lastResetSentAt;
 
   AdminModel({
     this.id = "",
@@ -22,7 +21,6 @@ class AdminModel implements Jsonable {
     this.updated = "",
     this.avatar = 0,
     this.email = "",
-    this.lastResetSentAt = "",
   });
 
   static AdminModel fromJson(Map<String, dynamic> json) =>

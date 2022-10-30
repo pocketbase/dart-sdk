@@ -10,9 +10,8 @@ RecordModel _$RecordModelFromJson(Map<String, dynamic> json) => RecordModel(
       id: json['id'] as String? ?? "",
       created: json['created'] as String? ?? "",
       updated: json['updated'] as String? ?? "",
-      collectionId: json['@collectionId'] as String? ?? "",
-      collectionName: json['@collectionName'] as String? ?? "",
-      expand: json['@expand'] as Map<String, dynamic>? ?? const {},
+      collectionId: json['collectionId'] as String? ?? "",
+      collectionName: json['collectionName'] as String? ?? "",
     );
 
 Map<String, dynamic> _$RecordModelToJson(RecordModel instance) =>
@@ -20,7 +19,6 @@ Map<String, dynamic> _$RecordModelToJson(RecordModel instance) =>
       'id': instance.id,
       'created': instance.created,
       'updated': instance.updated,
-      '@collectionId': instance.collectionId,
-      '@collectionName': instance.collectionName,
-      '@expand': instance.expand,
+      'collectionId': instance.collectionId,
+      'collectionName': instance.collectionName,
     };

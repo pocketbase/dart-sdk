@@ -14,10 +14,10 @@ void main() {
             "id": "test_id",
             "created": "test_created",
             "updated": "test_updated",
-            "@collectionId": "test_collectionId",
-            "@collectionName": "test_collectionName",
-            "@expand": {
-              "test": {"a": 1}
+            "collectionId": "test_collectionId",
+            "collectionName": "test_collectionName",
+            "expand": {
+              "test": RecordModel(id: "1").toJson(),
             },
             "a": 1,
             "b": "test",

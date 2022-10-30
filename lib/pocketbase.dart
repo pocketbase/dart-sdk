@@ -17,12 +17,11 @@ export "src/dtos/external_auth_model.dart";
 export "src/dtos/jsonable.dart";
 export "src/dtos/log_request_model.dart";
 export "src/dtos/log_request_stat.dart";
+export "src/dtos/record_auth.dart";
 export "src/dtos/record_model.dart";
+export "src/dtos/record_subscription_event.dart";
 export "src/dtos/result_list.dart";
 export "src/dtos/schema_field.dart";
-export "src/dtos/subscription_event.dart";
-export "src/dtos/user_auth.dart";
-export "src/dtos/user_model.dart";
 
 // services (exported mainly for dartdoc - https://github.com/dart-lang/dartdoc/issues/2154)
 export "src/services/admin_service.dart";
@@ -32,4 +31,3 @@ export "src/services/log_service.dart";
 export "src/services/realtime_service.dart";
 export "src/services/record_service.dart";
 export "src/services/settings_service.dart";
-export "src/services/user_service.dart";

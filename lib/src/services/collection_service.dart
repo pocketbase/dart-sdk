@@ -6,11 +6,11 @@ import "base_crud_service.dart";
 ///
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.collections] should be used.
-class CollectionService extends CrudService<CollectionModel> {
+class CollectionService extends BaseCrudService<CollectionModel> {
   CollectionService(PocketBase client) : super(client);
 
   @override
-  String get basePath => "/api/collections";
+  String get baseCrudPath => "/api/collections";
 
   @override
   CollectionModel itemFactoryFunc(Map<String, dynamic> json) =>
@@ -33,7 +33,7 @@ class CollectionService extends CrudService<CollectionModel> {
     enrichedBody["deleteMissing"] = deleteMissing;
 
     return client.send(
-      "$basePath/import",
+      "$baseCrudPath/import",
       method: "PUT",
       body: enrichedBody,
       query: query,

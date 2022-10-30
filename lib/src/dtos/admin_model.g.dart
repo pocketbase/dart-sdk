@@ -12,7 +12,6 @@ AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => AdminModel(
       updated: json['updated'] as String? ?? "",
       avatar: json['avatar'] as int? ?? 0,
       email: json['email'] as String? ?? "",
-      lastResetSentAt: json['lastResetSentAt'] as String? ?? "",
     );
 
 Map<String, dynamic> _$AdminModelToJson(AdminModel instance) =>
@@ -22,5 +21,4 @@ Map<String, dynamic> _$AdminModelToJson(AdminModel instance) =>
       'updated': instance.updated,
       'avatar': instance.avatar,
       'email': instance.email,
-      'lastResetSentAt': instance.lastResetSentAt,
     };

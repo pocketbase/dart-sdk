@@ -5,6 +5,7 @@ void main() {
   group("AuthMethodsList", () {
     test("fromJson() and toJson()", () {
       final json = {
+        "usernamePassword": true,
         "emailPassword": true,
         "authProviders": [
           {

@@ -1,14 +1,15 @@
 import "../client.dart";
-import "../dtos/subscription_event.dart";
 import "../sse/sse_client.dart";
+import "../sse/sse_message.dart";
 import "base_service.dart";
 
 /// The definition of a realtime subscription callback function.
+typedef SubscriptionFunc = void Function(SseMessage e);
+
+/// The service that handles the **Realtime APIs**.
 ///
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.realtime] should be used.
-typedef SubscriptionFunc = void Function(SubscriptionEvent e);
-
 class RealtimeService extends BaseService {
   RealtimeService(PocketBase client) : super(client);
 
@@ -32,6 +33,37 @@ class RealtimeService extends BaseService {
     }
 
     // otherwise - just persist the updated subscriptions
+    if (_clientId.isNotEmpty) {
+      return _submitSubscriptions();
+    }
+  }
+
+  /// Unsubscribe from all subscriptions starting with the provided prefix.
+  ///
+  /// This method is no-op if there are no active subscriptions with
+  /// the provided prefix.
+  ///
+  /// The related sse connection will be autoclosed if after the
+  /// unsubscribe operation there are no active subscriptions left.
+  Future<void> unsubscribeByPrefix(String prefix) async {
+    final beforeLength = _subscriptions.length;
+
+    // remove matching subscriptions
+    _subscriptions.removeWhere((sub, func) {
+      return sub.startsWith(prefix);
+    });
+
+    // no changes
+    if (beforeLength == _subscriptions.length) {
+      return;
+    }
+
+    // no more subscriptions -> close the sse connection
+    if (_subscriptions.isEmpty) {
+      return _disconnect();
+    }
+
+    // otherwise - notify the server about the subscription changes
     if (_clientId.isNotEmpty) {
       return _submitSubscriptions();
     }
@@ -79,9 +111,7 @@ class RealtimeService extends BaseService {
         return;
       }
 
-      final event = SubscriptionEvent.fromJson(msg.jsonData());
-
-      _subscriptions[msg.event]?.call(event);
+      _subscriptions[msg.event]?.call(msg);
     });
 
     // resubmit local subscriptions on first reconnect

@@ -6,7 +6,7 @@ class AuthStoreEvent {
   AuthStoreEvent(this.token, this.model);
 
   final String token;
-  final dynamic /* UserModel|AdminModel|null */ model;
+  final dynamic /* RecordModel|AdminModel|null */ model;
 
   @override
   String toString() => "token: $token\nmodel: $model";
@@ -16,14 +16,14 @@ class AuthStoreEvent {
 /// the authenticated User/Admin model and its token.
 class AuthStore {
   String _token = "";
-  dynamic /* UserModel|AdminModel|null */ _model;
+  dynamic /* RecordModel|AdminModel|null */ _model;
   final _onChangeController = StreamController<AuthStoreEvent>.broadcast();
 
   /// Returns the saved auth token (if any).
   String get token => _token;
 
   /// Returns the saved auth model (if any).
-  dynamic /* UserModel|AdminModel|null */ get model => _model;
+  dynamic /* RecordModel|AdminModel|null */ get model => _model;
 
   /// Stream that gets triggered on each auth store change
   /// (aka. on [save()] and [clear()] call).
@@ -49,7 +49,10 @@ class AuthStore {
   }
 
   /// Saves the provided [newToken] and [newModel] auth data into the store.
-  void save(String newToken, dynamic /* UserModel|AdminModel|null */ newModel) {
+  void save(
+    String newToken,
+    dynamic /* RecordModel|AdminModel|null */ newModel,
+  ) {
     _token = newToken;
     _model = newModel;
 

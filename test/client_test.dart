@@ -5,13 +5,6 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 import "package:http/testing.dart";
 import "package:pocketbase/pocketbase.dart";
-import "package:pocketbase/src/services/admin_service.dart";
-import "package:pocketbase/src/services/collection_service.dart";
-import "package:pocketbase/src/services/log_service.dart";
-import "package:pocketbase/src/services/realtime_service.dart";
-import "package:pocketbase/src/services/record_service.dart";
-import "package:pocketbase/src/services/settings_service.dart";
-import "package:pocketbase/src/services/user_service.dart";
 import "package:test/test.dart";
 
 class DummyAuthStore extends AuthStore {}
@@ -27,9 +20,7 @@ void main() {
 
       // services
       expect(client.admins, isA<AdminService>());
-      expect(client.users, isA<UserService>());
       expect(client.collections, isA<CollectionService>());
-      expect(client.records, isA<RecordService>());
       expect(client.realtime, isA<RealtimeService>());
       expect(client.settings, isA<SettingsService>());
       expect(client.logs, isA<LogService>());
@@ -45,6 +36,38 @@ void main() {
       expect(client.baseUrl, "https://example.com");
       expect(client.lang, "test_lang");
       expect(client.authStore, isA<DummyAuthStore>());
+    });
+  });
+
+  group("PocketBase.collection()", () {
+    test("initializing different RecordServices", () {
+      final client = PocketBase("https://example.com/");
+
+      final service1 = client.collection("test1");
+      final service2 = client.collection("@test2");
+      final service3 = client.collection("test1"); // same as service1
+
+      expect(service1.baseCrudPath, "/api/collections/test1/records");
+      expect(service2.baseCrudPath, "/api/collections/%40test2/records");
+      expect(service3.baseCrudPath, "/api/collections/test1/records");
+    });
+  });
+
+  group("PocketBase.getFileUrl()", () {
+    test("encoded record file url", () {
+      final client = PocketBase("/base/");
+      final result = client.getFileUrl(
+        RecordModel(id: "@r123", collectionId: "@c123"),
+        "@f123.png",
+        query: {
+          "demo": [1, null, "@test"],
+        },
+      );
+
+      expect(
+        result.toString(),
+        "/base/api/files/%40c123/%40r123/%40f123.png?demo=1&demo=%40test",
+      );
     });
   });
 
@@ -216,11 +239,11 @@ void main() {
       expect(result, equals({"test": 123}));
     });
 
-    test("with valid user authStore model", () async {
+    test("with valid record authStore model", () async {
       final mock = MockClient((request) async {
         expect(
           request.headers["Authorization"],
-          contains("User eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."),
+          contains("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."),
         );
         return http.Response("", 200);
       });
@@ -228,13 +251,13 @@ void main() {
       final client = PocketBase("/base", httpClientFactory: () => mock);
       client.authStore.save(
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4OTM0NTI0NjF9.yVr-4JxMz6qUf1MIlGx8iW2ktUrQaFecjY_TMm7Bo4o",
-        UserModel(),
+        RecordModel(),
       );
 
       await client.send("");
     });
 
-    test("with invalid user authStore", () async {
+    test("with invalid record authStore", () async {
       final mock = MockClient((request) async {
         expect(request.headers["Authorization"], isNull);
         return http.Response("", 200);
@@ -244,7 +267,7 @@ void main() {
       client.authStore.save(
         // expired
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDA5OTE2NjF9.TxZjXz_Ks665Hju0FkZSGqHFCYBbgBmMGOLnIzkg9Dg",
-        UserModel(),
+        RecordModel(),
       );
 
       await client.send("");
@@ -254,7 +277,7 @@ void main() {
       final mock = MockClient((request) async {
         expect(
           request.headers["Authorization"],
-          contains("Admin eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."),
+          contains("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."),
         );
         return http.Response("", 200);
       });
