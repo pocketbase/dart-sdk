@@ -1,3 +1,15 @@
+## 0.5.0-rc3
+
+To prevent confusion with the auth method responses, the following methods now returns 204 with empty body (previously 200 with token and auth model):
+
+```dart
+pb.admins.confirmPasswordReset(...)
+pb.collection("foo").confirmPasswordReset(...)
+pb.collection("foo").confirmVerification(...)
+pb.collection("foo").confirmEmailChange(...)
+```
+
+
 ## 0.5.0-rc2
 
 This pre-release contains small breaking change related to the collection's realtime handlers per [#pocketbase-954](https://github.com/pocketbase/pocketbase/discussions/954#discussioncomment-4071150)

@@ -239,18 +239,12 @@ void main() {
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({
-            "token": "test_token",
-            "admin": {"id": "test_id"},
-          }),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.admins.confirmPasswordReset(
+      await client.admins.confirmPasswordReset(
         "test_token",
         "test_password",
         "test_password_confirm",
@@ -265,13 +259,6 @@ void main() {
           "test": "789",
         },
       );
-
-      expect(result.token, "test_token");
-      expect(result.admin?.id, "test_id");
-      expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<AdminModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
     });
   });
 }

@@ -167,9 +167,7 @@ class AdminService extends BaseCrudService<AdminModel> {
   }
 
   /// Confirms admin password reset request.
-  ///
-  /// On success this method automatically updates the client"s AuthStore.
-  Future<AdminAuth> confirmPasswordReset(
+  Future<void> confirmPasswordReset(
     String passwordResetToken,
     String password,
     String passwordConfirm, {
@@ -182,14 +180,12 @@ class AdminService extends BaseCrudService<AdminModel> {
     enrichedBody["password"] = password;
     enrichedBody["passwordConfirm"] = passwordConfirm;
 
-    return client
-        .send(
-          "$baseCrudPath/confirm-password-reset",
-          method: "POST",
-          body: enrichedBody,
-          query: query,
-          headers: headers,
-        )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+    return client.send(
+      "$baseCrudPath/confirm-password-reset",
+      method: "POST",
+      body: enrichedBody,
+      query: query,
+      headers: headers,
+    );
   }
 }

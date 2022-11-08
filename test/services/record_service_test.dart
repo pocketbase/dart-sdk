@@ -327,7 +327,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/confirm-password-reset?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/confirm-password-reset?a=1&a=2&b=%40demo",
         );
         expect(
           request.body,
@@ -340,22 +340,15 @@ void main() {
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({
-            "token": "test_token",
-            "record": {"id": "test_id"},
-          }),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.collection("test").confirmPasswordReset(
+      await client.collection("test").confirmPasswordReset(
         "test_token",
         "test_password",
         "test_password_confirm",
-        expand: "rel",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -367,13 +360,6 @@ void main() {
           "test": "789",
         },
       );
-
-      expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
-      expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
     });
 
     test("requestVerification()", () async {
@@ -417,7 +403,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/confirm-verification?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/confirm-verification?a=1&a=2&b=%40demo",
         );
         expect(
           request.body,
@@ -428,20 +414,13 @@ void main() {
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({
-            "token": "test_token",
-            "record": {"id": "test_id"},
-          }),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.collection("test").confirmVerification(
+      await client.collection("test").confirmVerification(
         "test_token",
-        expand: "rel",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -453,13 +432,6 @@ void main() {
           "test": "789",
         },
       );
-
-      expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
-      expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
     });
 
     test("requestEmailChange()", () async {
@@ -503,7 +475,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/confirm-email-change?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/confirm-email-change?a=1&a=2&b=%40demo",
         );
         expect(
           request.body,
@@ -515,21 +487,14 @@ void main() {
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({
-            "token": "test_token",
-            "record": {"id": "test_id"},
-          }),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.collection("test").confirmEmailChange(
+      await client.collection("test").confirmEmailChange(
         "test_token",
         "test_password",
-        expand: "rel",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -541,13 +506,6 @@ void main() {
           "test": "789",
         },
       );
-
-      expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
-      expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
     });
 
     test("listExternalAuths()", () async {

@@ -289,13 +289,10 @@ class RecordService extends BaseCrudService<RecordModel> {
   }
 
   /// Confirms auth record password reset request.
-  ///
-  /// On success this method automatically updates the client's AuthStore.
-  Future<RecordAuth> confirmPasswordReset(
+  Future<void> confirmPasswordReset(
     String passwordResetToken,
     String password,
     String passwordConfirm, {
-    String? expand,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
@@ -305,18 +302,13 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedBody["password"] = password;
     enrichedBody["passwordConfirm"] = passwordConfirm;
 
-    final enrichedQuery = Map<String, dynamic>.of(query);
-    enrichedQuery["expand"] ??= expand;
-
-    return client
-        .send(
-          "$baseCollectionPath/confirm-password-reset",
-          method: "POST",
-          body: enrichedBody,
-          query: enrichedQuery,
-          headers: headers,
-        )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+    return client.send(
+      "$baseCollectionPath/confirm-password-reset",
+      method: "POST",
+      body: enrichedBody,
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Sends auth record verification email request.
@@ -341,9 +333,8 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// Confirms auth record email verification request.
   ///
   /// On success this method automatically updates the client's AuthStore.
-  Future<RecordAuth> confirmVerification(
+  Future<void> confirmVerification(
     String verificationToken, {
-    String? expand,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
@@ -351,18 +342,13 @@ class RecordService extends BaseCrudService<RecordModel> {
     final enrichedBody = Map<String, dynamic>.of(body);
     enrichedBody["token"] = verificationToken;
 
-    final enrichedQuery = Map<String, dynamic>.of(query);
-    enrichedQuery["expand"] ??= expand;
-
-    return client
-        .send(
-          "$baseCollectionPath/confirm-verification",
-          method: "POST",
-          body: enrichedBody,
-          query: enrichedQuery,
-          headers: headers,
-        )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+    return client.send(
+      "$baseCollectionPath/confirm-verification",
+      method: "POST",
+      body: enrichedBody,
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Sends auth record email change request to the provided email.
@@ -385,12 +371,9 @@ class RecordService extends BaseCrudService<RecordModel> {
   }
 
   /// Confirms auth record new email address.
-  ///
-  /// On success this method automatically updates the client's AuthStore.
-  Future<RecordAuth> confirmEmailChange(
+  Future<void> confirmEmailChange(
     String emailChangeToken,
     String userPassword, {
-    String? expand,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
@@ -399,18 +382,13 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedBody["token"] = emailChangeToken;
     enrichedBody["password"] = userPassword;
 
-    final enrichedQuery = Map<String, dynamic>.of(query);
-    enrichedQuery["expand"] ??= expand;
-
-    return client
-        .send(
-          "$baseCollectionPath/confirm-email-change",
-          method: "POST",
-          body: enrichedBody,
-          query: enrichedQuery,
-          headers: headers,
-        )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+    return client.send(
+      "$baseCollectionPath/confirm-email-change",
+      method: "POST",
+      body: enrichedBody,
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Lists all linked external auth providers for the specified record.
