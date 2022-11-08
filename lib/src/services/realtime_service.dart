@@ -5,6 +5,7 @@ import "base_service.dart";
 
 /// The definition of a realtime subscription callback function.
 typedef SubscriptionFunc = void Function(SseMessage e);
+typedef UnsubscribeFunc = Future<void> Function();
 
 /// The service that handles the **Realtime APIs**.
 ///
@@ -15,42 +16,82 @@ class RealtimeService extends BaseService {
 
   SseClient? _sse;
   String _clientId = "";
-  final _subscriptions = <String, SubscriptionFunc>{};
+  final _subscriptions = <String, List<SubscriptionFunc>>{};
 
-  /// Initialize the realtime connection (if not already)
-  /// and register the provided subscription.
-  Future<void> subscribe(
-    String subscription,
-    SubscriptionFunc callback,
+  /// Register the subscription listener.
+  ///
+  /// You can subscribe multiple times to the same topic.
+  ///
+  /// If the SSE connection is not started yet,
+  /// this method will also initialize it.
+  Future<UnsubscribeFunc> subscribe(
+    String topic,
+    SubscriptionFunc listener,
   ) async {
-    // register the subscription
-    // (previous identical subscription is replaced)
-    _subscriptions[subscription] = callback;
+    if (!_subscriptions.containsKey(topic)) {
+      _subscriptions[topic] = [];
+    }
+    _subscriptions[topic]?.add(listener);
 
     // start a new sse connection
     if (_sse == null) {
-      return _connect();
+      await _connect();
+    } else if (_clientId.isNotEmpty && _subscriptions[topic]?.length == 1) {
+      // otherwise - just persist the updated subscriptions
+      // (if it is the first for the topic)
+      await _submitSubscriptions();
     }
 
-    // otherwise - just persist the updated subscriptions
+    return () async {
+      return unsubscribeByTopicAndListener(topic, listener);
+    };
+  }
+
+  /// Unsubscribe from all subscription listeners with the specified topic.
+  ///
+  /// If [topic] is not set, then this method will unsubscribe
+  /// from all active subscriptions.
+  ///
+  /// This method is no-op if there are no active subscriptions.
+  ///
+  /// The related sse connection will be autoclosed if after the
+  /// unsubscribe operation there are no active subscriptions left.
+  Future<void> unsubscribe([String topic = ""]) async {
+    if (topic.isEmpty) {
+      // remove all subscriptions
+      _subscriptions.clear();
+    } else if (_subscriptions.containsKey(topic)) {
+      _subscriptions.remove(topic);
+    } else {
+      // not subscribed to the specified topic
+      return;
+    }
+
+    // no other subscriptions -> close the sse connection
+    if (!_hasNonEmptyTopic()) {
+      return _disconnect();
+    }
+
+    // otherwise - notify the server about the subscription changes
     if (_clientId.isNotEmpty) {
       return _submitSubscriptions();
     }
   }
 
-  /// Unsubscribe from all subscriptions starting with the provided prefix.
+  /// Unsubscribe from all subscription listeners starting with
+  /// the specified topic prefix.
   ///
-  /// This method is no-op if there are no active subscriptions with
-  /// the provided prefix.
+  /// This method is no-op if there are no active subscriptions
+  /// with the specified topic prefix.
   ///
   /// The related sse connection will be autoclosed if after the
   /// unsubscribe operation there are no active subscriptions left.
-  Future<void> unsubscribeByPrefix(String prefix) async {
+  Future<void> unsubscribeByPrefix(String topicPrefix) async {
     final beforeLength = _subscriptions.length;
 
     // remove matching subscriptions
-    _subscriptions.removeWhere((sub, func) {
-      return sub.startsWith(prefix);
+    _subscriptions.removeWhere((topic, func) {
+      return topic.startsWith(topicPrefix);
     });
 
     // no changes
@@ -58,8 +99,8 @@ class RealtimeService extends BaseService {
       return;
     }
 
-    // no more subscriptions -> close the sse connection
-    if (_subscriptions.isEmpty) {
+    // no other subscriptions -> close the sse connection
+    if (!_hasNonEmptyTopic()) {
       return _disconnect();
     }
 
@@ -69,33 +110,51 @@ class RealtimeService extends BaseService {
     }
   }
 
-  /// Unsubscribe from a subscription.
+  /// Unsubscribe from all subscriptions matching the specified topic
+  /// and listener function.
   ///
-  /// If the `subscription` argument is not set,
-  /// then the client will unsubscribe from all registered subscriptions.
+  /// This method is no-op if there are no active subscription with
+  /// the specified topic and listener.
   ///
-  /// The underlying sse connection will be autoclosed if after the
+  /// The related sse connection will be autoclosed if after the
   /// unsubscribe operation there are no active subscriptions left.
-  Future<void> unsubscribe([String subscription = ""]) async {
-    if (subscription.isEmpty) {
-      // remove all subscriptions
-      _subscriptions.clear();
-    } else if (_subscriptions.containsKey(subscription)) {
-      _subscriptions.remove(subscription);
-    } else {
-      // not subscribed to the specified subscription
+  Future<void> unsubscribeByTopicAndListener(
+    String topic,
+    SubscriptionFunc listener,
+  ) async {
+    if (_subscriptions[topic]?.isEmpty ?? true) {
+      return; // nothing to unsubscribe from
+    }
+
+    final beforeLength = _subscriptions[topic]?.length ?? 0;
+
+    _subscriptions[topic]?.removeWhere((fn) => fn == listener);
+
+    // no changes
+    if (beforeLength == (_subscriptions[topic]?.length ?? 0)) {
       return;
     }
 
-    // no more subscriptions -> close the sse connection
-    if (_subscriptions.isEmpty) {
+    // no other subscriptions -> close the sse connection
+    if (!_hasNonEmptyTopic()) {
       return _disconnect();
     }
 
     // otherwise - notify the server about the subscription changes
-    if (_clientId.isNotEmpty) {
+    // (if there are no other subscriptions in the topic)
+    if (_clientId.isNotEmpty && (_subscriptions[topic]?.isEmpty ?? true)) {
       return _submitSubscriptions();
     }
+  }
+
+  bool _hasNonEmptyTopic() {
+    for (final topic in _subscriptions.keys) {
+      if (_subscriptions[topic]?.isNotEmpty ?? false) {
+        return true; // has at least one non-empty topic
+      }
+    }
+
+    return false;
   }
 
   Future<void> _connect() async {
@@ -111,7 +170,9 @@ class RealtimeService extends BaseService {
         return;
       }
 
-      _subscriptions[msg.event]?.call(msg);
+      _subscriptions[msg.event]?.forEach((fn) {
+        fn.call(msg);
+      });
     });
 
     // resubmit local subscriptions on first reconnect

@@ -7,6 +7,7 @@ import "../dtos/record_auth.dart";
 import "../dtos/record_model.dart";
 import "../dtos/record_subscription_event.dart";
 import "base_crud_service.dart";
+import "realtime_service.dart";
 
 /// The definition of a realtime record subscription callback function.
 typedef RecordSubscriptionFunc = void Function(RecordSubscriptionEvent e);
@@ -35,30 +36,47 @@ class RecordService extends BaseCrudService<RecordModel> {
   // Realtime handlers
   // -----------------------------------------------------------------
 
-  /// Subscribe to the realtime changes of any record from the collection.
-  Future<void> subscribe(RecordSubscriptionFunc callback) {
-    return client.realtime.subscribe(_collectionIdOrName, (e) {
+  ///
+  /// Subscribe to realtime changes to the specified topic ("*" or record id).
+  ///
+  /// If [topic] is the wildcard "*", then this method will subscribe to
+  /// any record changes in the collection.
+  ///
+  /// If [topic] is a record id, then this method will subscribe only
+  /// to changes of the specified record id.
+  ///
+  /// It's OK to subscribe multiple times to the same topic.
+  ///
+  /// You can use the returned [UnsubscribeFunc] to remove the subscription.
+  /// Or use [unsubscribe(topic)] if you want to remove all
+  /// subscriptions attached to the topic.
+  Future<UnsubscribeFunc> subscribe(
+      String topic, RecordSubscriptionFunc callback) {
+    // @todo after v0.8 change to just "$_collectionIdOrName/$topic"
+    var subscribeTopic = _collectionIdOrName;
+    if (topic != "*") {
+      subscribeTopic += "/$topic";
+    }
+
+    return client.realtime.subscribe(subscribeTopic, (e) {
       callback(RecordSubscriptionEvent.fromJson(e.jsonData()));
     });
   }
 
-  /// Subscribe to the realtime changes of a single record in the collection.
-  Future<void> subscribeOne(String recordId, RecordSubscriptionFunc callback) {
-    return client.realtime.subscribe(
-      "$_collectionIdOrName/$recordId",
-      (e) {
-        callback(RecordSubscriptionEvent.fromJson(e.jsonData()));
-      },
-    );
-  }
-
-  /// Unsubscribe from the collection record subscription(s).
+  /// Unsubscribe from all subscriptions of the specified topic
+  /// ("*" or record id).
   ///
-  /// If `recordId` is not set, then this method will unsubscribe from
+  /// If [topic] is not set, then this method will unsubscribe from
   /// all subscriptions associated to the current collection.
-  Future<void> unsubscribe([String recordId = ""]) {
-    if (recordId.isNotEmpty) {
-      return client.realtime.unsubscribe("$_collectionIdOrName/$recordId");
+  Future<void> unsubscribe([String topic = ""]) {
+    if (topic.isNotEmpty) {
+      // @todo after v0.8 change to just "$_collectionIdOrName/$topic"
+      var unsubscribeTopic = _collectionIdOrName;
+      if (topic != "*") {
+        unsubscribeTopic += "/$topic";
+      }
+
+      return client.realtime.unsubscribe(unsubscribeTopic);
     }
 
     return client.realtime.unsubscribeByPrefix(_collectionIdOrName);

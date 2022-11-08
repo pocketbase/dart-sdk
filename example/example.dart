@@ -17,13 +17,13 @@ void main() {
   });
 
   // subscribe to realtime changes in the "example" collection
-  pb.collection("example").subscribe((e) {
+  pb.collection("example").subscribe("*", (e) {
     print(e.action); // create, update, delete
     print(e.record); // the changed record
   });
 
   // unsubsribe from all "example" realtime subscriptions after 10 seconds
-  Timer(const Duration(seconds: 10), () {
+  Timer(const Duration(seconds: 300), () {
     pb.collection("example").unsubscribe();
   });
 }
