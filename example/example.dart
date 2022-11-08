@@ -23,7 +23,7 @@ void main() {
   });
 
   // unsubsribe from all "example" realtime subscriptions after 10 seconds
-  Timer(const Duration(seconds: 300), () {
+  Timer(const Duration(seconds: 10), () {
     pb.collection("example").unsubscribe();
   });
 }
