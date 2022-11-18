@@ -1,7 +1,7 @@
 PocketBase Dart SDK [![Pub Package](https://img.shields.io/pub/v/pocketbase.svg)](https://pub.dev/packages/pocketbase)
 ======================================================================
 
-> **⚠️ This is a pre-release, contains breaking changes and works only with the new PocketBase v0.8+ API!**
+> **⚠️ PocketBase Dart SDK v0.5+ contains breaking changes and works only with the new PocketBase v0.8+ API!**
 
 Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](https://pocketbase.io/docs).
 
