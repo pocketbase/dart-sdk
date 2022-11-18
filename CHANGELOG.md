@@ -1,48 +1,10 @@
-## 0.5.0-rc3
+## 0.5.0
 
-To prevent confusion with the auth method responses, the following methods now returns 204 with empty body (previously 200 with token and auth model):
-
-```dart
-pb.admins.confirmPasswordReset(...)
-pb.collection("foo").confirmPasswordReset(...)
-pb.collection("foo").confirmVerification(...)
-pb.collection("foo").confirmEmailChange(...)
-```
-
-
-## 0.5.0-rc2
-
-This pre-release contains small breaking change related to the collection's realtime handlers per [#pocketbase-954](https://github.com/pocketbase/pocketbase/discussions/954#discussioncomment-4071150)
-in order to allow registering multiple subscriptions to the same topic.
-
-The minor breaking changes are:
-```dart
-pb.collection("foo").subscribe(fn)           => pb.collection("foo").subscribe("*", fn)
-pb.collection("foo").subscribeOne("id1", fn) => pb.collection("foo").subscribe("id1", fn)
-```
-
-Or to summarize, the collection realtime handler api now is:
-```js
-// subscribe:
-pb.collection("foo").subscribe("*", fn);
-pb.collection("foo").subscribe("YOUR_RECORD_ID", fn);
-
-// unsubscribe:
-pb.collection("foo").unsubscribe("YOUR_RECORD_ID"); // remove every "YOUR_RECORD_ID" subscription
-pb.collection("foo").unsubscribe("*");              // remove every "*" topic subscription
-pb.collection("foo").unsubscribe();                 // remove every subscription in foo
-```
-
-Additionally, `subscribe()` now returns `UnsubscribeFunc` that could be used to unsubscribe only from the registered single subscription.
-
-
-## 0.5.0-rc1
-
-> **⚠️ This is a pre-release, contains breaking changes and works only with the new PocketBase v0.8+ API!**
+> ⚠️ Please note that this release works only with the new PocketBase v0.8+ API!
 >
-> For a full list with all API changes you could check the main repo's changelog.
+> See the breaking changes below for more information on what has changed.
 
-**Non breaking changes:**
+#### Non breaking changes:
 
 - Added new crud method `getFirstListItem(filter)` to fetch a single item by a list filter.
 
@@ -52,7 +14,7 @@ Additionally, `subscribe()` now returns `UnsubscribeFunc` that could be used to 
 
 - Added `AuthMethodsList.usernamePassword` return field (we now support combined username/email authentication; see below `authWithPassword`).
 
-**Breaking changes:**
+#### Breaking changes:
 
 - For easier and more conventional parsing, all DateTime strings now have `Z` as suffix, eg. `2022-01-01 01:02:03.456Z`.
 
@@ -72,11 +34,13 @@ Additionally, `subscribe()` now returns `UnsubscribeFunc` that could be used to 
 - The `pb.realtime` service has now a more general callback form so that it can be used with custom realtime handlers.
   Dedicated records specific subscribtions could be found under `pb.collection().*`:
   ```
-  pb.realtime.subscribe('example', callback)           => pb.collection('example').subscribe(callback);
-  pb.realtime.subscribe('example/RECORD_ID', callback) => pb.collection('example').subscribeOne('RECORD_ID', callback);
-  pb.realtime.unsubscribe('example')                   => pb.collection('example').unsubscribe();
+  pb.realtime.subscribe('example', callback)           => pb.collection('example').subscribe('*', callback);
+  pb.realtime.subscribe('example/RECORD_ID', callback) => pb.collection('example').subscribe('RECORD_ID', callback);
+  pb.realtime.unsubscribe('example')                   => pb.collection('example').unsubscribe('*');
   pb.realtime.unsubscribe('example/RECORD_ID')         => pb.collection('example').unsubscribe('RECORD_ID');
+  (no old equivalent)                                  => pb.collection('example').unsubscribe();
   ```
+  Additionally, `subscribe()` now return `UnsubscribeFunc` that could be used to unsubscribe only from a single subscription listener.
 
 - Moved all `pb.users.*` handlers under `pb.collection().*`:
   ```
@@ -98,6 +62,14 @@ Additionally, `subscribe()` now returns `UnsubscribeFunc` that could be used to 
   ```
   pb.admins.authViaEmail(email, password); => pb.admins.authWithPassword(email, password);
   pb.admins.refresh();                     => pb.admins.authRefresh();
+  ```
+
+- To prevent confusion with the auth method responses, the following methods now returns 204 with empty body (previously 200 with token and auth model):
+  ```dart
+  Future<void> pb.admins.confirmPasswordReset(...)
+  Future<void> pb.collection("users").confirmPasswordReset(...)
+  Future<void> pb.collection("users").confirmVerification(...)
+  Future<void> pb.collection("users").confirmEmailChange(...)
   ```
 
 - Removed `UserModel` because users are now regular records (aka. `RecordModel`).
