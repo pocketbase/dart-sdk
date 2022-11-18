@@ -1,8 +1,6 @@
 PocketBase Dart SDK [![Pub Package](https://img.shields.io/pub/v/pocketbase.svg)](https://pub.dev/packages/pocketbase)
 ======================================================================
 
-> **⚠️ PocketBase Dart SDK v0.5+ contains breaking changes and works only with the new PocketBase v0.8+ API!**
-
 Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](https://pocketbase.io/docs).
 
 - [Installation](#installation)
@@ -17,10 +15,10 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
 Add the library to your `dependencies`:
 
 ```sh
-dart pub add pocketbase:^0.5.0-rc1
+dart pub add pocketbase:^0.5.0
 
 # or with Flutter:
-flutter pub add pocketbase:^0.5.0-rc1
+flutter pub add pocketbase:^0.5.0
 ```
 
 Import it in your Dart code:
