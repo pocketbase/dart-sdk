@@ -43,7 +43,7 @@ final result = await pb.collection('example').getList(
 );
 
 // subscribe to realtime "example" collection changes
-pb.collection('example').subscribe((e) {
+pb.collection('example').subscribe("*", (e) {
   print(e.action); // create, update, delete
   print(e.record); // the changed record
 });
