@@ -1,3 +1,8 @@
+## 0.5.0+1
+
+- Updated the realtime examples in the README.
+
+
 ## 0.5.0
 
 > ⚠️ Please note that this release works only with the new PocketBase v0.8+ API!
