@@ -244,14 +244,17 @@ final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 ###### _Realtime handlers_
 
 ```dart
-// Subscribe to realtime changes of any record from the collection.
-🔓 pb.collection(collectionIdOrName).subscribe(callback);
+// Subscribe to realtime changes to the specified topic ("*" or recordId).
+//
+// It is safe to subscribe multiple times to the same topic.
+//
+// You can use the returned UnsubscribeFunc to remove a single registered subscription.
+// If you want to remove all subscriptions related to the topic use unsubscribe(topic).
+🔓 pb.collection(collectionIdOrName).subscribe(topic, callback);
 
-// Subscribe to the realtime changes of a single record in the collection.
-🔓 pb.collection(collectionIdOrName).subscribeOne(recordId, callback);
-
-// Unsubscribe from the collection record subscription(s).
-🔓 pb.collection(collectionIdOrName).unsubscribe([recordId]);
+// Unsubscribe from all registered subscriptions to the specified topic ("*" or recordId).
+// If topic is not set, then it will remove all registered collection subscriptions.
+🔓 pb.collection(collectionIdOrName).unsubscribe([topic]);
 ```
 
 ###### _Auth handlers_
