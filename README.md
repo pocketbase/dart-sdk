@@ -417,6 +417,15 @@ final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 🔓 pb.realtime.unsubscribeByPrefix(subscriptionsPrefix);
 ```
 
+---
+
+##### HealthService
+
+```dart
+// Checks the health status of the api.
+🔓 pb.health.check({query, headers});
+```
+
 
 ## Limitations
 

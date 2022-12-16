@@ -1,3 +1,8 @@
+## 0.6.0
+
+- Added `pb.health.check()` that checks the health status of the PocketBase server (_available in PocketBase v0.10.0_)
+
+
 ## 0.5.0+1
 
 - Updated the realtime examples in the README.

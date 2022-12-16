@@ -15,14 +15,14 @@ class RecordModel implements Jsonable {
   String collectionId;
   String collectionName;
 
-  List<String> singleExpandKeys = [];
-  List<String> multiExpandKeys = [];
-
   @JsonKey(ignore: true) // manually serialized
   Map<String, List<RecordModel>> expand;
 
   @JsonKey(ignore: true) // manually serialized
   Map<String, dynamic> data;
+
+  final List<String> _singleExpandKeys = [];
+  final List<String> _multiExpandKeys = [];
 
   RecordModel({
     this.id = "",
@@ -42,14 +42,14 @@ class RecordModel implements Jsonable {
       final result = <RecordModel>[];
 
       if (value is Iterable) {
-        model.multiExpandKeys.add(key);
+        model._multiExpandKeys.add(key);
         for (final item in value) {
           result.add(RecordModel.fromJson(item as Map<String, dynamic>? ?? {}));
         }
       }
 
       if (value is Map) {
-        model.singleExpandKeys.add(key);
+        model._singleExpandKeys.add(key);
         result.add(RecordModel.fromJson(value as Map<String, dynamic>? ?? {}));
       }
 
@@ -236,7 +236,7 @@ class RecordModel implements Jsonable {
 
     // revert the expand format to the original
     json["expand"] = expand.map((k, v) {
-      if (singleExpandKeys.contains(k)) {
+      if (_singleExpandKeys.contains(k)) {
         return MapEntry(k, v.isEmpty ? null : v.first.toJson());
       }
       return MapEntry(k, v.map((e) => e.toJson()).toList());

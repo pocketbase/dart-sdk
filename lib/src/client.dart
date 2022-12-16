@@ -8,6 +8,7 @@ import "client_exception.dart";
 import "dtos/record_model.dart";
 import "services/admin_service.dart";
 import "services/collection_service.dart";
+import "services/health_service.dart";
 import "services/log_service.dart";
 import "services/realtime_service.dart";
 import "services/record_service.dart";
@@ -44,6 +45,9 @@ class PocketBase {
   /// An instance of the service that handles the **Log APIs**.
   late final LogService logs;
 
+  /// An instance of the service that handles the **Health APIs**.
+  late final HealthService health;
+
   /// The underlying http client that will be used to send the request.
   /// This is used primarily for the unit tests.
   late final http.Client Function() _httpClientFactory;
@@ -66,6 +70,7 @@ class PocketBase {
     realtime = RealtimeService(this);
     settings = SettingsService(this);
     logs = LogService(this);
+    health = HealthService(this);
   }
 
   /// Returns the RecordService associated to the specified collection.
