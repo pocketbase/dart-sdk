@@ -122,7 +122,7 @@ class Task {
   final String description;
 
   /// Creates a new Task instance form the provided RecordModel.
-  factory Task.fromRecord(record RecordModel) => Task.fromJson(record.toJson());
+  factory Task.fromRecord(RecordModel record) => Task.fromJson(record.toJson());
 
   /// Connect the generated [_$Task] function to the `fromJson` factory.
   factory Task.fromJson(Map<String, dynamic> json) => _$Task(json);
