@@ -106,7 +106,7 @@ void main() {
           }),
         );
         expect(request.headers["test"], "789");
-        expect(request.headers["Authorization"], "");
+        expect(request.headers["Authorization"], "test");
 
         return http.Response(
           jsonEncode({
@@ -131,7 +131,7 @@ void main() {
         },
         headers: {
           "test": "789",
-          "Authorization": "test", // should be ignored
+          "Authorization": "test",
         },
       );
 

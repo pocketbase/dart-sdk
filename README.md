@@ -180,7 +180,7 @@ The default `AuthStore` class has the following public members that you could us
 ```dart
 AuthStore {
     token:    String                      // Getter for the stored auth token
-    model:    RecordModel|AdminModel|null // Getter for the stored auth User or Admin model
+    model:    RecordModel|AdminModel|null // Getter for the stored auth RecordModel or AdminModel
     isValid   bool                        // Getter to loosely check if the store has an existing and unexpired token
     onChange  Stream                      // Stream that gets triggered on each auth store change
 
@@ -190,7 +190,7 @@ AuthStore {
 }
 ```
 
-To _"logout"_ an authenticated user or admin, you can just call `pb.authStore.clear()`.
+To _"logout"_ an authenticated record or admin, you can just call `pb.authStore.clear()`.
 
 To _"listen"_ for changes in the auth store, you can _listen_ to the `onChange` broadcast stream:
 ```dart

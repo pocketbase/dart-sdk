@@ -113,16 +113,13 @@ class AdminService extends BaseCrudService<AdminModel> {
     enrichedBody["identity"] = email;
     enrichedBody["password"] = password;
 
-    final enrichedHeaders = Map<String, String>.of(headers);
-    enrichedHeaders["Authorization"] = ""; // the request doesn't require auth
-
     return client
         .send(
           "$baseCrudPath/auth-with-password",
           method: "POST",
           body: enrichedBody,
           query: query,
-          headers: enrichedHeaders,
+          headers: headers,
         )
         .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
   }

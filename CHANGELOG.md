@@ -1,3 +1,10 @@
+## 0.7.0
+
+- Allowed sending the existing valid auth token with the `authWithPassword()` calls.
+
+- Minor docs improvements.
+
+
 ## 0.6.0
 
 - Added `pb.health.check()` that checks the health status of the PocketBase server (_available in PocketBase v0.10.0_)

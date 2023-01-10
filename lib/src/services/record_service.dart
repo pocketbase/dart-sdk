@@ -195,16 +195,13 @@ class RecordService extends BaseCrudService<RecordModel> {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
 
-    final enrichedHeaders = Map<String, String>.of(headers);
-    enrichedHeaders["Authorization"] = ""; // the request doesn't require auth
-
     return client
         .send(
           "$baseCollectionPath/auth-with-password",
           method: "POST",
           body: enrichedBody,
           query: enrichedQuery,
-          headers: enrichedHeaders,
+          headers: headers,
         )
         .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
   }
