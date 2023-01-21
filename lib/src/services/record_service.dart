@@ -111,7 +111,11 @@ class RecordService extends BaseCrudService<RecordModel> {
         .then((item) {
       if (client.authStore.model != null &&
           client.authStore.model is RecordModel &&
-          (client.authStore.model as RecordModel).id == item.id) {
+          (client.authStore.model as RecordModel).id == item.id &&
+          [
+            (client.authStore.model as RecordModel).collectionId,
+            (client.authStore.model as RecordModel).collectionName,
+          ].contains(_collectionIdOrName)) {
         client.authStore.save(client.authStore.token, item);
       }
 
@@ -140,7 +144,11 @@ class RecordService extends BaseCrudService<RecordModel> {
         .then((_) {
       if (client.authStore.model != null &&
           client.authStore.model is RecordModel &&
-          (client.authStore.model as RecordModel).id == id) {
+          (client.authStore.model as RecordModel).id == id &&
+          [
+            (client.authStore.model as RecordModel).collectionId,
+            (client.authStore.model as RecordModel).collectionName,
+          ].contains(_collectionIdOrName)) {
         client.authStore.clear();
       }
 

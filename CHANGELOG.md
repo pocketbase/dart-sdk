@@ -1,3 +1,8 @@
+## 0.7.1
+
+- Added check for the collection name before auto updating the `pb.authStore` state on auth record update/delete.
+
+
 ## 0.7.0
 
 - Allowed sending the existing valid auth token with the `authWithPassword()` calls.

@@ -14,10 +14,10 @@ void main() {
       "collections/%40test_collection/records",
     );
 
-    test("update() with mismatched AuthStore model", () async {
+    test("update() with mismatched AuthStore model id", () async {
       final mock = MockClient((request) async {
         return http.Response(
-          jsonEncode({"id": "test123", "collectionId": "123"}),
+          jsonEncode({"id": "test123", "test": "b"}),
           200,
         );
       });
@@ -26,20 +26,21 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test456", collectionId: "456"),
+        RecordModel(id: "test456", data: {"test": "a"}, collectionId: "test"),
       );
 
       await client.collection("test").update("test123");
 
       expect(client.authStore.model, isNotNull);
       // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.collectionId, "456");
+      expect(client.authStore.model.data["test"], "a");
     });
 
-    test("update() with matching AuthStore model", () async {
+    test("update() with matching AuthStore model id but mismatched collection",
+        () async {
       final mock = MockClient((request) async {
         return http.Response(
-          jsonEncode({"id": "test123", "collectionId": "123"}),
+          jsonEncode({"id": "test123", "test": "b"}),
           200,
         );
       });
@@ -48,38 +49,84 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test123", collectionId: "456"),
+        RecordModel(id: "test123", data: {"test": "a"}, collectionId: "test2"),
       );
 
       await client.collection("test").update("test123");
 
       expect(client.authStore.model, isNotNull);
       // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.collectionId, "123");
+      expect(client.authStore.model.data["test"], "a");
     });
 
-    test("delete() with matching AuthStore model", () async {
+    test("update() with matching AuthStore model id and collection", () async {
+      final mock = MockClient((request) async {
+        return http.Response(
+          jsonEncode({"id": "test123", "test": "b"}),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      client.authStore.save(
+        "test_token",
+        RecordModel(id: "test123", collectionId: "test"),
+      );
+
+      await client.collection("test").update("test123");
+
+      expect(client.authStore.model, isNotNull);
+      // ignore: avoid_dynamic_calls
+      expect(client.authStore.model.data["test"], "b");
+    });
+
+    test("delete() with matching AuthStore model id and collection", () async {
       final mock = MockClient((request) async {
         return http.Response("", 200);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      client.authStore.save("test_token", RecordModel(id: "test123"));
+      client.authStore.save(
+        "test_token",
+        RecordModel(id: "test123", collectionName: "test"),
+      );
 
       await client.collection("test").delete("test123");
 
       expect(client.authStore.model, isNull);
     });
 
-    test("delete() with mismatched AuthStore model", () async {
+    test("delete() with mismatched AuthStore model id", () async {
       final mock = MockClient((request) async {
         return http.Response("", 200);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      client.authStore.save("test_token", RecordModel(id: "test456"));
+      client.authStore.save(
+        "test_token",
+        RecordModel(id: "test456", collectionName: "test"),
+      );
+
+      await client.collection("test").delete("test123");
+
+      expect(client.authStore.model, isNotNull);
+    });
+
+    test("delete() with matching AuthStore model id but mismatched collection",
+        () async {
+      final mock = MockClient((request) async {
+        return http.Response("", 200);
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      client.authStore.save(
+        "test_token",
+        RecordModel(id: "test123", collectionName: "test2"),
+      );
 
       await client.collection("test").delete("test123");
 
