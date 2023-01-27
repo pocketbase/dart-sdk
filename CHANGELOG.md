@@ -1,3 +1,8 @@
+## 0.7.1+1
+
+- Removed version install constraint from the README.
+
+
 ## 0.7.1
 
 - Added check for the collection name before auto updating the `pb.authStore` state on auth record update/delete.

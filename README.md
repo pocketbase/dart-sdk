@@ -15,10 +15,10 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
 Add the library to your `dependencies`:
 
 ```sh
-dart pub add pocketbase:^0.5.0
+dart pub add pocketbase
 
 # or with Flutter:
-flutter pub add pocketbase:^0.5.0
+flutter pub add pocketbase
 ```
 
 Import it in your Dart code:
