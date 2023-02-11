@@ -159,8 +159,14 @@ class PocketBase {
     try {
       final response = await requestClient.send(request);
       final responseStr = await response.stream.bytesToString();
-      final responseData =
-          responseStr.isNotEmpty ? jsonDecode(responseStr) : null;
+
+      dynamic responseData;
+      try {
+        responseData = responseStr.isNotEmpty ? jsonDecode(responseStr) : null;
+      } catch (_) {
+        // custom non-json response
+        responseData = responseStr;
+      }
 
       if (response.statusCode >= 400) {
         throw ClientException(

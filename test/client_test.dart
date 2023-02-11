@@ -239,6 +239,22 @@ void main() {
       expect(result, equals({"test": 123}));
     });
 
+    test("non-json response", () async {
+      final mock = MockClient((request) async {
+        return http.Response(
+          "test123",
+          200,
+          headers: {"content-type": "text/html"},
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      final result = await client.send("/test");
+
+      expect(result, equals("test123"));
+    });
+
     test("with valid record authStore model", () async {
       final mock = MockClient((request) async {
         expect(

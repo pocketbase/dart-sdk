@@ -1,3 +1,8 @@
+## 0.7.2
+
+- Added support for handling non-json response when calling `pb.send()`.
+
+
 ## 0.7.1+1
 
 - Removed version install constraint from the README.
