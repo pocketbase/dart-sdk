@@ -1,3 +1,8 @@
+## 0.7.3
+
+- Improved the realtime autoretry handling (added `infinity` and stepped retries timeout duration).
+
+
 ## 0.7.2
 
 - Added support for handling non-json response when calling `pb.send()`.

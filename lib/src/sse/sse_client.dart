@@ -32,11 +32,20 @@ import "sse_message.dart";
 /// sse.close();
 /// ```
 class SseClient {
-  static const defaultRetryTimeout = 5000; // in ms
+  // List with default stepped retry timeouts (in ms).
+  static const List<int> defaultRetryTimeouts = [
+    200,
+    300,
+    500,
+    1000,
+    1200,
+    1500,
+    2000,
+  ];
 
-  int _retryAttempts = 0;
-  int _maxRetry = 5;
   Timer? _retryTimer;
+  int _retryAttempts = 0;
+  num _maxRetry = double.infinity;
 
   /// Indicates whether the client was closed.
   bool get isClosed => _isClosed;
@@ -65,7 +74,7 @@ class SseClient {
   /// Initializes the client and connects to the provided url.
   SseClient(
     this._url, {
-    int maxRetry = 5,
+    num maxRetry = double.infinity,
     void Function()? onClose,
     void Function(dynamic err)? onError,
 
@@ -203,7 +212,11 @@ class SseClient {
     }
 
     if (retryTimeout <= 0) {
-      retryTimeout = defaultRetryTimeout;
+      if (_retryAttempts > defaultRetryTimeouts.length - 1) {
+        retryTimeout = defaultRetryTimeouts[defaultRetryTimeouts.length - 1];
+      } else {
+        retryTimeout = defaultRetryTimeouts[_retryAttempts];
+      }
     }
 
     // cancel previous timer (if any)
