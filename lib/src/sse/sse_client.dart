@@ -213,7 +213,7 @@ class SseClient {
 
     if (retryTimeout <= 0) {
       if (_retryAttempts > defaultRetryTimeouts.length - 1) {
-        retryTimeout = defaultRetryTimeouts[defaultRetryTimeouts.length - 1];
+        retryTimeout = defaultRetryTimeouts.last;
       } else {
         retryTimeout = defaultRetryTimeouts[_retryAttempts];
       }
