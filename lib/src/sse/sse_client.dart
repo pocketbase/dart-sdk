@@ -19,12 +19,12 @@ import "sse_message.dart";
 /// final sse = SseClient("https://example.com")
 ///
 /// // subscribe to any message
-/// sse.stream.listen((msg) {
+/// sse.onMessage.listen((msg) {
 ///   print(msg);
 /// });
 ///
 /// // subscribe to specific event(s) only
-/// sse.stream.where((msg) => msg.event == "PB_CONNECT").listen((msg) {
+/// sse.onMessage.where((msg) => msg.event == "PB_CONNECT").listen((msg) {
 ///   print(msg);
 /// });
 ///
