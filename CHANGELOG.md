@@ -1,3 +1,10 @@
+## 0.8.0
+
+- Added `CollectionModel.indexes` field for the new collection indexes support in the upcoming PocketBase v0.14.0.
+
+- Added `pb.settings.generateAppleClientSecret()` for sending a request to generate Apple OAuth2 client secret in the upcoming PocketBase v0.14.0.
+
+
 ## 0.7.3
 
 - Improved the realtime autoretry handling (added `infinity` and stepped retries timeout duration).

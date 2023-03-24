@@ -396,6 +396,9 @@ final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 
 // Sends a test email (verification, password-reset, email-change).
 🔐 pb.settings.testEmail(toEmail, template, {body, query, headers});
+
+// Generates a new Apple OAuth2 client secret.
+🔐 pb.settings.generateAppleClientSecret(clientId, teamId, keyId, privateKey, duration, {body, query, headers});
 ```
 
 ---

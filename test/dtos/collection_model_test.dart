@@ -28,6 +28,7 @@ void main() {
         "updateRule": "",
         "deleteRule": "test_deleteRule",
         "options": {"b": 123},
+        "indexes": ["a", "b"],
       };
 
       final model = CollectionModel.fromJson(json);

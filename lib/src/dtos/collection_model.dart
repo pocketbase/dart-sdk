@@ -22,6 +22,7 @@ class CollectionModel implements Jsonable {
   String? updateRule;
   String? deleteRule;
   List<SchemaField> schema;
+  List<String> indexes;
   Map<String, dynamic> options;
 
   CollectionModel({
@@ -37,6 +38,7 @@ class CollectionModel implements Jsonable {
     this.updateRule,
     this.deleteRule,
     this.schema = const [],
+    this.indexes = const [],
     this.options = const {},
   });
 

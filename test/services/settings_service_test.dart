@@ -148,5 +148,51 @@ void main() {
         },
       );
     });
+
+    test("generateAppleClientSecret()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+            request.body,
+            jsonEncode({
+              "test_body": 123,
+              "clientId": "1",
+              "teamId": "2",
+              "keyId": "3",
+              "privateKey": "4",
+              "duration": 5,
+            }));
+        expect(
+          request.url.toString(),
+          "/base/api/settings/apple/generate-client-secret?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode({"secret": "test"}),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.settings.generateAppleClientSecret(
+        "1",
+        "2",
+        "3",
+        "4",
+        5,
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+    });
   });
 }

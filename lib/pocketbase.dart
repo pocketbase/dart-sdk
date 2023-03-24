@@ -10,6 +10,7 @@ export "src/client_exception.dart";
 // dtos
 export "src/dtos/admin_auth.dart";
 export "src/dtos/admin_model.dart";
+export "src/dtos/apple_client_secret.dart";
 export "src/dtos/auth_method_provider.dart";
 export "src/dtos/auth_methods_list.dart";
 export "src/dtos/collection_model.dart";

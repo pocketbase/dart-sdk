@@ -23,6 +23,10 @@ CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => SchemaField.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      indexes: (json['indexes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       options: json['options'] as Map<String, dynamic>? ?? const {},
     );
 
@@ -40,5 +44,6 @@ Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
       'updateRule': instance.updateRule,
       'deleteRule': instance.deleteRule,
       'schema': instance.schema.map((e) => e.toJson()).toList(),
+      'indexes': instance.indexes,
       'options': instance.options,
     };

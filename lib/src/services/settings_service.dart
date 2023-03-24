@@ -1,4 +1,5 @@
 import "../client.dart";
+import "../dtos/apple_client_secret.dart";
 import "base_service.dart";
 
 /// The service that handles the **Settings APIs**.
@@ -78,5 +79,35 @@ class SettingsService extends BaseService {
       query: query,
       headers: headers,
     );
+  }
+
+  /// Generates a new Apple OAuth2 client secret.
+  Future<void> generateAppleClientSecret(
+    String clientId,
+    String teamId,
+    String keyId,
+    String privateKey,
+    int duration, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["clientId"] ??= clientId;
+    enrichedBody["teamId"] ??= teamId;
+    enrichedBody["keyId"] ??= keyId;
+    enrichedBody["privateKey"] ??= privateKey;
+    enrichedBody["duration"] ??= duration;
+
+    return client
+        .send(
+          "/api/settings/apple/generate-client-secret",
+          method: "POST",
+          body: enrichedBody,
+          query: query,
+          headers: headers,
+        )
+        .then((data) =>
+            AppleClientSecret.fromJson(data as Map<String, dynamic>? ?? {}));
   }
 }
