@@ -54,7 +54,7 @@ void main() {
   });
 
   group("PocketBase.getFileUrl()", () {
-    test("encoded record file url", () {
+    test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");
       final result = client.getFileUrl(
         RecordModel(id: "@r123", collectionId: "@c123"),

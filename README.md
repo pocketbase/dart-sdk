@@ -301,6 +301,18 @@ final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 
 ---
 
+##### FileService
+
+```js
+// Builds and returns an absolute record file url for the provided filename.
+🔓 pb.files.getUrl(record, filename, {thumb?, token?, query, body, headers});
+
+// Requests a new private file access token for the current auth model (admin or record).
+🔐 pb.files.getToken({query, body, headers});
+```
+
+---
+
 #### AdminService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/AdminService-class.html), [API docs](https://pocketbase.io/docs/api-admins))
 
 ```dart

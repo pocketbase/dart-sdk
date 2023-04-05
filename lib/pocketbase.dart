@@ -29,6 +29,7 @@ export "src/dtos/schema_field.dart";
 export "src/services/admin_service.dart";
 export "src/services/base_crud_service.dart";
 export "src/services/collection_service.dart";
+export "src/services/file_service.dart";
 export "src/services/health_service.dart";
 export "src/services/log_service.dart";
 export "src/services/realtime_service.dart";

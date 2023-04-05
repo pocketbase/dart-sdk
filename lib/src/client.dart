@@ -8,6 +8,7 @@ import "client_exception.dart";
 import "dtos/record_model.dart";
 import "services/admin_service.dart";
 import "services/collection_service.dart";
+import "services/file_service.dart";
 import "services/health_service.dart";
 import "services/log_service.dart";
 import "services/realtime_service.dart";
@@ -31,6 +32,9 @@ class PocketBase {
 
   /// An instance of the service that handles the **Collection APIs**.
   late final CollectionService collections;
+
+  /// An instance of the service that handles the **File APIs**.
+  late final FileService files;
 
   /// An instance of the service that handles the **Realtime APIs**.
   ///
@@ -67,6 +71,7 @@ class PocketBase {
 
     admins = AdminService(this);
     collections = CollectionService(this);
+    files = FileService(this);
     realtime = RealtimeService(this);
     settings = SettingsService(this);
     logs = LogService(this);
@@ -86,19 +91,20 @@ class PocketBase {
     return service;
   }
 
-  /// Builds and returns an absolute record file url.
+  /// Legacy alias of `pb.files.getUrl()`.
   Uri getFileUrl(
     RecordModel record,
     String filename, {
     String? thumb,
+    String? token,
     Map<String, dynamic> query = const {},
   }) {
-    final params = Map<String, dynamic>.of(query);
-    params["thumb"] ??= thumb;
-
-    return buildUrl(
-      "/api/files/${Uri.encodeComponent(record.collectionId)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
-      params,
+    return files.getUrl(
+      record,
+      filename,
+      thumb: thumb,
+      token: token,
+      query: query,
     );
   }
 

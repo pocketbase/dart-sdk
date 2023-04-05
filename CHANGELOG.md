@@ -1,3 +1,18 @@
+## (WIP)
+
+- Adde new `pb.files` service:
+  ```js
+  // Builds and returns an absolute record file url for the provided filename.
+  🔓 pb.files.getUrl(record, filename, queryParams = {});
+
+  // Requests a new private file access token for the current auth model (admin or record).
+  🔐 pb.files.getToken(queryParams = {});
+  ```
+  _`pb.getFileUrl()` is soft deprecated and acts as alias calling `pb.files.getUrl()` under the hood._
+
+- Removed deprecated `SchemaField.unique` field.
+
+
 ## 0.8.0
 
 - Added `CollectionModel.indexes` field for the new collection indexes support in the upcoming PocketBase v0.14.0.

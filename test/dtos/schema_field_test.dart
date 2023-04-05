@@ -10,7 +10,6 @@ void main() {
         "type": "schema_type",
         "system": true,
         "required": false,
-        "unique": false,
         "options": {"a": 123},
       };
 
