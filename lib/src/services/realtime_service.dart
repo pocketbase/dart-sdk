@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import "../client.dart";
 import "../sse/sse_client.dart";
 import "../sse/sse_message.dart";
@@ -17,6 +19,9 @@ class RealtimeService extends BaseService {
   SseClient? _sse;
   String _clientId = "";
   final _subscriptions = <String, List<SubscriptionFunc>>{};
+
+  // Returns the established SSE connection client id (if any).
+  String get clientId => _clientId;
 
   /// Register the subscription listener.
   ///
@@ -157,8 +162,10 @@ class RealtimeService extends BaseService {
     return false;
   }
 
-  Future<void> _connect() async {
+  Future<void> _connect() {
     _disconnect();
+
+    final completer = Completer<void>();
 
     final url = client.buildUrl("/api/realtime").toString();
 
@@ -178,12 +185,18 @@ class RealtimeService extends BaseService {
     // resubmit local subscriptions on first reconnect
     _sse?.onMessage.where((msg) => msg.event == "PB_CONNECT").listen((
       msg,
-    ) {
+    ) async {
       _clientId = msg.id;
-      _submitSubscriptions();
-    }, onError: (err) {
+      await _submitSubscriptions();
+      completer.complete();
+    }, onError: (dynamic err) {
       _disconnect();
+      completer.completeError(
+        err is Object ? err : StateError("failed to establish SSE connection"),
+      );
     });
+
+    return completer.future;
   }
 
   void _disconnect() {

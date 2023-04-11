@@ -268,8 +268,11 @@ final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 // Authenticates a record with their username/email and password.
 🔓 pb.collection(collectionIdOrName).authWithPassword(usernameOrEmail, password, {expand?, query, body, headers});
 
-// Authenticates a record with OAuth2 client provider.
-🔓 pb.collection(collectionIdOrName).authWithOAuth2(provider, code, codeVerifier, redirectUrl, {createData?, expand?, query, body, headers});
+// Authenticates a record with OAuth2 provider without custom redirects, deeplinks or even page reload.
+🔓 pb.collection(collectionIdOrName).authWithOAuth2(provider, urlCallback {scopes, createData, expand?});
+
+// Authenticates a record with OAuth2 code.
+🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectUrl, {createData?, expand?, query, body, headers});
 
 // Refreshes the current authenticated record model and auth token.
 🔐 pb.collection(collectionIdOrName).authRefresh({expand?, query, body, headers});

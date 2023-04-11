@@ -1,5 +1,24 @@
 ## (WIP)
 
+- Added simplified `authWithOAuth2()` version without having to implement custom redirect, deeplink or even page reload:
+  ```dart
+  await pb.collection('users').authWithOAuth2('google', (url) async {
+    await launchUrl(url);
+  })
+  ```
+
+  This method initializes a one-off realtime subscription and will
+  call `urlCallback` with the OAuth2 vendor url to authenticate.
+  Once the external OAuth2 sign-in/sign-up flow is completed, the popup
+  window will be automatically closed and the OAuth2 data sent back
+  to the user through the previously established realtime connection.
+
+  _Site-note_: when creating the OAuth2 app in the provider dashboard
+  you have to configure `https://yourdomain.com/api/oauth2-redirect`
+  as redirect URL.
+
+  **!** _The "manual" code exchange flow is still supported as `authWithOAuth2Code(provider, code, codeVerifier, redirectUrl)`._
+
 - Adde new `pb.files` service:
   ```js
   // Builds and returns an absolute record file url for the provided filename.
@@ -9,6 +28,9 @@
   🔐 pb.files.getToken(queryParams = {});
   ```
   _`pb.getFileUrl()` is soft deprecated and acts as alias calling `pb.files.getUrl()` under the hood._
+
+
+
 
 - Removed deprecated `SchemaField.unique` field.
 

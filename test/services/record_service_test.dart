@@ -228,7 +228,7 @@ void main() {
       expect(client.authStore.model.id, "test_id");
     });
 
-    test("authWithOAuth2()", () async {
+    test("authWithOAuth2Code()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "POST");
         expect(
@@ -261,7 +261,7 @@ void main() {
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.collection("test").authWithOAuth2(
+      final result = await client.collection("test").authWithOAuth2Code(
         "test_provider",
         "test_code",
         "test_code_verifier",

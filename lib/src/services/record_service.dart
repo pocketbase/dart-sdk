@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import "package:http/http.dart" as http;
 
 import "../client.dart";
+import "../client_exception.dart";
+import "../dtos/auth_method_provider.dart";
 import "../dtos/auth_methods_list.dart";
 import "../dtos/external_auth_model.dart";
 import "../dtos/record_auth.dart";
@@ -11,6 +15,8 @@ import "realtime_service.dart";
 
 /// The definition of a realtime record subscription callback function.
 typedef RecordSubscriptionFunc = void Function(RecordSubscriptionEvent e);
+
+typedef OAuth2UrlCallbackFunc = void Function(Uri url);
 
 /// The service that handles the **Record APIs**.
 ///
@@ -218,7 +224,7 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// a new auth token and record data (including the OAuth2 user profile).
   ///
   /// On success this method automatically updates the client's AuthStore.
-  Future<RecordAuth> authWithOAuth2(
+  Future<RecordAuth> authWithOAuth2Code(
     String provider,
     String code,
     String codeVerifier,
@@ -248,6 +254,109 @@ class RecordService extends BaseCrudService<RecordModel> {
           headers: headers,
         )
         .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+  }
+
+  /// Authenticate a single auth collection record with OAuth2
+  /// **without custom redirects, deeplinks or even page reload**.
+  ///
+  /// This method initializes a one-off realtime subscription and will
+  /// call [urlCallback] with the OAuth2 vendor url to authenticate.
+  /// Once the external OAuth2 sign-in/sign-up flow is completed, the popup
+  /// window will be automatically closed and the OAuth2 data sent back
+  /// to the user through the previously established realtime connection.
+  ///
+  /// On success this method automatically updates the client's AuthStore.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// await pb.collection('users').authWithOAuth2('google', (url) async {
+  ///   await launchUrl(url);
+  /// });
+  /// ```
+  ///
+  /// _Site-note_: when creating the OAuth2 app in the provider dashboard
+  /// you have to configure `https://yourdomain.com/api/oauth2-redirect`
+  /// as redirect URL.
+  Future<RecordAuth> authWithOAuth2(
+    String providerName,
+    OAuth2UrlCallbackFunc urlCallback, {
+    List<String> scopes = const [],
+    Map<String, dynamic> createData = const {},
+    String? expand,
+  }) async {
+    final authMethods = await listAuthMethods();
+
+    final AuthMethodProvider provider;
+    try {
+      provider =
+          authMethods.authProviders.firstWhere((p) => p.name == providerName);
+    } catch (err) {
+      throw ClientException(originalError: err);
+    }
+
+    final redirectUrl = client.buildUrl("/api/oauth2-redirect");
+
+    final completer = Completer<RecordAuth>();
+
+    Future<void> Function()? unsubscribeFunc;
+
+    try {
+      unsubscribeFunc = await client.realtime.subscribe("@oauth2", (e) async {
+        final oldState = client.realtime.clientId;
+
+        try {
+          final eventData = e.jsonData();
+          final code = eventData["code"] as String? ?? "";
+          final state = eventData["state"] as String? ?? "";
+
+          if (state.isEmpty || state != oldState) {
+            throw StateError("State parameters don't match.");
+          }
+
+          final auth = await authWithOAuth2Code(
+            provider.name,
+            code,
+            provider.codeVerifier,
+            redirectUrl.toString(),
+            createData: createData,
+            expand: expand,
+          );
+
+          completer.complete(auth);
+
+          if (unsubscribeFunc != null) {
+            unawaited(unsubscribeFunc());
+          }
+        } catch (err) {
+          if (err is ClientException) {
+            completer.completeError(err);
+          } else {
+            completer.completeError(ClientException(originalError: err));
+          }
+        }
+      });
+
+      final authUrl = Uri.parse(provider.authUrl + redirectUrl.toString());
+
+      final queryParameters = Map<String, String>.of(authUrl.queryParameters);
+      queryParameters["state"] = client.realtime.clientId;
+
+      // set custom scopes (if any)
+      if (scopes.isNotEmpty) {
+        queryParameters["scope"] = scopes.join(" ");
+      }
+
+      urlCallback(authUrl.replace(queryParameters: queryParameters));
+    } catch (err) {
+      if (err is ClientException) {
+        completer.completeError(err);
+      } else {
+        completer.completeError(ClientException(originalError: err));
+      }
+    }
+
+    return completer.future;
   }
 
   /// Refreshes the current authenticated auth record instance and
