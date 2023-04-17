@@ -9,7 +9,7 @@
 
   This method initializes a one-off realtime subscription and will
   call `urlCallback` with the OAuth2 vendor url to authenticate.
-  Once the external OAuth2 sign-in/sign-up flow is completed, the popup
+  Once the external OAuth2 sign-in/sign-up flow is completed, the browser
   window will be automatically closed and the OAuth2 data sent back
   to the user through the previously established realtime connection.
 
@@ -28,9 +28,6 @@
   🔐 pb.files.getToken(queryParams = {});
   ```
   _`pb.getFileUrl()` is soft deprecated and acts as alias calling `pb.files.getUrl()` under the hood._
-
-
-
 
 - Removed deprecated `SchemaField.unique` field.
 
