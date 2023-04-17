@@ -1,4 +1,4 @@
-## (WIP)
+## 0.9.0
 
 - Added simplified `authWithOAuth2()` version without having to implement custom redirect, deeplink or even page reload:
   ```dart
