@@ -7,6 +7,8 @@
   })
   ```
 
+  Works with PocketBase v0.15.0+.
+
   This method initializes a one-off realtime subscription and will
   call `urlCallback` with the OAuth2 vendor url to authenticate.
   Once the external OAuth2 sign-in/sign-up flow is completed, the browser
@@ -28,6 +30,7 @@
   🔐 pb.files.getToken(queryParams = {});
   ```
   _`pb.getFileUrl()` is soft deprecated and acts as alias calling `pb.files.getUrl()` under the hood._
+  Works with PocketBase v0.15.0+.
 
 - Removed deprecated `SchemaField.unique` field.
 
