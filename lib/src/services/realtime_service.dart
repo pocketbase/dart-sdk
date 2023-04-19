@@ -165,7 +165,7 @@ class RealtimeService extends BaseService {
   Future<void> _connect() {
     _disconnect();
 
-    final completer = Completer<dynamic>();
+    final completer = Completer<void>();
 
     final url = client.buildUrl("/api/realtime").toString();
 
