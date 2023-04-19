@@ -1,3 +1,8 @@
+## 0.9.1
+
+- Fixed `RealtimeService._connect()` completer not properly resolving.
+
+
 ## 0.9.0
 
 - Added simplified `authWithOAuth2()` version without having to implement custom redirect, deeplink or even page reload:

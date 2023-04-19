@@ -165,11 +165,18 @@ class RealtimeService extends BaseService {
   Future<void> _connect() {
     _disconnect();
 
-    final completer = Completer<void>();
+    final completer = Completer<dynamic>();
 
     final url = client.buildUrl("/api/realtime").toString();
 
-    _sse = SseClient(url, onClose: _disconnect);
+    _sse = SseClient(url, onClose: () {
+      _disconnect();
+
+      if (!completer.isCompleted) {
+        completer
+            .completeError(StateError("failed to establish SSE connection"));
+      }
+    });
 
     // bind subscriptions listener
     _sse?.onMessage.listen((msg) {
@@ -188,12 +195,20 @@ class RealtimeService extends BaseService {
     ) async {
       _clientId = msg.id;
       await _submitSubscriptions();
-      completer.complete();
+
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
     }, onError: (dynamic err) {
       _disconnect();
-      completer.completeError(
-        err is Object ? err : StateError("failed to establish SSE connection"),
-      );
+
+      if (!completer.isCompleted) {
+        completer.completeError(
+          err is Object
+              ? err
+              : StateError("failed to establish SSE connection"),
+        );
+      }
     });
 
     return completer.future;
