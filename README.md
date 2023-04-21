@@ -185,7 +185,7 @@ AuthStore {
     onChange  Stream                      // Stream that gets triggered on each auth store change
 
     // methods
-    save(token, model)             // update the store with the new auth data
+    save(token, model)             // update the store with the new auth data (not persistent)
     clear()                        // clears the current auth store state
 }
 ```
