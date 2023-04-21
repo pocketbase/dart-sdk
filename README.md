@@ -210,6 +210,8 @@ class CustomAuthStore extends AuthStore {
 final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
 ```
 
+_Please note that at the moment the default `AuthStore` is not persistent! Built-in persistent store for Flutter apps may get added in the future, but for now you can check [#13](https://github.com/pocketbase/dart-sdk/issues/13) (or [pocketbase#1887](https://github.com/pocketbase/pocketbase/discussions/1887#discussioncomment-5057297) for examples)._
+
 
 ## Services
 
