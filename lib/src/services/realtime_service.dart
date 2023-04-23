@@ -1,4 +1,4 @@
-import 'dart:async';
+import "dart:async";
 
 import "../client.dart";
 import "../sse/sse_client.dart";
@@ -9,6 +9,10 @@ import "base_service.dart";
 typedef SubscriptionFunc = void Function(SseMessage e);
 typedef UnsubscribeFunc = Future<void> Function();
 
+/// The definition of a callback function that is triggered when the connection
+/// is (re)established.
+typedef ConnectionListener = void Function();
+
 /// The service that handles the **Realtime APIs**.
 ///
 /// Usually shouldn't be initialized manually and instead
@@ -17,8 +21,12 @@ class RealtimeService extends BaseService {
   RealtimeService(PocketBase client) : super(client);
 
   SseClient? _sse;
+
   String _clientId = "";
+
   final _subscriptions = <String, List<SubscriptionFunc>>{};
+
+  final _connectionListeners = <ConnectionListener>[];
 
   // Returns the established SSE connection client id (if any).
   String get clientId => _clientId;
@@ -152,6 +160,23 @@ class RealtimeService extends BaseService {
     }
   }
 
+  /// Register the connection listener.
+  ///
+  /// This listener will be triggered when the connection to the server is
+  /// (re)established. Add same listener multiple times is the same as calling
+  /// it once.
+  void addOnConnectedListener(ConnectionListener listener) {
+    _connectionListeners.add(listener);
+  }
+
+  /// Unsubscribe the connection listener previously registered with
+  /// [addOnConnectedListener].
+  ///
+  /// If [listener] has not been registered, this method is no-op.
+  void removeOnConnectedListener(ConnectionListener listener) {
+    _connectionListeners.remove(listener);
+  }
+
   bool _hasNonEmptyTopic() {
     for (final topic in _subscriptions.keys) {
       if (_subscriptions[topic]?.isNotEmpty ?? false) {
@@ -169,7 +194,7 @@ class RealtimeService extends BaseService {
 
     final url = client.buildUrl("/api/realtime").toString();
 
-    _sse = SseClient(url, onClose: () {
+    _sse = SseClient(url, onConnected: _connected, onClose: () {
       _disconnect();
 
       if (!completer.isCompleted) {
@@ -212,6 +237,12 @@ class RealtimeService extends BaseService {
     });
 
     return completer.future;
+  }
+
+  void _connected() {
+    for (final listener in _connectionListeners) {
+      listener.call();
+    }
   }
 
   void _disconnect() {

@@ -57,6 +57,10 @@ class SseClient {
   /// Callback function that is triggered on each error connect attempt.
   late final void Function(dynamic err)? _onError;
 
+  /// Callback function that is triggered on successful connect. May be called
+  /// multiple times if the client reconnects.
+  late final void Function()? _onConnected;
+
   /// The local streamed http response subscription.
   StreamSubscription<String>? _responseStreamSubscription;
 
@@ -77,6 +81,7 @@ class SseClient {
     num maxRetry = double.infinity,
     void Function()? onClose,
     void Function(dynamic err)? onError,
+    void Function()? onConnected,
 
     /// The underlying http client that will be used to send the request.
     /// This is used primarily for the unit tests.
@@ -85,6 +90,7 @@ class SseClient {
     _maxRetry = maxRetry;
     _onClose = onClose;
     _onError = onError;
+    _onConnected = onConnected;
     _httpClient = httpClientFactory?.call() ?? http.Client();
     _init();
   }
@@ -141,6 +147,7 @@ class SseClient {
       _retryAttempts = 0;
       sseMessage = SseMessage();
       await _responseStreamSubscription?.cancel();
+      _onConnected?.call();
 
       _responseStreamSubscription = response.stream
           .transform(const Utf8Decoder())

@@ -1,3 +1,4 @@
+import "dart:async";
 import "dart:convert";
 
 import "package:http/http.dart" as http;
@@ -46,6 +47,37 @@ void main() {
           expect(a.jsonData(), equals({"data": "none_object"}));
         }
       }, count: 2));
+    });
+
+    test("can receive onConnect event", () async {
+      final streamController = StreamController<String>.broadcast(sync: true);
+      final mockHttpClient = MockClient.streaming(
+        (http.BaseRequest request, http.ByteStream bodyStream) async {
+          return http.StreamedResponse(
+            streamController.stream.transform(utf8.encoder),
+            200,
+          );
+        },
+      );
+
+      var onConnectCount = 0;
+
+      SseClient(
+        "/base",
+        httpClientFactory: () => mockHttpClient,
+        onConnected: () => onConnectCount++,
+      );
+
+      await Future<void>.delayed(const Duration(milliseconds: 1));
+      expect(onConnectCount, 1);
+
+      streamController.addError("connection boom");
+      await Future<void>.delayed(const Duration(milliseconds: 201));
+      expect(onConnectCount, 2);
+
+      streamController.addError("connection boom");
+      await Future<void>.delayed(const Duration(milliseconds: 201));
+      expect(onConnectCount, 3);
     });
   });
 }
