@@ -29,6 +29,14 @@ class RealtimeService extends BaseService {
   ///
   /// If the SSE connection is not started yet,
   /// this method will also initialize it.
+  ///
+  /// Here is an example listening to the connect/reconnect events:
+  ///
+  /// ```dart
+  /// pb.realtime.subscribe("PB_CONNECT", (e) {
+  ///   print("Connected: $e");
+  /// });
+  /// ```
   Future<UnsubscribeFunc> subscribe(
     String topic,
     SubscriptionFunc listener,

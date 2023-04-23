@@ -428,6 +428,8 @@ _Please note that at the moment the default `AuthStore` is not persistent! Built
 
 ```dart
 // Initialize the realtime connection (if not already) and register the subscription.
+//
+// You can subscribe to the `PB_CONNECT` event if you want to listen to the realtime connection connect/reconnect events.
 🔓 pb.realtime.subscribe(subscription, callback);
 
 // Unsubscribe from a subscription (if empty - unsubscibe from all registered subscriptions).
