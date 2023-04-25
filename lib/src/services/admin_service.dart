@@ -35,6 +35,7 @@ class AdminService extends BaseCrudService<AdminModel> {
     List<http.MultipartFile> files = const [],
     Map<String, String> headers = const {},
     String? expand,
+    String? fields,
   }) {
     return super
         .update(
@@ -44,6 +45,7 @@ class AdminService extends BaseCrudService<AdminModel> {
       files: files,
       headers: headers,
       expand: expand,
+      fields: fields,
     )
         .then((item) {
       if (client.authStore.model != null &&

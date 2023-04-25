@@ -1,3 +1,8 @@
+## 0.10.0
+
+- Added `fields` optional parameters for the crud services to limit the returned api fields (available with PocketBase v0.16.0).
+
+
 ## 0.9.1
 
 - Fixed `RealtimeService._connect()` completer not properly resolving.

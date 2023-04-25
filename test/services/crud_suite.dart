@@ -21,7 +21,7 @@ void crudServiceTests<M extends Jsonable>(
         if (request.url.queryParameters["page"] == "1") {
           expect(
             request.url.toString(),
-            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel",
+            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a",
           );
 
           return http.Response(
@@ -42,7 +42,7 @@ void crudServiceTests<M extends Jsonable>(
         // page2
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a",
         );
 
         return http.Response(
@@ -64,6 +64,7 @@ void crudServiceTests<M extends Jsonable>(
       final result = await serviceFactory(client).getFullList(
         batch: 2,
         expand: "rel",
+        fields: "a",
         filter: "f=123",
         sort: "s=456",
         query: {
@@ -84,7 +85,7 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=15&filter=f123&sort=s456&expand=rel",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=15&filter=f123&sort=s456&expand=rel&fields=a",
         );
         expect(request.headers["test"], "789");
 
@@ -110,6 +111,7 @@ void crudServiceTests<M extends Jsonable>(
         filter: "f123",
         sort: "s456",
         expand: "rel",
+        fields: "a",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -163,7 +165,7 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=1&filter=test%3D123&expand=rel",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=1&filter=test%3D123&expand=rel&fields=a",
         );
         expect(request.headers["test"], "789");
 
@@ -186,6 +188,7 @@ void crudServiceTests<M extends Jsonable>(
       final result = await serviceFactory(client).getFirstListItem(
         "test=123",
         expand: "rel",
+        fields: "a",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -285,7 +288,7 @@ void crudServiceTests<M extends Jsonable>(
       expect((result as dynamic).id, "@id123");
     });
 
-    test("getOne()", () async {
+    test("delete()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "DELETE");
         expect(

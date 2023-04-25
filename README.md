@@ -221,26 +221,25 @@ _Please note that at the moment the default `AuthStore` is not persistent! Built
 
 ```dart
 // Returns a paginated records list.
-🔓 pb.collection(collectionIdOrName).getList({page = 1, perPage = 30, filter?, sort?, expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).getList({page = 1, perPage = 30, filter?, sort?, expand?, fields?, query, headers});
 
 // Returns a list with all records batch fetched at once.
-🔓 pb.collection(collectionIdOrName).getFullList({batch = 100, filter?, sort?, expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).getFullList({batch = 100, filter?, sort?, expand?, fields?, query, headers});
 
 // Returns the first found record matching the specified filter.
-🔓 pb.collection(collectionIdOrName).getFirstListItem(filter, {expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).getFirstListItem(filter, {expand?, fields?, query, headers});
 
 // Returns a single record by its id.
-🔓 pb.collection(collectionIdOrName).getOne(recordId, {expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).getOne(recordId, {expand?, fields?, query, headers});
 
 // Creates (aka. register) a new record.
-🔓 pb.collection(collectionIdOrName).create({body, files, expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).create({body, files, expand?, fields?, query, headers});
 
 // Updates an existing record by its id.
-🔓 pb.collection(collectionIdOrName).update(recordId, {body, files, expand?, query, headers});
+🔓 pb.collection(collectionIdOrName).update(recordId, {body, files, expand?, fields?, query, headers});
 
 // Deletes a single record by its id.
 🔓 pb.collection(collectionIdOrName).delete(recordId, {query, body, headers});
-
 ```
 
 ###### _Realtime handlers_
@@ -268,34 +267,34 @@ _Please note that at the moment the default `AuthStore` is not persistent! Built
 🔓 pb.collection(collectionIdOrName).listAuthMethods({query, headers});
 
 // Authenticates a record with their username/email and password.
-🔓 pb.collection(collectionIdOrName).authWithPassword(usernameOrEmail, password, {expand?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).authWithPassword(usernameOrEmail, password, {expand?, fields?, query, body, headers});
 
 // Authenticates a record with OAuth2 provider without custom redirects, deeplinks or even page reload.
 🔓 pb.collection(collectionIdOrName).authWithOAuth2(provider, urlCallback {scopes, createData, expand?});
 
 // Authenticates a record with OAuth2 code.
-🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectUrl, {createData?, expand?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectUrl, {createData?, expand?, fields?, query, body, headers});
 
 // Refreshes the current authenticated record model and auth token.
-🔐 pb.collection(collectionIdOrName).authRefresh({expand?, query, body, headers});
+🔐 pb.collection(collectionIdOrName).authRefresh({expand?, fields?, query, body, headers});
 
 // Sends a user password reset email.
 🔓 pb.collection(collectionIdOrName).requestPasswordReset(email, {query, body, headers});
 
 // Confirms a record password reset request.
-🔓 pb.collection(collectionIdOrName).confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {expand?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {expand?, fields?, query, body, headers});
 
 // Sends a record verification email request.
 🔓 pb.collection(collectionIdOrName).requestVerification(email, {query, body, headers});
 
 // Confirms a record email verification request.
-🔓 pb.collection(collectionIdOrName).confirmVerification(verificationToken, {expand?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).confirmVerification(verificationToken, {expand?, fields?, query, body, headers});
 
 // Sends a record email change request to the provider email.
 🔐 pb.collection(collectionIdOrName).requestEmailChange(newEmail, {query, body, headers});
 
 // Confirms record new email address.
-🔓 pb.collection(collectionIdOrName).confirmEmailChange(emailChangeToken, userPassword, {expand?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).confirmEmailChange(emailChangeToken, userPassword, {expand?, fields?, query, body, headers});
 
 // Lists all linked external auth providers for the specified record.
 🔐 pb.collection(collectionIdOrName).listExternalAuths(recordId, {query, headers});

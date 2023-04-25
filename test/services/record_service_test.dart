@@ -179,7 +179,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/auth-with-password?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/auth-with-password?a=1&a=2&b=%40demo&expand=rel&fields=a",
         );
         expect(
           request.body,
@@ -207,6 +207,7 @@ void main() {
         "test_identity",
         "test_password",
         expand: "rel",
+        fields: "a",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -233,7 +234,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/auth-with-oauth2?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/auth-with-oauth2?a=1&a=2&b=%40demo&expand=rel&fields=a",
         );
         expect(
           request.body,
@@ -267,6 +268,7 @@ void main() {
         "test_code_verifier",
         "test_redirect_url",
         expand: "rel",
+        fields: "a",
         createData: {"c": 456},
         query: {
           "a": ["1", null, 2],
@@ -295,7 +297,7 @@ void main() {
         expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/auth-refresh?a=1&a=2&b=%40demo&expand=rel",
+          "/base/api/collections/test/auth-refresh?a=1&a=2&b=%40demo&expand=rel&fields=a",
         );
         expect(request.body, jsonEncode({"test_body": 123}));
         expect(request.headers["test"], "789");
@@ -313,6 +315,7 @@ void main() {
 
       final result = await client.collection("test").authRefresh(
         expand: "rel",
+        fields: "a",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",

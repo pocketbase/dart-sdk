@@ -104,6 +104,7 @@ class RecordService extends BaseCrudService<RecordModel> {
     List<http.MultipartFile> files = const [],
     Map<String, String> headers = const {},
     String? expand,
+    String? fields,
   }) {
     return super
         .update(
@@ -113,6 +114,7 @@ class RecordService extends BaseCrudService<RecordModel> {
       files: files,
       headers: headers,
       expand: expand,
+      fields: fields,
     )
         .then((item) {
       if (client.authStore.model != null &&
@@ -198,6 +200,7 @@ class RecordService extends BaseCrudService<RecordModel> {
     String usernameOrEmail,
     String password, {
     String? expand,
+    String? fields,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
@@ -208,6 +211,7 @@ class RecordService extends BaseCrudService<RecordModel> {
 
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
@@ -234,6 +238,7 @@ class RecordService extends BaseCrudService<RecordModel> {
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
     String? expand,
+    String? fields,
   }) {
     final enrichedBody = Map<String, dynamic>.of(body);
     enrichedBody["provider"] = provider;
@@ -244,6 +249,7 @@ class RecordService extends BaseCrudService<RecordModel> {
 
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
@@ -284,6 +290,7 @@ class RecordService extends BaseCrudService<RecordModel> {
     List<String> scopes = const [],
     Map<String, dynamic> createData = const {},
     String? expand,
+    String? fields,
   }) async {
     final authMethods = await listAuthMethods();
 
@@ -321,6 +328,7 @@ class RecordService extends BaseCrudService<RecordModel> {
             redirectUrl.toString(),
             createData: createData,
             expand: expand,
+            fields: fields,
           );
 
           completer.complete(auth);
@@ -365,12 +373,14 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// On success this method automatically updates the client's AuthStore.
   Future<RecordAuth> authRefresh({
     String? expand,
+    String? fields,
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(

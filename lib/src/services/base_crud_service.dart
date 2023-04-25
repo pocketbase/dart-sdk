@@ -24,6 +24,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? expand,
     String? filter,
     String? sort,
+    String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
@@ -35,6 +36,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
         perPage: batch,
         filter: filter,
         sort: sort,
+        fields: fields,
         expand: expand,
         query: query,
         headers: headers,
@@ -59,6 +61,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? expand,
     String? filter,
     String? sort,
+    String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
@@ -68,6 +71,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["filter"] ??= filter;
     enrichedQuery["sort"] ??= sort;
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
@@ -87,11 +91,13 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   Future<M> getOne(
     String id, {
     String? expand,
+    String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
@@ -111,6 +117,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   Future<M> getFirstListItem(
     String filter, {
     String? expand,
+    String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
@@ -118,6 +125,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
       perPage: 1,
       filter: filter,
       expand: expand,
+      fields: fields,
       query: query,
       headers: headers,
     ).then((result) {
@@ -143,9 +151,11 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     List<http.MultipartFile> files = const [],
     Map<String, String> headers = const {},
     String? expand,
+    String? fields,
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
@@ -167,9 +177,11 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     List<http.MultipartFile> files = const [],
     Map<String, String> headers = const {},
     String? expand,
+    String? fields,
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
 
     return client
         .send(
