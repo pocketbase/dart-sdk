@@ -1,3 +1,18 @@
+## 0.10.0
+
+- Incremented Dart min sdk version to 3.0.0
+- Implementation of a [`sealed class`](https://dart.dev/language/class-modifiers#sealed) for `AuthStore`'s model.
+This allows to write :
+```dart
+pb.authStore.onChange.listen((e) {
+  switch (e.model) {
+    RecordModel user => /** Authentified as user */,
+    AdminModel admin => /** Authentified as admin */,
+    _ => /** Unauthentified */
+  }
+});
+```
+
 ## 0.9.1
 
 - Fixed `RealtimeService._connect()` completer not properly resolving.

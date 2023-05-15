@@ -32,8 +32,8 @@ void main() {
       await client.collection("test").update("test123");
 
       expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "a");
+      expect(client.authStore.model, isA<RecordModel>());
+      expect((client.authStore.model as RecordModel).data["test"], "a");
     });
 
     test("update() with matching AuthStore model id but mismatched collection",
@@ -55,8 +55,8 @@ void main() {
       await client.collection("test").update("test123");
 
       expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "a");
+      expect(client.authStore.model, isA<RecordModel>());
+      expect((client.authStore.model as RecordModel).data["test"], "a");
     });
 
     test("update() with matching AuthStore model id and collection", () async {
@@ -77,8 +77,8 @@ void main() {
       await client.collection("test").update("test123");
 
       expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "b");
+      expect(client.authStore.model, isA<RecordModel>());
+      expect((client.authStore.model as RecordModel).data["test"], "b");
     });
 
     test("delete() with matching AuthStore model id and collection", () async {
@@ -224,8 +224,7 @@ void main() {
       expect(result.record?.id, "test_id");
       expect(client.authStore.token, "test_token");
       expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect((client.authStore.model as RecordModel).id, "test_id");
     });
 
     test("authWithOAuth2Code()", () async {
@@ -286,8 +285,7 @@ void main() {
       expect(result.meta, equals({"a": 123}));
       expect(client.authStore.token, "test_token");
       expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect((client.authStore.model as RecordModel).id, "test_id");
     });
 
     test("authRefresh()", () async {
@@ -329,8 +327,7 @@ void main() {
       expect(result.record?.id, "test_id");
       expect(client.authStore.token, "test_token");
       expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect((client.authStore.model as RecordModel).id, "test_id");
     });
 
     test("requestPasswordReset()", () async {

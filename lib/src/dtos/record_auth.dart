@@ -2,8 +2,8 @@ import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
 
+import "auth_model.dart" show RecordModel;
 import "jsonable.dart";
-import "record_model.dart";
 
 part "record_auth.g.dart";
 

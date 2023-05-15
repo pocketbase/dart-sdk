@@ -2,7 +2,7 @@ import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
 
-import "admin_model.dart";
+import "auth_model.dart" show AdminModel;
 import "jsonable.dart";
 
 part "admin_auth.g.dart";

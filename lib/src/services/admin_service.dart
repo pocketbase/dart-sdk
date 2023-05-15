@@ -2,7 +2,7 @@ import "package:http/http.dart" as http;
 
 import "../client.dart";
 import "../dtos/admin_auth.dart";
-import "../dtos/admin_model.dart";
+import "../dtos/auth_model.dart" show AdminModel;
 import "base_crud_service.dart";
 
 /// The service that handles the **Admin APIs**.

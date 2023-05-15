@@ -1,4 +1,4 @@
-import 'dart:async';
+import "dart:async";
 
 import "package:http/http.dart" as http;
 
@@ -6,9 +6,9 @@ import "../client.dart";
 import "../client_exception.dart";
 import "../dtos/auth_method_provider.dart";
 import "../dtos/auth_methods_list.dart";
+import "../dtos/auth_model.dart" show RecordModel;
 import "../dtos/external_auth_model.dart";
 import "../dtos/record_auth.dart";
-import "../dtos/record_model.dart";
 import "../dtos/record_subscription_event.dart";
 import "base_crud_service.dart";
 import "realtime_service.dart";

@@ -5,7 +5,7 @@ import "package:http/http.dart" as http;
 
 import "auth_store.dart";
 import "client_exception.dart";
-import "dtos/record_model.dart";
+import "dtos/auth_model.dart" show RecordModel;
 import "services/admin_service.dart";
 import "services/collection_service.dart";
 import "services/file_service.dart";

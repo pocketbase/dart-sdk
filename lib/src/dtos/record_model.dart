@@ -1,14 +1,8 @@
-import "dart:convert";
-
-import "package:json_annotation/json_annotation.dart";
-
-import "jsonable.dart";
-
-part "record_model.g.dart";
+part of "auth_model.dart";
 
 /// Response DTO of a single record model.
 @JsonSerializable(explicitToJson: true)
-class RecordModel implements Jsonable {
+class RecordModel implements AuthModel {
   String id;
   String created;
   String updated;

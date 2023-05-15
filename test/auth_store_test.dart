@@ -22,9 +22,11 @@ void main() {
 
       expect(store.model, isNull);
 
-      store.save("test_token", 123);
+      final record = RecordModel();
 
-      expect(store.model, 123);
+      store.save("test_token", record);
+
+      expect(store.model, record);
     });
   });
 
@@ -62,7 +64,7 @@ void main() {
     test("saves new token and model", () async {
       final store = AuthStore();
       const testToken = "test_token";
-      const testModel = 123;
+      final testModel = RecordModel();
 
       store.onChange.listen(expectAsync1((e) {
         expect(e.token, testToken);
@@ -78,10 +80,13 @@ void main() {
 
   group("AuthStore.clear()", () {
     test("clears the stored token and model", () async {
-      final store = AuthStore()..save("test_token", 123);
+      final store = AuthStore();
+      final testModel = RecordModel();
+
+      store.save("test_token", testModel);
 
       expect(store.token, "test_token");
-      expect(store.model, 123);
+      expect(store.model, testModel);
 
       store.onChange.listen(expectAsync1((e) {
         expect(e.token, isEmpty);

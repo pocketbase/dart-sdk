@@ -1,14 +1,8 @@
-import "dart:convert";
-
-import "package:json_annotation/json_annotation.dart";
-
-import "jsonable.dart";
-
-part "admin_model.g.dart";
+part of "auth_model.dart";
 
 /// Response DTO of a single admin model.
 @JsonSerializable(explicitToJson: true)
-class AdminModel implements Jsonable {
+class AdminModel implements AuthModel {
   String id;
   String created;
   String updated;

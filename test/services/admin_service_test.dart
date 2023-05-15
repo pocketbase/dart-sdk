@@ -34,8 +34,7 @@ void main() {
       });
 
       expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.email, "test2@example.com");
+      expect((client.authStore.model as AdminModel).email, "test2@example.com");
     });
 
     test("update() with matched AuthStore model", () async {
@@ -58,8 +57,7 @@ void main() {
       });
 
       expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.email, "test1@example.com");
+      expect((client.authStore.model as AdminModel).email, "test1@example.com");
     });
 
     test("delete() with matching AuthStore model", () async {
@@ -139,8 +137,7 @@ void main() {
       expect(result.admin?.id, "test_id");
       expect(client.authStore.token, "test_token");
       expect(client.authStore.model, isA<AdminModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect((client.authStore.model as AdminModel).id, "test_id");
     });
 
     test("refresh()", () async {
@@ -181,8 +178,7 @@ void main() {
       expect(result.admin?.id, "test_id");
       expect(client.authStore.token, "test_token");
       expect(client.authStore.model, isA<AdminModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect((client.authStore.model as AdminModel).id, "test_id");
     });
 
     test("requestPasswordReset()", () async {

@@ -1,5 +1,5 @@
 import "../client.dart";
-import "../dtos/record_model.dart";
+import "../dtos/auth_model.dart" show RecordModel;
 import "base_service.dart";
 
 /// The service that handles the **File APIs**.
