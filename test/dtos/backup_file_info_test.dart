@@ -2,15 +2,15 @@ import "package:pocketbase/pocketbase.dart";
 import "package:test/test.dart";
 
 void main() {
-  group("HealthCheck", () {
+  group("BackupFileInfo", () {
     test("fromJson() and toJson()", () {
       final json = {
-        "code": 200,
-        "message": "test",
-        "data": {"test": 123},
+        "key": "test_key",
+        "size": 100,
+        "modified": "test_modified",
       };
 
-      final model = HealthCheck.fromJson(json);
+      final model = BackupFileInfo.fromJson(json);
 
       expect(model.toJson(), json);
     });

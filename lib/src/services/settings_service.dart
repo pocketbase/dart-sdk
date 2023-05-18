@@ -42,14 +42,18 @@ class SettingsService extends BaseService {
 
   /// Performs a S3 storage connection test.
   Future<void> testS3({
+    String filesystem = "storage", // "storage" or "backups"
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["filesystem"] ??= filesystem;
+
     return client.send(
       "/api/settings/test/s3",
       method: "POST",
-      body: body,
+      body: enrichedBody,
       query: query,
       headers: headers,
     );

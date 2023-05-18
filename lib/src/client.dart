@@ -14,6 +14,7 @@ import "services/log_service.dart";
 import "services/realtime_service.dart";
 import "services/record_service.dart";
 import "services/settings_service.dart";
+import "services/backup_service.dart";
 
 /// The main PocketBase API client.
 class PocketBase {
@@ -52,6 +53,9 @@ class PocketBase {
   /// An instance of the service that handles the **Health APIs**.
   late final HealthService health;
 
+  /// The service that handles the **Backup and restore APIs**.
+  late final BackupService backups;
+
   /// The underlying http client that will be used to send the request.
   /// This is used primarily for the unit tests.
   late final http.Client Function() _httpClientFactory;
@@ -76,6 +80,7 @@ class PocketBase {
     settings = SettingsService(this);
     logs = LogService(this);
     health = HealthService(this);
+    backups = BackupService(this);
   }
 
   /// Returns the RecordService associated to the specified collection.

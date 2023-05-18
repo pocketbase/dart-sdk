@@ -299,7 +299,7 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.headers["content-type"], "application/json");
         expect(request.body, jsonEncode({"test": 123}));
 
-        return http.Response("", 200);
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);

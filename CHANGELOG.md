@@ -1,6 +1,10 @@
 ## 0.10.0
 
-- Added `fields` optional parameters for the crud services to limit the returned api fields (available with PocketBase v0.16.0).
+- Added `fields` optional parameter to the crud services to limit the returned API fields (_available with PocketBase v0.16.0_).
+
+- Added `pb.backups` service for the new PocketBase backup and restore APIs (_available with PocketBase v0.16.0_).
+
+- Added `filesystem` optional parameter to `pb.settings.testS3()` to allow specifying a filesystem for test - `storage` or `backups` (_available with PocketBase v0.16.0_).
 
 
 ## 0.9.1

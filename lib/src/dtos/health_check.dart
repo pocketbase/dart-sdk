@@ -11,10 +11,12 @@ part "health_check.g.dart";
 class HealthCheck implements Jsonable {
   int code;
   String message;
+  Map<String, dynamic> data;
 
   HealthCheck({
     this.code = 0,
     this.message = "",
+    this.data = const {},
   });
 
   static HealthCheck fromJson(Map<String, dynamic> json) =>

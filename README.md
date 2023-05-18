@@ -440,6 +440,28 @@ _Please note that at the moment the default `AuthStore` is not persistent! Built
 
 ---
 
+##### BackupService
+
+```js
+// Returns list with all available backup files.
+🔐 pb.backups.getFullList({query, headers});
+
+// Initializes a new backup.
+🔐 pb.backups.create(name, {body, query, headers});
+
+// Deletes a single backup by its name.
+🔐 pb.backups.delete(name, {body, query, headers});
+
+// Initializes an app data restore from an existing backup.
+🔐 pb.backups.restore(name, {body, query, headers});
+
+// Builds a download url for a single existing backup using an
+// admin file token and the backup name.
+🔐 pb.backups.getDownloadUrl(token, name, {query});
+```
+
+---
+
 ##### HealthService
 
 ```dart

@@ -80,22 +80,26 @@ void main() {
     test("testS3()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "POST");
-        expect(request.body, jsonEncode({"test_body": 123}));
+        expect(
+          request.body,
+          jsonEncode({
+            "test_body": 123,
+            "filesystem": "@demo",
+          }),
+        );
         expect(
           request.url.toString(),
           "/base/api/settings/test/s3?a=1&a=2&b=%40demo",
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({"a": 1, "b": false, "c": "test"}),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
       await client.settings.testS3(
+        filesystem: "@demo",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -125,10 +129,7 @@ void main() {
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({"a": 1, "b": false, "c": "test"}),
-          200,
-        );
+        return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
