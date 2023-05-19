@@ -30,13 +30,13 @@ class BackupService extends BaseService {
 
   /// Initializes a new backup.
   Future<void> create(
-    String name, {
+    String basename, {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     final enrichedBody = Map<String, dynamic>.of(body);
-    enrichedBody["name"] ??= name;
+    enrichedBody["name"] ??= basename;
 
     return client.send(
       "/api/backups",
@@ -49,13 +49,13 @@ class BackupService extends BaseService {
 
   /// Deletes a single backup file.
   Future<void> delete(
-    String name, {
+    String key, {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     return client.send(
-      "/api/backups/${Uri.encodeComponent(name)}",
+      "/api/backups/${Uri.encodeComponent(key)}",
       method: "DELETE",
       body: body,
       query: query,
@@ -65,13 +65,13 @@ class BackupService extends BaseService {
 
   /// Initializes an app data restore from an existing backup.
   Future<void> restore(
-    String name, {
+    String key, {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     return client.send(
-      "/api/backups/${Uri.encodeComponent(name)}/restore",
+      "/api/backups/${Uri.encodeComponent(key)}/restore",
       method: "POST",
       body: body,
       query: query,
@@ -80,19 +80,19 @@ class BackupService extends BaseService {
   }
 
   /// Builds a download url for a single existing backup using an
-  /// admin file token and the backup name.
+  /// admin file token and the backup file key.
   ///
   /// The file token can be generated via `pb.files.getToken()`.
   Uri getDownloadUrl(
     String token,
-    String name, {
+    String key, {
     Map<String, dynamic> query = const {},
   }) {
     final params = Map<String, dynamic>.of(query);
     params["token"] ??= token;
 
     return client.buildUrl(
-      "/api/backups/${Uri.encodeComponent(name)}",
+      "/api/backups/${Uri.encodeComponent(key)}",
       params,
     );
   }

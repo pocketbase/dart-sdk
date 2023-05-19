@@ -447,17 +447,17 @@ _Please note that at the moment the default `AuthStore` is not persistent! Built
 🔐 pb.backups.getFullList({query, headers});
 
 // Initializes a new backup.
-🔐 pb.backups.create(name, {body, query, headers});
+🔐 pb.backups.create(basename, {body, query, headers});
 
-// Deletes a single backup by its name.
-🔐 pb.backups.delete(name, {body, query, headers});
+// Deletes a single backup by its file key.
+🔐 pb.backups.delete(key, {body, query, headers});
 
 // Initializes an app data restore from an existing backup.
-🔐 pb.backups.restore(name, {body, query, headers});
+🔐 pb.backups.restore(key, {body, query, headers});
 
 // Builds a download url for a single existing backup using an
-// admin file token and the backup name.
-🔐 pb.backups.getDownloadUrl(token, name, {query});
+// admin file token and the backup file key.
+🔐 pb.backups.getDownloadUrl(token, key, {query});
 ```
 
 ---
