@@ -1,3 +1,9 @@
+## 0.10.1
+
+- Exposed the internal `PocketBase.httpClientFactory` constructor option to allow users to provide their own `http.Client` implementation as workaround
+  for the realtime events on Flutter Web ([#11](https://github.com/pocketbase/dart-sdk/issues/11)).
+
+
 ## 0.10.0
 
 - Added `fields` optional parameter to the crud services to limit the returned API fields (_available with PocketBase v0.16.0_).

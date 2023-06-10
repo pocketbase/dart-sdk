@@ -42,7 +42,6 @@ class RecordService extends BaseCrudService<RecordModel> {
   // Realtime handlers
   // -----------------------------------------------------------------
 
-  ///
   /// Subscribe to realtime changes to the specified topic ("*" or record id).
   ///
   /// If [topic] is the wildcard "*", then this method will subscribe to

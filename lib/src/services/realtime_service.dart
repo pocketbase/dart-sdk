@@ -177,14 +177,18 @@ class RealtimeService extends BaseService {
 
     final url = client.buildUrl("/api/realtime").toString();
 
-    _sse = SseClient(url, onClose: () {
-      _disconnect();
+    _sse = SseClient(
+      url,
+      httpClientFactory: client.httpClientFactory,
+      onClose: () {
+        _disconnect();
 
-      if (!completer.isCompleted) {
-        completer
-            .completeError(StateError("failed to establish SSE connection"));
-      }
-    });
+        if (!completer.isCompleted) {
+          completer
+              .completeError(StateError("failed to establish SSE connection"));
+        }
+      },
+    );
 
     // bind subscriptions listener
     _sse?.onMessage.listen((msg) {

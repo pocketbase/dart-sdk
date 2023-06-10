@@ -7,6 +7,7 @@ import "auth_store.dart";
 import "client_exception.dart";
 import "dtos/record_model.dart";
 import "services/admin_service.dart";
+import "services/backup_service.dart";
 import "services/collection_service.dart";
 import "services/file_service.dart";
 import "services/health_service.dart";
@@ -14,7 +15,6 @@ import "services/log_service.dart";
 import "services/realtime_service.dart";
 import "services/record_service.dart";
 import "services/settings_service.dart";
-import "services/backup_service.dart";
 
 /// The main PocketBase API client.
 class PocketBase {
@@ -58,7 +58,7 @@ class PocketBase {
 
   /// The underlying http client that will be used to send the request.
   /// This is used primarily for the unit tests.
-  late final http.Client Function() _httpClientFactory;
+  late final http.Client Function() httpClientFactory;
 
   /// Cache of all created RecordService instances.
   final _recordServices = <String, RecordService>{};
@@ -71,7 +71,7 @@ class PocketBase {
     http.Client Function()? httpClientFactory,
   }) {
     this.authStore = authStore ?? AuthStore();
-    _httpClientFactory = httpClientFactory ?? () => http.Client();
+    this.httpClientFactory = httpClientFactory ?? () => http.Client();
 
     admins = AdminService(this);
     collections = CollectionService(this);
@@ -165,7 +165,7 @@ class PocketBase {
       request.headers["Accept-Language"] = lang;
     }
 
-    final requestClient = _httpClientFactory();
+    final requestClient = httpClientFactory();
 
     try {
       final response = await requestClient.send(request);
