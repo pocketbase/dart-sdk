@@ -480,13 +480,13 @@ PocketBase Dart SDK is built on top of the standard `dart-lang/http` package and
 One possible workaround for the streamed responses is to provide a 3rd party `http.Client` implementation like [`fetch_client`](https://pub.dev/packages/fetch_client) using the `httpClientFactory` constructor option:
 
 ```dart
-import "package:pocketbase/pocketbase.dart";
+import 'package:pocketbase/pocketbase.dart';
 import 'package:fetch_client/fetch_client.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   final pb = PocketBase(
-    "http://127.0.0.1:8090",
+    'http://127.0.0.1:8090',
     // load the fetch_client only for web, otherwise - fallback to the default http.Client()
     httpClientFactory: kIsWeb ? () => FetchClient(mode: RequestMode.cors) : null,
   );
