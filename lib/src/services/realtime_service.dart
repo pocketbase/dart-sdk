@@ -1,4 +1,4 @@
-import 'dart:async';
+import "dart:async";
 
 import "../client.dart";
 import "../sse/sse_client.dart";
