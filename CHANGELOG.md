@@ -1,3 +1,8 @@
+## 0.10.2
+
+- Modified the original `http.MultipartRequest` to support List field values ([pocketbase#2763](https://github.com/pocketbase/pocketbase/discussions/2763)).
+
+
 ## 0.10.1
 
 - Exposed the internal `PocketBase.httpClientFactory` constructor option to allow users to provide their own `http.Client` implementation as workaround

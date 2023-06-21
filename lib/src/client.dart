@@ -6,6 +6,7 @@ import "package:http/http.dart" as http;
 import "auth_store.dart";
 import "client_exception.dart";
 import "dtos/record_model.dart";
+import "multipart_request.dart";
 import "services/admin_service.dart";
 import "services/backup_service.dart";
 import "services/collection_service.dart";
@@ -234,25 +235,28 @@ class PocketBase {
     return request;
   }
 
-  http.MultipartRequest _multipartRequest(
+  MultipartRequest _multipartRequest(
     String method,
     Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> body = const {},
     List<http.MultipartFile> files = const [],
   }) {
-    final request = http.MultipartRequest(method, url)
+    final request = MultipartRequest(method, url)
       ..files.addAll(files)
       ..headers.addAll(headers);
 
     body.forEach((key, value) {
+      final entries = <String>[];
       if (value is Iterable) {
-        for (var i = 0; i < value.length; i++) {
-          request.fields["$key[$i]"] = value.elementAt(i).toString();
+        for (final v in value) {
+          entries.add(v.toString());
         }
       } else {
-        request.fields[key] = value.toString();
+        entries.add(value.toString());
       }
+
+      request.fields[key] = entries;
     });
 
     return request;
