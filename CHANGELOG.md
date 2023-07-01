@@ -1,3 +1,11 @@
+## 0.10.3
+
+- Explicitly disable `BaseRequest.persistentConnection` since it is
+  ignored anyway when using the default `dart-lang/http.Cient` on Web
+  and it is [causing issues](https://github.com/Zekfad/fetch_client/issues/6)
+  with the alternative `fetch_client` package.
+
+
 ## 0.10.2
 
 - Modified the original `http.MultipartRequest` to support List field values ([pocketbase#2763](https://github.com/pocketbase/pocketbase/discussions/2763)).

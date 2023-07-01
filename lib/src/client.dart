@@ -17,6 +17,8 @@ import "services/realtime_service.dart";
 import "services/record_service.dart";
 import "services/settings_service.dart";
 
+const bool isWeb = bool.fromEnvironment("dart.library.js_util");
+
 /// The main PocketBase API client.
 class PocketBase {
   /// The PocketBase backend base url address (eg. 'http://127.0.0.1:8090').
@@ -164,6 +166,15 @@ class PocketBase {
 
     if (!headers.containsKey("Accept-Language")) {
       request.headers["Accept-Language"] = lang;
+    }
+
+    // ensures that keepalive on web is disabled for now
+    //
+    // it is ignored anyway when using the default http.Cient on web
+    // and it causing issues with the alternative fetch_client package
+    // (see https://github.com/Zekfad/fetch_client/issues/6#issuecomment-1615936365)
+    if (isWeb) {
+      request.persistentConnection = false;
     }
 
     final requestClient = httpClientFactory();
