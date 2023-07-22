@@ -6,7 +6,6 @@
 - Added optional `download=1` query parameter to force file urls with `Content-Disposition: attachment` (_supported with PocketBase v0.17+_).
 
 
-
 ## 0.10.3
 
 - Explicitly disable `BaseRequest.persistentConnection` since it is
