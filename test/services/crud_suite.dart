@@ -12,7 +12,7 @@ void crudServiceTests<M extends Jsonable>(
   String expectedPath,
 ) {
   group("BaseCrudService", () {
-    test("getFullList()", () async {
+    test("getFullList() with last items.length < perPage", () async {
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(request.headers["test"], "789");
@@ -21,15 +21,15 @@ void crudServiceTests<M extends Jsonable>(
         if (request.url.queryParameters["page"] == "1") {
           expect(
             request.url.toString(),
-            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a",
+            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a&skipTotal=true",
           );
 
           return http.Response(
             jsonEncode({
               "page": 1,
               "perPage": 2,
-              "totalItems": 3,
-              "totalPages": 2,
+              "totalItems": -1,
+              "totalPages": -1,
               "items": [
                 {"id": "1"},
                 {"id": "2"},
@@ -42,15 +42,15 @@ void crudServiceTests<M extends Jsonable>(
         // page2
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a&skipTotal=true",
         );
 
         return http.Response(
           jsonEncode({
             "page": 2,
             "perPage": 2,
-            "totalItems": 3,
-            "totalPages": 2,
+            "totalItems": -1,
+            "totalPages": -1,
             "items": [
               {"id": "3"},
             ],
@@ -80,12 +80,100 @@ void crudServiceTests<M extends Jsonable>(
       expect(result.length, 3);
     });
 
+    test("getFullList() with last items.length = perPage", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "GET");
+        expect(request.headers["test"], "789");
+
+        // page1
+        if (request.url.queryParameters["page"] == "1") {
+          expect(
+            request.url.toString(),
+            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a&skipTotal=true",
+          );
+
+          return http.Response(
+            jsonEncode({
+              "page": 1,
+              "perPage": 2,
+              "totalItems": -1,
+              "totalPages": -1,
+              "items": [
+                {"id": "1"},
+                {"id": "2"},
+              ],
+            }),
+            200,
+          );
+        }
+
+        // page2
+        if (request.url.queryParameters["page"] == "2") {
+          expect(
+            request.url.toString(),
+            "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a&skipTotal=true",
+          );
+
+          return http.Response(
+            jsonEncode({
+              "page": 2,
+              "perPage": 2,
+              "totalItems": -1,
+              "totalPages": -1,
+              "items": [
+                {"id": "3"},
+                {"id": "4"},
+              ],
+            }),
+            200,
+          );
+        }
+
+        // page3
+        expect(
+          request.url.toString(),
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=3&perPage=2&filter=f%3D123&sort=s%3D456&expand=rel&fields=a&skipTotal=true",
+        );
+
+        return http.Response(
+          jsonEncode({
+            "page": 3,
+            "perPage": 2,
+            "totalItems": -1,
+            "totalPages": -1,
+            // no items
+          }),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      final result = await serviceFactory(client).getFullList(
+        batch: 2,
+        expand: "rel",
+        fields: "a",
+        filter: "f=123",
+        sort: "s=456",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+
+      expect(result, isA<List<M>>());
+      expect(result.length, 4);
+    });
+
     test("getList()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=15&filter=f123&sort=s456&expand=rel&fields=a",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=2&perPage=15&filter=f123&sort=s456&expand=rel&fields=a&skipTotal=false",
         );
         expect(request.headers["test"], "789");
 
@@ -165,7 +253,7 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=1&filter=test%3D123&expand=rel&fields=a",
+          "/base/api/$expectedPath?a=1&a=2&b=%40demo&page=1&perPage=1&filter=test%3D123&expand=rel&fields=a&skipTotal=true",
         );
         expect(request.headers["test"], "789");
 

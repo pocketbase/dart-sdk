@@ -1,3 +1,12 @@
+## 0.11.0-rc1
+
+- Added `skipTotal=1` query parameter by default for the `getFirstListItem()` and `getFullList()` requests.
+  _Note that this have performance boost only with PocketBase v0.17+._
+
+- Added optional `download=1` query parameter to force file urls with `Content-Disposition: attachment` (_supported with PocketBase v0.17+_).
+
+
+
 ## 0.10.3
 
 - Explicitly disable `BaseRequest.persistentConnection` since it is

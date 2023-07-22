@@ -20,7 +20,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
 
   /// Returns a list with all items batch fetched at once.
   Future<List<M>> getFullList({
-    int batch = 200,
+    int batch = 500,
     String? expand,
     String? filter,
     String? sort,
@@ -32,6 +32,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
 
     Future<List<M>> request(int page) async {
       return getList(
+        skipTotal: true,
         page: page,
         perPage: batch,
         filter: filter,
@@ -43,7 +44,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
       ).then((list) {
         result.addAll(list.items);
 
-        if (list.items.isNotEmpty && list.totalItems > result.length) {
+        if (list.items.length == list.perPage) {
           return request(page + 1);
         }
 
@@ -58,6 +59,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   Future<ResultList<M>> getList({
     int page = 1,
     int perPage = 30,
+    bool skipTotal = false,
     String? expand,
     String? filter,
     String? sort,
@@ -72,6 +74,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["sort"] ??= sort;
     enrichedQuery["expand"] ??= expand;
     enrichedQuery["fields"] ??= fields;
+    enrichedQuery["skipTotal"] ??= skipTotal;
 
     return client
         .send(
@@ -123,6 +126,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   }) {
     return getList(
       perPage: 1,
+      skipTotal: true,
       filter: filter,
       expand: expand,
       fields: fields,
