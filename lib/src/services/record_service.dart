@@ -297,8 +297,10 @@ class RecordService extends BaseCrudService<RecordModel> {
     try {
       provider =
           authMethods.authProviders.firstWhere((p) => p.name == providerName);
-    } catch (err) {
-      throw ClientException(originalError: err);
+    } catch (_) {
+      throw ClientException(
+        originalError: Exception("missing provider $providerName"),
+      );
     }
 
     final redirectUrl = client.buildUrl("/api/oauth2-redirect");
