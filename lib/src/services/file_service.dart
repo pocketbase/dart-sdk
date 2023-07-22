@@ -15,11 +15,15 @@ class FileService extends BaseService {
     String filename, {
     String? thumb,
     String? token,
+    bool? download,
     Map<String, dynamic> query = const {},
   }) {
     final params = Map<String, dynamic>.of(query);
     params["thumb"] ??= thumb;
     params["token"] ??= token;
+    if (download != null && download) {
+      params["download"] = "";
+    }
 
     return client.buildUrl(
       "/api/files/${Uri.encodeComponent(record.collectionId)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
