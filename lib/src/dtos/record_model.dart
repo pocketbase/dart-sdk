@@ -15,10 +15,10 @@ class RecordModel implements Jsonable {
   String collectionId;
   String collectionName;
 
-  @JsonKey(ignore: true) // manually serialized
+  @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
   Map<String, List<RecordModel>> expand;
 
-  @JsonKey(ignore: true) // manually serialized
+  @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
   Map<String, dynamic> data;
 
   final List<String> _singleExpandKeys = [];

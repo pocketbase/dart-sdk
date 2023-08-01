@@ -1,3 +1,8 @@
+## 0.12.0-WIP
+
+- Require Dart 3.0 or later
+
+
 ## 0.11.0
 
 - Added `skipTotal=1` query parameter by default for the `getFirstListItem()` and `getFullList()` requests.

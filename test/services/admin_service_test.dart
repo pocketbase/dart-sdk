@@ -10,7 +10,7 @@ import "crud_suite.dart";
 void main() {
   group("AdminService", () {
     crudServiceTests<AdminModel>(
-      (client) => AdminService(client),
+      AdminService.new,
       "admins",
     );
 

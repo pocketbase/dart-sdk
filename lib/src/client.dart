@@ -74,7 +74,7 @@ class PocketBase {
     http.Client Function()? httpClientFactory,
   }) {
     this.authStore = authStore ?? AuthStore();
-    this.httpClientFactory = httpClientFactory ?? () => http.Client();
+    this.httpClientFactory = httpClientFactory ?? http.Client.new;
 
     admins = AdminService(this);
     collections = CollectionService(this);

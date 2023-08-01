@@ -10,7 +10,7 @@ import "crud_suite.dart";
 void main() {
   group("CollectionService", () {
     crudServiceTests<CollectionModel>(
-      (client) => CollectionService(client),
+      CollectionService.new,
       "collections",
     );
 

@@ -20,7 +20,7 @@ class ResultList<M extends Jsonable> implements Jsonable {
   int totalItems;
   int totalPages;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
   List<M> items;
 
   ResultList({
