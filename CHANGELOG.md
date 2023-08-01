@@ -1,6 +1,6 @@
-## 0.12.0-WIP
+## 0.12.0
 
-- Require Dart 3.0 or later
+- Require Dart 3.0 or later.
 
 
 ## 0.11.0
