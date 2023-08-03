@@ -3,6 +3,7 @@
 library pocketbase;
 
 // main
+export "src/async_auth_store.dart";
 export "src/auth_store.dart";
 export "src/client.dart";
 export "src/client_exception.dart";

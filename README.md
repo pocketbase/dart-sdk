@@ -5,6 +5,10 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
 
 - [Installation](#installation)
 - [Caveats](#caveats)
+    - [File upload](#file-upload)
+    - [RecordModel](#recordmodel)
+    - [Error handling](#error-handling)
+    - [AuthStore](#authstore)
 - [Services](#services)
 - [Limitations](#limitations)
 - [Development](#development)
@@ -87,7 +91,7 @@ pb.collection('example').create(
 });
 ```
 
-#### Accessing RecordModel dynamic fields
+#### RecordModel
 
 The SDK comes with several helpers to make it easier working with the `RecordService` and `RecordModel` DTO.
 You could find more detailed documentation in the [`RecordModel` class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RecordModel-class.html),
@@ -200,17 +204,22 @@ pb.authStore.onChange.listen((e) {
 });
 ```
 
-If you want to customize the default `AuthStore`, you can extend it and pass a new custom instance as constructor argument to the client:
+**The default `AuthStore` is not persistent!**
+
+If you want to persist the `AuthStore` state (eg. in case the app get closed), you can extend the default store and pass a new custom instance as constructor argument to the client.
+To make it slightly easier, the SDK has a builtin `AsyncAuthStore` that you can combine with any async persistent layer (`shared_preferences`, `hive`, local file, etc.).
+Here is an example using Flutter's [`shared_preferences`](https://pub.dev/packages/shared_preferences):
 
 ```dart
-class CustomAuthStore extends AuthStore {
-  ...
-}
+final prefs = await SharedPreferences.getInstance();
 
-final pb = PocketBase('http://127.0.0.1:8090', authStore: CustomAuthStore());
+final store = AsyncAuthStore(
+ save:    (String data) async => prefs.setString('pb_auth', data),
+ initial: prefs.getString('pb_auth'),
+);
+
+final pb = PocketBase('http://example.com', authStore: store);
 ```
-
-_Please note that at the moment the default `AuthStore` is not persistent! Built-in persistent store for Flutter apps may get added in the future, but for now you can check [#13](https://github.com/pocketbase/dart-sdk/issues/13) (or [pocketbase#1887](https://github.com/pocketbase/pocketbase/discussions/1887#discussioncomment-5057297) for examples)._
 
 
 ## Services

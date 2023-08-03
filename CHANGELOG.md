@@ -1,3 +1,19 @@
+## 0.13.0
+
+- Added new `AsyncAuthStore` helper class that could be used with any external async persistent layer (shared_preferences, hive, local file, etc.).
+  For example:
+  ```dart
+  final prefs = await SharedPreferences.getInstance();
+
+  final store = AsyncAuthStore(
+   save:    (String data) async => prefs.setString('pb_auth', data),
+   initial: prefs.getString('pb_auth'),
+  );
+
+  final pb = PocketBase('http://example.com', authStore: store);
+  ```
+
+
 ## 0.12.0
 
 - Require Dart 3.0 or later.
