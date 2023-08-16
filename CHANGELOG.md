@@ -1,3 +1,25 @@
+## 0.14.0
+
+- Added new generic `RecordModel.getDataValue<T>(key, [default])` data value accessor to support retrieval of any value type.
+  We now also allow accessing nested json object values via dot-notation.
+  For example:
+  ```dart
+  final record = RecordModel(data: {"a": {"b": [{"b1": 1}, {"b2": 2}, {"b3": 3}]}});
+
+  record.getDataValue<int>("a.b.1.b2", 2); // 2
+  record.getDataValue<int>("a.b.c");       // 0 (no explicit default)
+  record.getDataValue<int>("a.b.c", -1);   // -1 (explicit default)
+  ```
+  The old `RecordModel` accessors are aliased to use `getDataValue`.
+  ```
+  getStringValue(field)   is the same as  getDataValue<String>(field)
+  getBoolValue(field)     is the same as  getDataValue<bool>(field)
+  getIntValue(field)      is the same as  getDataValue<int>(field)
+  getDoubleValue(field)   is the same as  getDataValue<double>(field)
+  getListValue<T>(field)  is the same as  getDataValue<List<T>>(field)
+  ```
+
+
 ## 0.13.0
 
 - Added new `AsyncAuthStore` helper class that could be used with any external async persistent layer (shared_preferences, hive, local file, etc.).
