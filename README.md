@@ -95,18 +95,17 @@ pb.collection('example').create(
 
 The SDK comes with several helpers to make it easier working with the `RecordService` and `RecordModel` DTO.
 You could find more detailed documentation in the [`RecordModel` class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/RecordModel-class.html),
-but here are some examples:
+but below is an example how to access and cast record data values:
 
 ```dart
 final record = await pb.collection('example').getOne('RECORD_ID');
 
-...
-
-final email   = record.getStringValue('email');
-final options = record.getListValue<String>('options');
-final status  = record.getBoolValue('status');
-final total   = record.getIntValue('total');
-final price   = record.getDoubleValue('price');
+final options = record.getDataValue<List<String>>('options');
+final email   = record.getDataValue<String>('email');
+final status  = record.getDataValue<bool>('status');
+final total   = record.getDataValue<int>('total');
+final price   = record.getDataValue<double>('price');
+final nested  = record.getDataValue<String>('a.b.c', 'missing');
 ```
 
 Alternatively, you can also create your own typed DTO data classes and use for example the `record.toJson()` to populate your object, eg:

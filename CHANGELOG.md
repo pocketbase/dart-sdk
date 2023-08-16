@@ -1,3 +1,8 @@
+## 0.14.0+1
+
+- Updated the examples in README.
+
+
 ## 0.14.0
 
 - Added new generic `RecordModel.getDataValue<T>(key, [default])` data value getter to support retrieval of any value type.
