@@ -1,6 +1,6 @@
 ## 0.14.0
 
-- Added new generic `RecordModel.getDataValue<T>(key, [default])` data value accessor to support retrieval of any value type.
+- Added new generic `RecordModel.getDataValue<T>(key, [default])` data value getter to support retrieval of any value type.
   We now also allow accessing nested json object values via dot-notation.
   For example:
   ```dart
@@ -10,7 +10,7 @@
   record.getDataValue<int>("a.b.c");       // 0 (no explicit default)
   record.getDataValue<int>("a.b.c", -1);   // -1 (explicit default)
   ```
-  The old `RecordModel` accessors are aliased to use `getDataValue`.
+  The old `RecordModel` getters are aliased to use `getDataValue`.
   ```
   getStringValue(field)   is the same as  getDataValue<String>(field)
   getBoolValue(field)     is the same as  getDataValue<bool>(field)

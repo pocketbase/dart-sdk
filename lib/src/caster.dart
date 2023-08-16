@@ -27,7 +27,7 @@ T extract<T>(
     case num:
     case double:
       return toDouble(rawValue) as T;
-    case List:
+    case const(List<dynamic>):
       return toList(rawValue) as T;
     case const(List<String>):
       return toList<String>(rawValue) as T;
