@@ -27,17 +27,17 @@ T extract<T>(
     case num:
     case double:
       return toDouble(rawValue) as T;
-    case const(List<dynamic>):
+    case const (List<dynamic>):
       return toList(rawValue) as T;
-    case const(List<String>):
+    case const (List<String>):
       return toList<String>(rawValue) as T;
-    case const(List<bool>):
+    case const (List<bool>):
       return toList<bool>(rawValue) as T;
-    case const(List<int>):
+    case const (List<int>):
       return toList<int>(rawValue) as T;
-    case const(List<double>):
+    case const (List<double>):
       return toList<double>(rawValue) as T;
-    case const(List<num>):
+    case const (List<num>):
       return toList<num>(rawValue) as T;
     default:
       if (rawValue is T) {

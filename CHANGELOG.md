@@ -1,3 +1,8 @@
+## 0.14.0+2
+
+- Run `dart formatter`.
+
+
 ## 0.14.0+1
 
 - Updated the examples in README.
