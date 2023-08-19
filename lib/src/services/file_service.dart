@@ -18,6 +18,10 @@ class FileService extends BaseService {
     bool? download,
     Map<String, dynamic> query = const {},
   }) {
+    if (filename.isEmpty || record.id.isEmpty) {
+      return Uri(); // blank Uri
+    }
+
     final params = Map<String, dynamic>.of(query);
     params["thumb"] ??= thumb;
     params["token"] ??= token;

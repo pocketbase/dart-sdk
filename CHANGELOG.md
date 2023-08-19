@@ -1,3 +1,8 @@
+## WIP
+
+- `pb.files.getUrl()` now returns empty string in case an empty filename is passed.
+
+
 ## 0.14.0+2
 
 - Run `dart formatter`.

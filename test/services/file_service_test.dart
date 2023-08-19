@@ -7,6 +7,19 @@ import "package:test/test.dart";
 
 void main() {
   group("FileService", () {
+    test("blank uri on missing filename", () {
+      final client = PocketBase("/base/");
+      final result = client.files.getUrl(
+        RecordModel(id: "@r123", collectionId: "@c123"),
+        "",
+        query: {
+          "demo": [1, null, "@test"],
+        },
+      );
+
+      expect(result.toString(), "");
+    });
+
     test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");
       final result = client.files.getUrl(
