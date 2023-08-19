@@ -1,6 +1,6 @@
-## WIP
+## 0.14.1
 
-- `pb.files.getUrl()` now returns empty string in case an empty filename is passed.
+- `pb.files.getUrl()` now returns empty URI in case an empty filename is passed.
 
 
 ## 0.14.0+2
