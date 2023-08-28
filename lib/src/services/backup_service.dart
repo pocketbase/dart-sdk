@@ -1,3 +1,5 @@
+import "package:http/http.dart" as http;
+
 import "../client.dart";
 import "../dtos/backup_file_info.dart";
 import "base_service.dart";
@@ -44,6 +46,30 @@ class BackupService extends BaseService {
       body: enrichedBody,
       query: query,
       headers: headers,
+    );
+  }
+
+  /// Uploads an existing backup file.
+  ///
+  /// The key of the MultipartFile file must be "file".
+  ///
+  /// Example:
+  /// ```dart
+  /// await pb.backups.upload(http.MultipartFile.fromBytes("file", ...))
+  /// ```
+  Future<void> upload(
+    http.MultipartFile file, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client.send(
+      "/api/backups/upload",
+      method: "POST",
+      body: body,
+      query: query,
+      headers: headers,
+      files: [file],
     );
   }
 

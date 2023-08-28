@@ -1,3 +1,8 @@
+## 0.15.0-WIP
+
+- Added `pb.backups.upload(file)` action (_available with PocketBase v0.18.0_).
+
+
 ## 0.14.1
 
 - `pb.files.getUrl()` now returns empty URI in case an empty filename is passed.

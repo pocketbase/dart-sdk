@@ -73,6 +73,38 @@ void main() {
       );
     });
 
+    test("upload()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(request.body, contains("content-disposition: form-data;"));
+        expect(request.body, contains('name="test_body"'));
+        expect(request.body, contains('form-data; name="file"'));
+        expect(
+          request.url.toString(),
+          "/base/api/backups/upload?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response("", 204);
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.backups.upload(
+        http.MultipartFile.fromBytes("file", []),
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+    });
+
     test("restore()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "POST");

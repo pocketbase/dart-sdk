@@ -457,6 +457,9 @@ final pb = PocketBase('http://example.com', authStore: store);
 // Initializes a new backup.
 🔐 pb.backups.create(basename, {body, query, headers});
 
+// Uploads an existing backup file (_the multipart file key is "file"_).
+🔐 pb.backups.upload(file, {body, query, headers});
+
 // Deletes a single backup by its file key.
 🔐 pb.backups.delete(key, {body, query, headers});
 
