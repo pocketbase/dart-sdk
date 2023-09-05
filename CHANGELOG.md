@@ -1,4 +1,4 @@
-## 0.15.0-WIP
+## 0.15.0
 
 - Added `pb.backups.upload(file)` action (_available with PocketBase v0.18.0_).
 
