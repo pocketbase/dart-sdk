@@ -271,7 +271,7 @@ class PocketBase {
           } else {
             // strings lists -> add each item as new entry
             for (final v in casted) {
-              entries.add(v.toString());
+              entries.add(v);
             }
           }
         } catch (_) {
