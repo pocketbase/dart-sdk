@@ -202,8 +202,6 @@ void main() {
           contains("multipart/form-data; boundary=dart-http-boundary-"),
         );
 
-        //final bodyExpectations = <String>[]
-
         return http.Response("", 200);
       });
 
