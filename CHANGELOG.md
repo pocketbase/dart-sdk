@@ -1,3 +1,8 @@
+## 0.15.1
+
+- Fixed `multipart/form-data` body serialization when `null` values are submitted ([#48](https://github.com/pocketbase/dart-sdk/issues/48)).
+
+
 ## 0.15.0
 
 - Added `pb.backups.upload(file)` action (_available with PocketBase v0.18.0_).

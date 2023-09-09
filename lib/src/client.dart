@@ -259,12 +259,29 @@ class PocketBase {
 
     body.forEach((key, value) {
       final entries = <String>[];
+      // @todo consider adding a note in the docs that for `json` fields
+      // the value may need to be `jsonEncode()`-ed
+      // (and more specifically for null and <String>[])
       if (value is Iterable) {
-        for (final v in value) {
-          entries.add(v.toString());
+        try {
+          final casted = value.cast<String>();
+          if (casted.isEmpty) {
+            // empty list -> resolve as empty entry
+            entries.add("");
+          } else {
+            // strings lists -> add each item as new entry
+            for (final v in casted) {
+              entries.add(v.toString());
+            }
+          }
+        } catch (_) {
+          // non-strings lists -> json encode
+          entries.add(jsonEncode(value));
         }
+      } else if (value is Map) {
+        entries.add(jsonEncode(value));
       } else {
-        entries.add(value.toString());
+        entries.add(value?.toString() ?? "");
       }
 
       request.fields[key] = entries;

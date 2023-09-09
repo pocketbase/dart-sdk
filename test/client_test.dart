@@ -148,10 +148,48 @@ void main() {
       final mock = MockClient((request) async {
         expect(request.method, "POST");
         expect(request.url.toString(), "/base/test?a=1&a=2&c=3");
-        expect(request.body, contains("--dart-http-boundar"));
+        expect(request.body, contains("--dart-http-boundary"));
         expect(
           request.body,
-          contains('content-disposition: form-data; name="test_body"'),
+          contains('content-disposition: form-data; name="a"\r\n\r\n123\r\n'),
+        );
+        expect(
+          request.body,
+          contains('content-disposition: form-data; name="b1"\r\n\r\n1\r\n'),
+        );
+        expect(
+          request.body,
+          contains('content-disposition: form-data; name="b1"\r\n\r\n2\r\n'),
+        );
+        expect(
+          request.body,
+          contains(
+            'content-disposition: form-data; name="b2"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
+          ),
+        );
+        expect(
+          request.body,
+          contains(
+            'content-disposition: form-data; name="c1"\r\n\r\n[1,2]\r\n',
+          ),
+        );
+        expect(
+          request.body,
+          contains(
+            'content-disposition: form-data; name="c2"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
+          ),
+        );
+        expect(
+          request.body,
+          contains(
+            'content-disposition: form-data; name="d"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
+          ),
+        );
+        expect(
+          request.body,
+          contains(
+            'content-disposition: form-data; name="e"\r\n\r\n{"test":123}\r\n',
+          ),
         );
         expect(
           request.body,
@@ -163,6 +201,8 @@ void main() {
           request.headers["content-type"],
           contains("multipart/form-data; boundary=dart-http-boundary-"),
         );
+
+        //final bodyExpectations = <String>[]
 
         return http.Response("", 200);
       });
@@ -181,7 +221,15 @@ void main() {
           "b": null,
           "c": 3,
         },
-        body: {"test_body": 123},
+        body: {
+          "a": 123,
+          "b1": ["1", "2"],
+          "b2": <String>[],
+          "c1": [1, 2],
+          "c2": <dynamic>[],
+          "d": null,
+          "e": <String, dynamic>{"test": 123},
+        },
         files: [http.MultipartFile.fromString("test_file", "123")],
         headers: {"test_header": "123"},
       );
