@@ -53,6 +53,56 @@ void main() {
     });
   });
 
+  group("PocketBase.filter()", () {
+    test("filter expression without params", () {
+      final client = PocketBase("https://example.com/");
+      const expr = "a > {:test1} && b = {:test2} || c = {:test2}";
+
+      expect(client.filter(expr), expr);
+    });
+
+    test("filter expression with partial missing placeholders", () {
+      final client = PocketBase("https://example.com/");
+      const expr = "a > {:test1} && b = {:test2} || c = {:test2}";
+
+      expect(
+        client.filter(expr, {"test2": "hello"}),
+        "a > {:test1} && b = 'hello' || c = 'hello'",
+      );
+    });
+
+    test("filter expression with all placeholder types", () {
+      final client = PocketBase("https://example.com/");
+
+      final params = {
+        "test1": "a'b'c'",
+        "test2": null,
+        "test3": true,
+        "test4": false,
+        "test5": 123,
+        "test6": -123.45,
+        "test7": 123.45,
+        "test8": DateTime(2023, 10, 18, 10, 11, 12),
+        "test9": [1, 2, 3, "test'123"],
+        "test10": {"a": "test'123"},
+      };
+
+      var expr = "";
+      params.forEach((key, value) {
+        if (expr.isNotEmpty) {
+          expr += " || ";
+        }
+
+        expr += "$key={:$key}";
+      });
+
+      expect(
+        client.filter(expr, params),
+        "test1='a\\'b\\'c\\'' || test2=null || test3=true || test4=false || test5=123 || test6=-123.45 || test7=123.45 || test8='2023-10-18 07:11:12.000Z' || test9='[1,2,3,\"test\\'123\"]' || test10='{\"a\":\"test\\'123\"}'",
+      );
+    });
+  });
+
   group("PocketBase.getFileUrl()", () {
     test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");

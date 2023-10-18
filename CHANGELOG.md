@@ -1,3 +1,25 @@
+## 0.16.0
+
+- Added `pb.filter(rawExpr, params?)` helper to construct a filter string with placeholder parameters populated from a `Map`.
+
+    ```dart
+    final records = await pb.collection("example").getList(filter: pb.filter(
+      // the same as: "title ~ 'exa\\'mple' && created = '2023-10-18 18:20:00.123Z'"
+      "title ~ {:title} && created >= {:created}",
+      { "title": "exa'mple", "created": DateTime.now() },
+    ));
+    ```
+
+    The supported placeholder parameter values are:
+
+    - `String` (_single quotes are autoescaped_)
+    - `num`
+    - `bool`
+    - `DateTime`
+    - `null`
+    - everything else is converted to a string using `jsonEncode()`
+
+
 ## 0.15.1
 
 - Fixed `multipart/form-data` body serialization when `null` values are submitted ([#48](https://github.com/pocketbase/dart-sdk/issues/48)).

@@ -99,6 +99,47 @@ class PocketBase {
     return service;
   }
 
+  /// Constructs a filter expression with placeholders populated from a map.
+  ///
+  /// Placeholder parameters are defined with the `{:paramName}` notation.
+  ///
+  /// The following parameter values are supported:
+  /// - `String` (_single quotes are autoescaped_)
+  /// - `num`
+  /// - `bool`
+  /// - `DateTime`
+  /// - `null`
+  /// - everything else is converted to a string using `jsonEncode()`
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// pb.collection("example").getList(filter: pb.filter(
+  ///   "title ~ {:title} && created >= {:created}",
+  ///   { "title": "example", "created": DateTime.now() },
+  /// ));
+  /// ```
+  String filter(String expr, [Map<String, dynamic> query = const {}]) {
+    if (query.isEmpty) {
+      return expr;
+    }
+
+    query.forEach((key, value) {
+      if (value == null || value is num || value is bool) {
+        value = value.toString();
+      } else if (value is DateTime) {
+        value = "'${value.toUtc().toIso8601String().replaceFirst("T", " ")}'";
+      } else if (value is String) {
+        value = "'${value.replaceAll("'", "\\'")}'";
+      } else {
+        value = "'${jsonEncode(value).replaceAll("'", "\\'")}'";
+      }
+      expr = expr.replaceAll("{:$key}", value.toString());
+    });
+
+    return expr;
+  }
+
   /// Legacy alias of `pb.files.getUrl()`.
   Uri getFileUrl(
     RecordModel record,
