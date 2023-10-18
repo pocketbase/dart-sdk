@@ -9,6 +9,7 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
     - [RecordModel](#recordmodel)
     - [Error handling](#error-handling)
     - [AuthStore](#authstore)
+    - [Binding filter parameters](#binding-filter-parameters)
 - [Services](#services)
 - [Limitations](#limitations)
 - [Development](#development)
@@ -60,28 +61,6 @@ pb.collection('example').subscribe("*", (e) {
 
 
 ## Caveats
-
-#### Binding filter parameters
-
-The SDK comes with a helper `pb.filter(expr, params)` method to generate a filter string with placeholder parameters (`{:paramName}`) populated from a `Map`.
-
-```dart
-final records = await pb.collection('example').getList(filter: pb.filter(
-  // the same as: "title ~ 'exa\\'mple' && created = '2023-10-18 18:20:00.123Z'"
-  'title ~ {:title} && created >= {:created}',
-  { "title": "exa'mple", "created": DateTime.now() },
-));
-```
-
-The supported placeholder parameter values are:
-
-- `String` (_single quotes are autoescaped_)
-- `num`
-- `bool`
-- `DateTime`
-- `null`
-- everything else is converted to a string using `jsonEncode()`
-
 
 #### File upload
 
@@ -241,6 +220,27 @@ final store = AsyncAuthStore(
 
 final pb = PocketBase('http://example.com', authStore: store);
 ```
+
+#### Binding filter parameters
+
+The SDK comes with a helper `pb.filter(expr, params)` method to generate a filter string with placeholder parameters (`{:paramName}`) populated from a `Map`.
+
+```dart
+final records = await pb.collection('example').getList(filter: pb.filter(
+  // the same as: "title ~ 'exa\\'mple' && created = '2023-10-18 18:20:00.123Z'"
+  'title ~ {:title} && created >= {:created}',
+  { "title": "exa'mple", "created": DateTime.now() },
+));
+```
+
+The supported placeholder parameter values are:
+
+- `String` (_single quotes are autoescaped_)
+- `DateTime`
+- `bool`
+- `num`
+- `null`
+- everything else is converted to a string using `jsonEncode()`
 
 
 ## Services

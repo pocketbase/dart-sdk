@@ -13,9 +13,9 @@
     The supported placeholder parameter values are:
 
     - `String` (_single quotes are autoescaped_)
-    - `num`
-    - `bool`
     - `DateTime`
+    - `bool`
+    - `num`
     - `null`
     - everything else is converted to a string using `jsonEncode()`
 
