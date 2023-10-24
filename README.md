@@ -51,7 +51,7 @@ final result = await pb.collection('example').getList(
 pb.collection('example').subscribe("*", (e) {
   print(e.action); // create, update, delete
   print(e.record); // the changed record
-});
+}, filter: "someField > 10");
 
 // and much more...
 ```
@@ -281,7 +281,7 @@ The supported placeholder parameter values are:
 //
 // You can use the returned UnsubscribeFunc to remove a single registered subscription.
 // If you want to remove all subscriptions related to the topic use unsubscribe(topic).
-🔓 pb.collection(collectionIdOrName).subscribe(topic, callback);
+🔓 pb.collection(collectionIdOrName).subscribe(topic, callback, {filter?, expand?, fields?, query, headers});
 
 // Unsubscribe from all registered subscriptions to the specified topic ("*" or recordId).
 // If topic is not set, then it will remove all registered collection subscriptions.
@@ -459,7 +459,7 @@ The supported placeholder parameter values are:
 // Initialize the realtime connection (if not already) and register the subscription.
 //
 // You can subscribe to the `PB_CONNECT` event if you want to listen to the realtime connection connect/reconnect events.
-🔓 pb.realtime.subscribe(subscription, callback);
+🔓 pb.realtime.subscribe(subscription, callback, {filter?, expand?, fields?, query, headers});
 
 // Unsubscribe from a subscription (if empty - unsubscibe from all registered subscriptions).
 🔓 pb.realtime.unsubscribe([subscription = '']);

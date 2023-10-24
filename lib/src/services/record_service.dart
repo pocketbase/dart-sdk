@@ -56,16 +56,25 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// Or use [unsubscribe(topic)] if you want to remove all
   /// subscriptions attached to the topic.
   Future<UnsubscribeFunc> subscribe(
-      String topic, RecordSubscriptionFunc callback) {
-    // @todo after v0.8 change to just "$_collectionIdOrName/$topic"
-    var subscribeTopic = _collectionIdOrName;
-    if (topic != "*") {
-      subscribeTopic += "/$topic";
-    }
-
-    return client.realtime.subscribe(subscribeTopic, (e) {
-      callback(RecordSubscriptionEvent.fromJson(e.jsonData()));
-    });
+    String topic,
+    RecordSubscriptionFunc callback, {
+    String? expand,
+    String? filter,
+    String? fields,
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client.realtime.subscribe(
+      "$_collectionIdOrName/$topic",
+      (e) {
+        callback(RecordSubscriptionEvent.fromJson(e.jsonData()));
+      },
+      expand: expand,
+      filter: filter,
+      fields: fields,
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Unsubscribe from all subscriptions of the specified topic
@@ -75,13 +84,7 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// all subscriptions associated to the current collection.
   Future<void> unsubscribe([String topic = ""]) {
     if (topic.isNotEmpty) {
-      // @todo after v0.8 change to just "$_collectionIdOrName/$topic"
-      var unsubscribeTopic = _collectionIdOrName;
-      if (topic != "*") {
-        unsubscribeTopic += "/$topic";
-      }
-
-      return client.realtime.unsubscribe(unsubscribeTopic);
+      return client.realtime.unsubscribe("$_collectionIdOrName/$topic");
     }
 
     return client.realtime.unsubscribeByPrefix(_collectionIdOrName);

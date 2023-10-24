@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:convert";
 
 import "../client.dart";
 import "../sse/sse_client.dart";
@@ -39,17 +40,50 @@ class RealtimeService extends BaseService {
   /// ```
   Future<UnsubscribeFunc> subscribe(
     String topic,
-    SubscriptionFunc listener,
-  ) async {
-    if (!_subscriptions.containsKey(topic)) {
-      _subscriptions[topic] = [];
+    SubscriptionFunc listener, {
+    String? expand,
+    String? filter,
+    String? fields,
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) async {
+    var key = topic;
+
+    // merge query parameters
+    final enrichedQuery = Map<String, dynamic>.of(query);
+    if (expand?.isNotEmpty ?? false) {
+      enrichedQuery["expand"] ??= expand;
     }
-    _subscriptions[topic]?.add(listener);
+    if (filter?.isNotEmpty ?? false) {
+      enrichedQuery["filter"] ??= filter;
+    }
+    if (fields?.isNotEmpty ?? false) {
+      enrichedQuery["fields"] ??= fields;
+    }
+
+    // serialize and append the topic options (if any)
+    final options = <String, dynamic>{};
+    if (enrichedQuery.isNotEmpty) {
+      options["query"] = enrichedQuery;
+    }
+    if (headers.isNotEmpty) {
+      options["headers"] = headers;
+    }
+    if (options.isNotEmpty) {
+      final encoded =
+          "options=${Uri.encodeQueryComponent(jsonEncode(options))}";
+      key += (key.contains("?") ? "&" : "?") + encoded;
+    }
+
+    if (!_subscriptions.containsKey(key)) {
+      _subscriptions[key] = [];
+    }
+    _subscriptions[key]?.add(listener);
 
     // start a new sse connection
     if (_sse == null) {
       await _connect();
-    } else if (_clientId.isNotEmpty && _subscriptions[topic]?.length == 1) {
+    } else if (_clientId.isNotEmpty && _subscriptions[key]?.length == 1) {
       // otherwise - just persist the updated subscriptions
       // (if it is the first for the topic)
       await _submitSubscriptions();
@@ -70,14 +104,18 @@ class RealtimeService extends BaseService {
   /// The related sse connection will be autoclosed if after the
   /// unsubscribe operation there are no active subscriptions left.
   Future<void> unsubscribe([String topic = ""]) async {
+    var needToSubmit = false;
+
     if (topic.isEmpty) {
       // remove all subscriptions
       _subscriptions.clear();
-    } else if (_subscriptions.containsKey(topic)) {
-      _subscriptions.remove(topic);
     } else {
-      // not subscribed to the specified topic
-      return;
+      final subs = _getSubscriptionsByTopic(topic);
+
+      for (final key in subs.keys) {
+        _subscriptions.remove(key);
+        needToSubmit = true;
+      }
     }
 
     // no other subscriptions -> close the sse connection
@@ -86,7 +124,7 @@ class RealtimeService extends BaseService {
     }
 
     // otherwise - notify the server about the subscription changes
-    if (_clientId.isNotEmpty) {
+    if (_clientId.isNotEmpty && needToSubmit) {
       return _submitSubscriptions();
     }
   }
@@ -103,8 +141,9 @@ class RealtimeService extends BaseService {
     final beforeLength = _subscriptions.length;
 
     // remove matching subscriptions
-    _subscriptions.removeWhere((topic, func) {
-      return topic.startsWith(topicPrefix);
+    _subscriptions.removeWhere((key, func) {
+      // "?" so that it can be used as end delimiter for the prefix
+      return "$key?".startsWith(topicPrefix);
     });
 
     // no changes
@@ -135,17 +174,30 @@ class RealtimeService extends BaseService {
     String topic,
     SubscriptionFunc listener,
   ) async {
-    if (_subscriptions[topic]?.isEmpty ?? true) {
-      return; // nothing to unsubscribe from
-    }
+    var needToSubmit = false;
 
-    final beforeLength = _subscriptions[topic]?.length ?? 0;
+    final subs = _getSubscriptionsByTopic(topic);
 
-    _subscriptions[topic]?.removeWhere((fn) => fn == listener);
+    for (final key in subs.keys) {
+      if (_subscriptions[key]?.isEmpty ?? true) {
+        continue; // nothing to unsubscribe from
+      }
 
-    // no changes
-    if (beforeLength == (_subscriptions[topic]?.length ?? 0)) {
-      return;
+      final beforeLength = _subscriptions[key]?.length ?? 0;
+
+      _subscriptions[key]?.removeWhere((fn) => fn == listener);
+
+      final afterLength = _subscriptions[key]?.length ?? 0;
+
+      // no changes
+      if (beforeLength == afterLength) {
+        continue;
+      }
+
+      // mark for subscriptions change submit if there are no other listeners
+      if (!needToSubmit && afterLength == 0) {
+        needToSubmit = true;
+      }
     }
 
     // no other subscriptions -> close the sse connection
@@ -155,15 +207,30 @@ class RealtimeService extends BaseService {
 
     // otherwise - notify the server about the subscription changes
     // (if there are no other subscriptions in the topic)
-    if (_clientId.isNotEmpty && (_subscriptions[topic]?.isEmpty ?? true)) {
+    if (_clientId.isNotEmpty && needToSubmit) {
       return _submitSubscriptions();
     }
   }
 
+  Map<String, List<SubscriptionFunc>> _getSubscriptionsByTopic(String topic) {
+    final result = <String, List<SubscriptionFunc>>{};
+
+    // "?" so that it can be used as end delimiter for the topic
+    topic = topic.contains("?") ? topic : "$topic?";
+
+    _subscriptions.forEach((key, value) {
+      if ("$key?".startsWith(topic)) {
+        result[key] = value;
+      }
+    });
+
+    return result;
+  }
+
   bool _hasNonEmptyTopic() {
-    for (final topic in _subscriptions.keys) {
-      if (_subscriptions[topic]?.isNotEmpty ?? false) {
-        return true; // has at least one non-empty topic
+    for (final key in _subscriptions.keys) {
+      if (_subscriptions[key]?.isNotEmpty ?? false) {
+        return true; // has at least one listener
       }
     }
 

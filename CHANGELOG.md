@@ -1,3 +1,14 @@
+## 0.17.0-rc
+
+- Added experimental `expand`, `filter`, `fields`, custom query and headers parameters support for the realtime subscriptions.
+    ```dart
+    pb.collection("example").subscribe("*", (e) {
+      ...
+    }, filter: "someField > 10");
+    ```
+    _This works only with PocketBase v0.20.0-rc._
+
+
 ## 0.16.0
 
 - Added `pb.filter(rawExpr, params?)` helper to construct a filter string with placeholder parameters populated from a `Map`.
