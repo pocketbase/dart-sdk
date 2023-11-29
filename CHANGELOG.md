@@ -17,6 +17,8 @@
 
 - Added missing `SchemaField.presentable` bool field.
 
+- Added new `AuthMethodProvider.displayName` string field.
+
 
 ## 0.16.0
 
