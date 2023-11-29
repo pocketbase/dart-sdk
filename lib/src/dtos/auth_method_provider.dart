@@ -10,6 +10,7 @@ part "auth_method_provider.g.dart";
 @JsonSerializable(explicitToJson: true)
 class AuthMethodProvider implements Jsonable {
   String name;
+  String displayName;
   String state;
   String codeVerifier;
   String codeChallenge;
@@ -18,6 +19,7 @@ class AuthMethodProvider implements Jsonable {
 
   AuthMethodProvider({
     this.name = "",
+    this.displayName = "",
     this.state = "",
     this.codeVerifier = "",
     this.codeChallenge = "",

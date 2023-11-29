@@ -1,6 +1,6 @@
 import "../client.dart";
-import "../dtos/log_request_model.dart";
-import "../dtos/log_request_stat.dart";
+import "../dtos/log_model.dart";
+import "../dtos/log_stat.dart";
 import "../dtos/result_list.dart";
 import "base_service.dart";
 
@@ -11,8 +11,8 @@ import "base_service.dart";
 class LogService extends BaseService {
   LogService(PocketBase client) : super(client);
 
-  /// Returns paginated log requests list.
-  Future<ResultList<LogRequestModel>> getRequestsList({
+  /// Returns paginated logs list.
+  Future<ResultList<LogModel>> getList({
     int page = 1,
     int perPage = 30,
     String? filter,
@@ -28,47 +28,45 @@ class LogService extends BaseService {
 
     return client
         .send(
-          "/api/logs/requests",
+          "/api/logs",
           query: params,
           headers: headers,
         )
-        .then((data) => ResultList<LogRequestModel>.fromJson(
+        .then((data) => ResultList<LogModel>.fromJson(
               data as Map<String, dynamic>? ?? {},
-              LogRequestModel.fromJson,
+              LogModel.fromJson,
             ));
   }
 
-  /// Returns a single log request by its id.
-  Future<LogRequestModel> getRequest(
+  /// Returns a single log by its id.
+  Future<LogModel> getOne(
     String id, {
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     return client
         .send(
-          "/api/logs/requests/${Uri.encodeComponent(id)}",
+          "/api/logs/${Uri.encodeComponent(id)}",
           query: query,
           headers: headers,
         )
-        .then((data) =>
-            LogRequestModel.fromJson(data as Map<String, dynamic>? ?? {}));
+        .then((data) => LogModel.fromJson(data as Map<String, dynamic>? ?? {}));
   }
 
   /// Returns request logs statistics.
-  Future<List<LogRequestStat>> getRequestsStats({
+  Future<List<LogStat>> getStats({
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
     return client
         .send(
-          "/api/logs/requests/stats",
+          "/api/logs/stats",
           query: query,
           headers: headers,
         )
         .then((data) =>
             (data as List<dynamic>?)
-                ?.map((item) =>
-                    LogRequestStat.fromJson(item as Map<String, dynamic>))
+                ?.map((item) => LogStat.fromJson(item as Map<String, dynamic>))
                 .toList() ??
             []);
   }

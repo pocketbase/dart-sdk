@@ -10,6 +10,7 @@ void main() {
         "authProviders": [
           {
             "name": "test_name",
+            "displayName": "test_displayName",
             "state": "test_state",
             "codeVerifier": "test_codeVerifier",
             "codeChallenge": "test_codeChallenge",

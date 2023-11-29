@@ -6,6 +6,7 @@ void main() {
     test("fromJson() and toJson()", () {
       final json = {
         "name": "test_name",
+        "displayName": "test_displayName",
         "state": "test_state",
         "codeVerifier": "test_codeVerifier",
         "codeChallenge": "test_codeChallenge",

@@ -240,9 +240,9 @@ void main() {
           request.body,
           jsonEncode({
             "test_body": 123,
+            "codeVerifier": "customCodeVerifier",
             "provider": "test_provider",
             "code": "test_code",
-            "codeVerifier": "test_code_verifier",
             "redirectUrl": "test_redirect_url",
             "createData": {"c": 456},
           }),
@@ -276,6 +276,7 @@ void main() {
         },
         body: {
           "test_body": 123,
+          "codeVerifier": "customCodeVerifier",
         },
         headers: {
           "test": "789",

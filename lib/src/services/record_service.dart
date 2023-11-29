@@ -243,10 +243,10 @@ class RecordService extends BaseCrudService<RecordModel> {
     String? fields,
   }) {
     final enrichedBody = Map<String, dynamic>.of(body);
-    enrichedBody["provider"] = provider;
-    enrichedBody["code"] = code;
-    enrichedBody["codeVerifier"] = codeVerifier;
-    enrichedBody["redirectUrl"] = redirectUrl;
+    enrichedBody["provider"] ??= provider;
+    enrichedBody["code"] ??= code;
+    enrichedBody["codeVerifier"] ??= codeVerifier;
+    enrichedBody["redirectUrl"] ??= redirectUrl;
     enrichedBody["createData"] ??= createData;
 
     final enrichedQuery = Map<String, dynamic>.of(query);

@@ -12,6 +12,7 @@ SchemaField _$SchemaFieldFromJson(Map<String, dynamic> json) => SchemaField(
       type: json['type'] as String? ?? "",
       system: json['system'] as bool? ?? false,
       required: json['required'] as bool? ?? false,
+      presentable: json['presentable'] as bool? ?? false,
       options: json['options'] as Map<String, dynamic>? ?? const {},
     );
 
@@ -22,5 +23,6 @@ Map<String, dynamic> _$SchemaFieldToJson(SchemaField instance) =>
       'type': instance.type,
       'system': instance.system,
       'required': instance.required,
+      'presentable': instance.presentable,
       'options': instance.options,
     };

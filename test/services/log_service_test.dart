@@ -12,7 +12,7 @@ void main() {
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/logs/requests?a=1&a=2&b=%40demo&page=2&perPage=15&filter=filter%3D123&sort=sort%3D456",
+          "/base/api/logs?a=1&a=2&b=%40demo&page=2&perPage=15&filter=filter%3D123&sort=sort%3D456",
         );
         expect(request.headers["test"], "789");
 
@@ -32,7 +32,7 @@ void main() {
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.logs.getRequestsList(
+      final result = await client.logs.getList(
         page: 2,
         perPage: 15,
         filter: "filter=123",
@@ -50,7 +50,7 @@ void main() {
       expect(result.perPage, 15);
       expect(result.totalItems, 17);
       expect(result.totalPages, 2);
-      expect(result.items, isA<List<LogRequestModel>>());
+      expect(result.items, isA<List<LogModel>>());
       expect(result.items.length, 2);
     });
 
@@ -59,7 +59,7 @@ void main() {
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/logs/requests/%40id123?a=1&a=2&b=%40demo",
+          "/base/api/logs/%40id123?a=1&a=2&b=%40demo",
         );
         expect(request.headers["test"], "789");
 
@@ -68,7 +68,7 @@ void main() {
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.logs.getRequest(
+      final result = await client.logs.getOne(
         "@id123",
         query: {
           "a": ["1", null, 2],
@@ -79,16 +79,16 @@ void main() {
         },
       );
 
-      expect(result, isA<LogRequestModel>());
+      expect(result, isA<LogModel>());
       expect(result.id, "@id123");
     });
 
-    test("getRequestsStats()", () async {
+    test("getStats()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/logs/requests/stats?a=1&a=2&b=%40demo",
+          "/base/api/logs/stats?a=1&a=2&b=%40demo",
         );
         expect(request.headers["test"], "789");
 
@@ -102,7 +102,7 @@ void main() {
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      final result = await client.logs.getRequestsStats(
+      final result = await client.logs.getStats(
         query: {
           "a": ["1", null, 2],
           "b": "@demo",

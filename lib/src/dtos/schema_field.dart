@@ -14,6 +14,7 @@ class SchemaField implements Jsonable {
   String type;
   bool system;
   bool required;
+  bool presentable;
   Map<String, dynamic> options;
 
   SchemaField({
@@ -22,6 +23,7 @@ class SchemaField implements Jsonable {
     this.type = "",
     this.system = false,
     this.required = false,
+    this.presentable = false,
     this.options = const {},
   });
 

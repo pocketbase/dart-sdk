@@ -419,11 +419,14 @@ The supported placeholder parameter values are:
 #### LogService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/LogService-class.html), [API docs](https://pocketbase.io/docs/api-logs))
 
 ```dart
-// Returns a paginated log requests list.
-🔐 pb.logs.getRequestsList({page = 1, perPage = 30, filter?, sort?, query, headers});
+// Returns a paginated logs list.
+🔐 pb.logs.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
 
-// Returns a single log request by its id.
-🔐 pb.logs.getRequest(id, {query, headers});
+// Returns a single log by its id.
+🔐 pb.logs.getOne(id, {query, headers});
+
+// Returns logs statistics.
+🔐 pb.logs.getStats({query, headers});
 ```
 
 ---

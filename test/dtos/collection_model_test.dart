@@ -17,6 +17,7 @@ void main() {
             "type": "schema_type",
             "system": true,
             "required": false,
+            "presentable": false,
             "options": {"a": 123},
           },
         ],
