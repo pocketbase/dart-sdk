@@ -10,6 +10,7 @@ AuthMethodsList _$AuthMethodsListFromJson(Map<String, dynamic> json) =>
     AuthMethodsList(
       usernamePassword: json['usernamePassword'] as bool? ?? false,
       emailPassword: json['emailPassword'] as bool? ?? false,
+      onlyVerified: json['onlyVerified'] as bool? ?? false,
       authProviders: (json['authProviders'] as List<dynamic>?)
               ?.map(
                   (e) => AuthMethodProvider.fromJson(e as Map<String, dynamic>))
@@ -21,5 +22,6 @@ Map<String, dynamic> _$AuthMethodsListToJson(AuthMethodsList instance) =>
     <String, dynamic>{
       'usernamePassword': instance.usernamePassword,
       'emailPassword': instance.emailPassword,
+      'onlyVerified': instance.onlyVerified,
       'authProviders': instance.authProviders.map((e) => e.toJson()).toList(),
     };

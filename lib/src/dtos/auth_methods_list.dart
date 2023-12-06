@@ -12,11 +12,13 @@ part "auth_methods_list.g.dart";
 class AuthMethodsList implements Jsonable {
   bool usernamePassword;
   bool emailPassword;
+  bool onlyVerified;
   List<AuthMethodProvider> authProviders;
 
   AuthMethodsList({
     this.usernamePassword = false,
     this.emailPassword = false,
+    this.onlyVerified = false,
     this.authProviders = const [],
   });
 

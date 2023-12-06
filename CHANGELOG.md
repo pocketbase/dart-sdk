@@ -1,4 +1,4 @@
-## 0.17.0-WIP
+## 0.17.0-rc2
 
 - Added experimental `expand`, `filter`, `fields`, custom query and headers parameters support for the realtime subscriptions.
     ```dart
@@ -18,6 +18,8 @@
 - Added missing `SchemaField.presentable` bool field.
 
 - Added new `AuthMethodProvider.displayName` string field.
+
+- Added new `AuthMethodsList.onlyVerified` bool field.
 
 
 ## 0.16.0

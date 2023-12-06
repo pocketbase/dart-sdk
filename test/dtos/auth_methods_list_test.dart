@@ -7,6 +7,7 @@ void main() {
       final json = {
         "usernamePassword": true,
         "emailPassword": true,
+        "onlyVerified": true,
         "authProviders": [
           {
             "name": "test_name",
