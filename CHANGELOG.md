@@ -1,4 +1,4 @@
-## 0.17.0-rc2
+## 0.17.0
 
 - Added experimental `expand`, `filter`, `fields`, custom query and headers parameters support for the realtime subscriptions.
     ```dart
@@ -9,11 +9,11 @@
     _This works only with PocketBase v0.20.0+._
 
 - Changes to the logs service methods in relation to the logs generalization in PocketBase v0.20.0+:
-  ```js
-  pb.logs.getRequestsList(...)  -> pb.logs.getList(...)
-  pb.logs.getRequest(...)       -> pb.logs.getOne(...)
-  pb.logs.getRequestsStats(...) -> pb.logs.getStats(...)
-  ```
+    ```dart
+    pb.logs.getRequestsList(...)  -> pb.logs.getList(...)
+    pb.logs.getRequest(...)       -> pb.logs.getOne(...)
+    pb.logs.getRequestsStats(...) -> pb.logs.getStats(...)
+    ```
 
 - Added missing `SchemaField.presentable` bool field.
 
