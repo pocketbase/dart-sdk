@@ -1,3 +1,8 @@
+## 0.17.1
+
+- Throw 404 `ClientException` on `getOne("")`  with empty id.
+
+
 ## 0.17.0
 
 - Added experimental `expand`, `filter`, `fields`, custom query and headers parameters support for the realtime subscriptions.

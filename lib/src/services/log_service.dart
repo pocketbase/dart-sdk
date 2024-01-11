@@ -1,4 +1,5 @@
 import "../client.dart";
+import "../client_exception.dart";
 import "../dtos/log_model.dart";
 import "../dtos/log_stat.dart";
 import "../dtos/result_list.dart";
@@ -43,7 +44,19 @@ class LogService extends BaseService {
     String id, {
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
-  }) {
+  }) async {
+    if (id.isEmpty) {
+      throw ClientException(
+        url: client.buildUrl("/api/logs/"),
+        statusCode: 404,
+        response: <String, dynamic>{
+          "code": 404,
+          "message": "Missing required log id.",
+          "data": <String, dynamic>{},
+        },
+      );
+    }
+
     return client
         .send(
           "/api/logs/${Uri.encodeComponent(id)}",

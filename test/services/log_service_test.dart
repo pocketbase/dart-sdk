@@ -54,7 +54,7 @@ void main() {
       expect(result.items.length, 2);
     });
 
-    test("getRequest()", () async {
+    test("getOne()", () async {
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(
@@ -81,6 +81,13 @@ void main() {
 
       expect(result, isA<LogModel>());
       expect(result.id, "@id123");
+    });
+
+    test("getOne() with empty id", () async {
+      final client = PocketBase("/base");
+
+      await expectLater(
+          client.logs.getOne(""), throwsA(isA<ClientException>()));
     });
 
     test("getStats()", () async {

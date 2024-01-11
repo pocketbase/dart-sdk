@@ -91,13 +91,27 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   }
 
   /// Returns single item by its id.
+  ///
+  /// Throws 404 `ClientException` in case an empty `id` is provided.
   Future<M> getOne(
     String id, {
     String? expand,
     String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
-  }) {
+  }) async {
+    if (id.isEmpty) {
+      throw ClientException(
+        url: client.buildUrl("$baseCrudPath/"),
+        statusCode: 404,
+        response: <String, dynamic>{
+          "code": 404,
+          "message": "Missing required record id.",
+          "data": <String, dynamic>{},
+        },
+      );
+    }
+
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
     enrichedQuery["fields"] ??= fields;

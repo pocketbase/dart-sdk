@@ -243,10 +243,19 @@ void crudServiceTests<M extends Jsonable>(
         },
       );
 
+      await expectLater(client.send(""), throwsA(isA<ClientException>()));
+
       expect(result, isA<M>());
       // ignore: avoid_dynamic_calls
       expect((result as dynamic).id, "@id123");
     });
+
+    //test("getOne() with empty id", () async {
+    //  final client = PocketBase("/base");
+
+    //  await expectLater(
+    //      serviceFactory(client).getOne(""), throwsA(isA<ClientException>()));
+    //});
 
     test("getFirstListItem()", () async {
       final mock = MockClient((request) async {
