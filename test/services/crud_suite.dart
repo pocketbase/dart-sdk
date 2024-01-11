@@ -250,12 +250,12 @@ void crudServiceTests<M extends Jsonable>(
       expect((result as dynamic).id, "@id123");
     });
 
-    //test("getOne() with empty id", () async {
-    //  final client = PocketBase("/base");
+    test("getOne() with empty id", () async {
+      final client = PocketBase("/base");
 
-    //  await expectLater(
-    //      serviceFactory(client).getOne(""), throwsA(isA<ClientException>()));
-    //});
+      await expectLater(
+          serviceFactory(client).getOne(""), throwsA(isA<ClientException>()));
+    });
 
     test("getFirstListItem()", () async {
       final mock = MockClient((request) async {
