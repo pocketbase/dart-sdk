@@ -1,3 +1,11 @@
+## 0.18.0
+
+**⚠️ This release works only with PocketBase v0.21.0+ due to changes of how the `multipart/form-data` body is handled.**
+
+- Properly sent json body with `multipart/form-data` requests.
+  _This fixes a similar issue described in [js-sdk#274](https://github.com/pocketbase/js-sdk/issues/274)._
+
+
 ## 0.17.1
 
 - Throw 404 `ClientException` on `getOne("")`  with empty id.

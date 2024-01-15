@@ -77,7 +77,8 @@ void main() {
       final mock = MockClient((request) async {
         expect(request.method, "POST");
         expect(request.body, contains("content-disposition: form-data;"));
-        expect(request.body, contains('name="test_body"'));
+        expect(request.body, contains('name="@jsonPayload"'));
+        expect(request.body, contains('{"test_body":123}\r\n'));
         expect(request.body, contains('form-data; name="file"'));
         expect(
           request.url.toString(),

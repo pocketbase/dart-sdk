@@ -201,44 +201,12 @@ void main() {
         expect(request.body, contains("--dart-http-boundary"));
         expect(
           request.body,
-          contains('content-disposition: form-data; name="a"\r\n\r\n123\r\n'),
-        );
-        expect(
-          request.body,
-          contains('content-disposition: form-data; name="b1"\r\n\r\n1\r\n'),
-        );
-        expect(
-          request.body,
-          contains('content-disposition: form-data; name="b1"\r\n\r\n2\r\n'),
+          contains('content-disposition: form-data; name="@jsonPayload"\r\n'),
         );
         expect(
           request.body,
           contains(
-            'content-disposition: form-data; name="b2"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
-          ),
-        );
-        expect(
-          request.body,
-          contains(
-            'content-disposition: form-data; name="c1"\r\n\r\n[1,2]\r\n',
-          ),
-        );
-        expect(
-          request.body,
-          contains(
-            'content-disposition: form-data; name="c2"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
-          ),
-        );
-        expect(
-          request.body,
-          contains(
-            'content-disposition: form-data; name="d"\r\ncontent-type: text/plain; charset=utf-8\r\ncontent-transfer-encoding: binary\r\n\r\n\r\n',
-          ),
-        );
-        expect(
-          request.body,
-          contains(
-            'content-disposition: form-data; name="e"\r\n\r\n{"test":123}\r\n',
+            '{"a":123,"b1":["1","2"],"b2":[],"c1":[1,2],"c2":[],"d":null,"e":{"test":123}}\r\n',
           ),
         );
         expect(

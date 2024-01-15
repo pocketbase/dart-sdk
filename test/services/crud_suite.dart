@@ -306,7 +306,11 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.body, contains("--dart-http-boundar"));
         expect(
           request.body,
-          contains('content-disposition: form-data; name="test_body"'),
+          contains('content-disposition: form-data; name="@jsonPayload"\r\n'),
+        );
+        expect(
+          request.body,
+          contains('{"test_body":123}\r\n'),
         );
         expect(
           request.body,
@@ -348,7 +352,11 @@ void crudServiceTests<M extends Jsonable>(
         expect(request.body, contains("--dart-http-boundar"));
         expect(
           request.body,
-          contains('content-disposition: form-data; name="test_body"'),
+          contains('content-disposition: form-data; name="@jsonPayload"\r\n'),
+        );
+        expect(
+          request.body,
+          contains('{"test_body":123}\r\n'),
         );
         expect(
           request.body,
