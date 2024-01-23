@@ -55,7 +55,7 @@ class AsyncAuthStore extends AuthStore {
   @override
   void save(
     String newToken,
-    dynamic /* RecordModel|AdminModel|null */ newModel,
+    Object? /* RecordModel|AdminModel|null */ newModel,
   ) {
     super.save(newToken, newModel);
 
@@ -94,7 +94,7 @@ class AsyncAuthStore extends AuthStore {
 
     final rawModel = decoded[_modelKey] as Map<String, dynamic>? ?? {};
 
-    dynamic model;
+    Object? model;
     if (rawModel.containsKey("collectionId") ||
         rawModel.containsKey("collectionName") ||
         rawModel.containsKey("verified") ||
