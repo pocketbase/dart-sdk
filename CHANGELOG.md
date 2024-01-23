@@ -5,6 +5,8 @@
 - Properly sent json body with `multipart/form-data` requests.
   _This fixes a similar issue described in [js-sdk#274](https://github.com/pocketbase/js-sdk/issues/274)._
 
+- Gracefully handle OAuth2 redirect error with the `authWithOAuth2()` call.
+
 
 ## 0.17.1
 

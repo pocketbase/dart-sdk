@@ -320,9 +320,14 @@ class RecordService extends BaseCrudService<RecordModel> {
           final eventData = e.jsonData();
           final code = eventData["code"] as String? ?? "";
           final state = eventData["state"] as String? ?? "";
+          final error = eventData["error"] as String? ?? "";
 
           if (state.isEmpty || state != oldState) {
             throw StateError("State parameters don't match.");
+          }
+
+          if (error.isNotEmpty || code.isEmpty) {
+            throw StateError("OAuth2 redirect error or missing code.");
           }
 
           final auth = await authWithOAuth2Code(
