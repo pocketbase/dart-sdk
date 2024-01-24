@@ -1,6 +1,5 @@
 import "package:http/http.dart" as http;
 
-import "../client.dart";
 import "../client_exception.dart";
 import "../dtos/jsonable.dart";
 import "../dtos/result_list.dart";
@@ -9,7 +8,7 @@ import "base_service.dart";
 /// Base generic crud service that is intented to be used by all other
 /// crud services.
 abstract class BaseCrudService<M extends Jsonable> extends BaseService {
-  BaseCrudService(PocketBase client) : super(client);
+  BaseCrudService(super.client);
 
   /// The base url path that is used by the service.
   String get baseCrudPath;

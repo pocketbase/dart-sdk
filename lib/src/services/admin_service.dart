@@ -10,7 +10,7 @@ import "base_crud_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.admins] should be used.
 class AdminService extends BaseCrudService<AdminModel> {
-  AdminService(PocketBase client) : super(client);
+  AdminService(super.client);
 
   @override
   String get baseCrudPath => "/api/admins";

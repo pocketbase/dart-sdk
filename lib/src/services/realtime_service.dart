@@ -15,7 +15,7 @@ typedef UnsubscribeFunc = Future<void> Function();
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.realtime] should be used.
 class RealtimeService extends BaseService {
-  RealtimeService(PocketBase client) : super(client);
+  RealtimeService(super.client);
 
   SseClient? _sse;
   String _clientId = "";

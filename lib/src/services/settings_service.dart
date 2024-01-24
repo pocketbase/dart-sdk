@@ -7,7 +7,7 @@ import "base_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.settings] should be used.
 class SettingsService extends BaseService {
-  SettingsService(PocketBase client) : super(client);
+  SettingsService(super.client);
 
   /// Fetch all available app settings.
   Future<Map<String, dynamic>> getAll({

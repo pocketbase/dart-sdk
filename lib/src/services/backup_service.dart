@@ -9,7 +9,7 @@ import "base_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.backups] should be used.
 class BackupService extends BaseService {
-  BackupService(PocketBase client) : super(client);
+  BackupService(super.client);
 
   /// Fetch all available app settings.
   Future<List<BackupFileInfo>> getFullList({

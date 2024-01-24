@@ -10,7 +10,7 @@ import "base_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.logs] should be used.
 class LogService extends BaseService {
-  LogService(PocketBase client) : super(client);
+  LogService(super.client);
 
   /// Returns paginated logs list.
   Future<ResultList<LogModel>> getList({

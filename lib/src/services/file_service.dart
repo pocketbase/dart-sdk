@@ -7,7 +7,7 @@ import "base_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.files] should be used.
 class FileService extends BaseService {
-  FileService(PocketBase client) : super(client);
+  FileService(super.client);
 
   /// Builds and returns an absolute record file url.
   Uri getUrl(

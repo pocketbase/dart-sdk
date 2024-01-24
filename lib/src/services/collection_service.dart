@@ -7,7 +7,7 @@ import "base_crud_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.collections] should be used.
 class CollectionService extends BaseCrudService<CollectionModel> {
-  CollectionService(PocketBase client) : super(client);
+  CollectionService(super.client);
 
   @override
   String get baseCrudPath => "/api/collections";

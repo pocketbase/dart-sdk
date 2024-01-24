@@ -7,7 +7,7 @@ import "base_service.dart";
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.health] should be used.
 class HealthService extends BaseService {
-  HealthService(PocketBase client) : super(client);
+  HealthService(super.client);
 
   /// Checks the health status of the api.
   Future<HealthCheck> check({

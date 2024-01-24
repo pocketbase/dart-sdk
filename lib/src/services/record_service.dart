@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:http/http.dart" as http;
 
-import "../client.dart";
 import "../client_exception.dart";
 import "../dtos/auth_method_provider.dart";
 import "../dtos/auth_methods_list.dart";
@@ -23,7 +22,7 @@ typedef OAuth2UrlCallbackFunc = void Function(Uri url);
 /// Usually shouldn't be initialized manually and instead
 /// [PocketBase.collection("COLLECTION")] should be used.
 class RecordService extends BaseCrudService<RecordModel> {
-  RecordService(PocketBase client, this._collectionIdOrName) : super(client);
+  RecordService(super.client, this._collectionIdOrName);
 
   final String _collectionIdOrName;
 
