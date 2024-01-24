@@ -18,14 +18,14 @@ T extract<T>(
   final rawValue = _extractNestedValue(data, path, defaultValue);
 
   switch (T) {
-    case String:
+    case const (String):
       return toString(rawValue) as T;
-    case bool:
+    case const (bool):
       return toBool(rawValue) as T;
-    case int:
+    case const (int):
       return toInt(rawValue) as T;
-    case num:
-    case double:
+    case const (num):
+    case const (double):
       return toDouble(rawValue) as T;
     case const (List<dynamic>):
       return toList(rawValue) as T;
