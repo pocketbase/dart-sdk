@@ -20,7 +20,7 @@ class RecordModel implements Jsonable {
   Map<String, List<RecordModel>> expand;
 
   @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
-  Map<String, dynamic> data;
+  Map<String, dynamic> data = {};
 
   final List<String> _singleExpandKeys = [];
   final List<String> _multiExpandKeys = [];
@@ -31,9 +31,10 @@ class RecordModel implements Jsonable {
     this.updated = "",
     this.collectionId = "",
     this.collectionName = "",
-    this.expand = const {},
-    this.data = const {},
-  });
+    Map<String, List<RecordModel>>? expand,
+    Map<String, dynamic>? data,
+  })  : expand = expand ?? {},
+        data = data ?? {};
 
   static RecordModel fromJson(Map<String, dynamic> json) {
     final model = _$RecordModelFromJson(json)..expand = {};

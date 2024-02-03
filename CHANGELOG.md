@@ -1,3 +1,10 @@
+## 0.18.1
+
+- Manually update the verified state of the current matching `AuthStore` model on successful "confirm-verification" call.
+
+- Manually clear the current matching `AuthStore` on "confirm-email-change" call because previous tokens are always invalidated.
+
+
 ## 0.18.0
 
 **⚠️ This release works only with PocketBase v0.21.0+ due to changes of how the `multipart/form-data` body is handled.**

@@ -449,7 +449,10 @@ void main() {
       );
     });
 
-    test("confirmVerification()", () async {
+    test("confirmVerification() with matching AuthStore model id", () async {
+      const token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
+
       final mock = MockClient((request) async {
         expect(request.method, "POST");
         expect(
@@ -460,7 +463,7 @@ void main() {
           request.body,
           jsonEncode({
             "test_body": 123,
-            "token": "test_token",
+            "token": token,
           }),
         );
         expect(request.headers["test"], "789");
@@ -470,8 +473,13 @@ void main() {
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
+      client.authStore.save(
+        "auth_token",
+        RecordModel(id: "123", collectionId: "456"),
+      );
+
       await client.collection("test").confirmVerification(
-        "test_token",
+        token,
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -483,6 +491,53 @@ void main() {
           "test": "789",
         },
       );
+
+      expect((client.authStore.model as RecordModel).data["verified"], true);
+    });
+
+    test("confirmVerification() with mismatched AuthStore model id", () async {
+      const token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
+
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+          request.url.toString(),
+          "/base/api/collections/test/confirm-verification?a=1&a=2&b=%40demo",
+        );
+        expect(
+          request.body,
+          jsonEncode({
+            "test_body": 123,
+            "token": token,
+          }),
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response("", 204);
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      client.authStore.save(
+        "auth_token",
+        RecordModel(id: "123", collectionId: "789"),
+      );
+
+      await client.collection("test").confirmVerification(
+        token,
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+      expect((client.authStore.model as RecordModel).data["verified"], null);
     });
 
     test("requestEmailChange()", () async {
@@ -521,7 +576,10 @@ void main() {
       );
     });
 
-    test("confirmEmailChange()", () async {
+    test("confirmEmailChange() with matching AuthStore model id", () async {
+      const token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
+
       final mock = MockClient((request) async {
         expect(request.method, "POST");
         expect(
@@ -532,19 +590,24 @@ void main() {
           request.body,
           jsonEncode({
             "test_body": 123,
-            "token": "test_token",
+            "token": token,
             "password": "test_password",
           }),
         );
-        expect(request.headers["test"], "789");
+        expect(request.headers["test"], "456");
 
         return http.Response("", 204);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
+      client.authStore.save(
+        "auth_token",
+        RecordModel(id: "123", collectionId: "456"),
+      );
+
       await client.collection("test").confirmEmailChange(
-        "test_token",
+        token,
         "test_password",
         query: {
           "a": ["1", null, 2],
@@ -554,9 +617,46 @@ void main() {
           "test_body": 123,
         },
         headers: {
-          "test": "789",
+          "test": "456",
         },
       );
+
+      expect(client.authStore.token, "");
+    });
+
+    test("confirmEmailChange() with mismatched AuthStore model id", () async {
+      const token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
+
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+          request.url.toString(),
+          "/base/api/collections/test/confirm-email-change",
+        );
+        expect(
+          request.body,
+          jsonEncode({
+            "token": token,
+            "password": "test_password",
+          }),
+        );
+
+        return http.Response("", 204);
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      client.authStore.save(
+        "auth_token",
+        RecordModel(id: "123", collectionId: "789"),
+      );
+
+      await client
+          .collection("test")
+          .confirmEmailChange(token, "test_password");
+
+      expect(client.authStore.token, "auth_token");
     });
 
     test("listExternalAuths()", () async {

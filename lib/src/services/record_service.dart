@@ -1,4 +1,5 @@
 import "dart:async";
+import "dart:convert";
 
 import "package:http/http.dart" as http;
 
@@ -474,13 +475,35 @@ class RecordService extends BaseCrudService<RecordModel> {
     final enrichedBody = Map<String, dynamic>.of(body);
     enrichedBody["token"] = verificationToken;
 
-    return client.send(
+    return client
+        .send(
       "$baseCollectionPath/confirm-verification",
       method: "POST",
       body: enrichedBody,
       query: query,
       headers: headers,
-    );
+    )
+        .then((item) {
+      // on success manually update the current auth record verified state
+      final parts = verificationToken.split(".");
+      if (parts.length != 3) {
+        return;
+      }
+
+      final payloadPart = base64.normalize(parts[1]);
+      final payload = jsonDecode(utf8.decode(base64Decode(payloadPart)))
+          as Map<String, dynamic>;
+
+      if (client.authStore.model != null &&
+          client.authStore.model is RecordModel &&
+          !(client.authStore.model as RecordModel).getBoolValue("verified") &&
+          (client.authStore.model as RecordModel).id == payload["id"] &&
+          (client.authStore.model as RecordModel).collectionId ==
+              payload["collectionId"]) {
+        (client.authStore.model as RecordModel).data["verified"] = true;
+        client.authStore.save(client.authStore.token, client.authStore.model);
+      }
+    });
   }
 
   /// Sends auth record email change request to the provided email.
@@ -503,6 +526,9 @@ class RecordService extends BaseCrudService<RecordModel> {
   }
 
   /// Confirms auth record new email address.
+  ///
+  /// If the current AuthStore.model matches with the record from the token,
+  /// then on success the client AuthStore will be also cleared.
   Future<void> confirmEmailChange(
     String emailChangeToken,
     String userPassword, {
@@ -514,13 +540,33 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedBody["token"] = emailChangeToken;
     enrichedBody["password"] = userPassword;
 
-    return client.send(
+    return client
+        .send(
       "$baseCollectionPath/confirm-email-change",
       method: "POST",
       body: enrichedBody,
       query: query,
       headers: headers,
-    );
+    )
+        .then((item) {
+      final parts = emailChangeToken.split(".");
+      if (parts.length != 3) {
+        return;
+      }
+
+      final payloadPart = base64.normalize(parts[1]);
+      final payload = jsonDecode(utf8.decode(base64Decode(payloadPart)))
+          as Map<String, dynamic>;
+
+      if (client.authStore.model != null &&
+          client.authStore.model is RecordModel &&
+          !(client.authStore.model as RecordModel).getBoolValue("verified") &&
+          (client.authStore.model as RecordModel).id == payload["id"] &&
+          (client.authStore.model as RecordModel).collectionId ==
+              payload["collectionId"]) {
+        client.authStore.clear();
+      }
+    });
   }
 
   /// Lists all linked external auth providers for the specified record.
