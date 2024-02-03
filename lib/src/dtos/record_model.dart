@@ -20,7 +20,7 @@ class RecordModel implements Jsonable {
   Map<String, List<RecordModel>> expand;
 
   @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
-  Map<String, dynamic> data = {};
+  Map<String, dynamic> data;
 
   final List<String> _singleExpandKeys = [];
   final List<String> _multiExpandKeys = [];
