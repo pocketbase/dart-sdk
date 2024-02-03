@@ -451,6 +451,7 @@ void main() {
 
     test("confirmVerification() with matching AuthStore model id", () async {
       const token =
+          // ignore: lines_longer_than_80_chars
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
 
       final mock = MockClient((request) async {
@@ -497,6 +498,7 @@ void main() {
 
     test("confirmVerification() with mismatched AuthStore model id", () async {
       const token =
+          // ignore: lines_longer_than_80_chars
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
 
       final mock = MockClient((request) async {
@@ -578,6 +580,7 @@ void main() {
 
     test("confirmEmailChange() with matching AuthStore model id", () async {
       const token =
+          // ignore: lines_longer_than_80_chars
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
 
       final mock = MockClient((request) async {
@@ -626,6 +629,7 @@ void main() {
 
     test("confirmEmailChange() with mismatched AuthStore model id", () async {
       const token =
+          // ignore: lines_longer_than_80_chars
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMyIsInR5cGUiOiJhdXRoUmVjb3JkIiwiY29sbGVjdGlvbklkIjoiNDU2In0.c9ZkXkC8rSqkKlpyx3kXt9ID3qYsIoy1Vz3a2m3ly0c";
 
       final mock = MockClient((request) async {

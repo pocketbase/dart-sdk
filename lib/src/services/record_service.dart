@@ -560,7 +560,6 @@ class RecordService extends BaseCrudService<RecordModel> {
 
       if (client.authStore.model != null &&
           client.authStore.model is RecordModel &&
-          !(client.authStore.model as RecordModel).getBoolValue("verified") &&
           (client.authStore.model as RecordModel).id == payload["id"] &&
           (client.authStore.model as RecordModel).collectionId ==
               payload["collectionId"]) {
