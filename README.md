@@ -511,9 +511,9 @@ The supported placeholder parameter values are:
 PocketBase Dart SDK is built on top of the standard `dart-lang/http` package and inherits some of its limitations:
 
 - Requests cancellation/abort is not supported yet - [dart-lang/http #424](https://github.com/dart-lang/http/issues/424)
-- Streamed responses (used by the realtime service) are not supported on the web - [dart-lang/http #595](https://github.com/dart-lang/http/issues/595)
+- Streamed responses (used by the realtime service and the "all-in-one" OAuth2 flow) are not supported on the web - [dart-lang/http #595](https://github.com/dart-lang/http/issues/595)
 
-One possible workaround for the streamed responses is to provide a 3rd party `http.Client` implementation like [`fetch_client`](https://pub.dev/packages/fetch_client) using the `httpClientFactory` constructor option:
+One possible workaround for the latter is to provide a 3rd party `http.Client` implementation specific for the web like [`fetch_client`](https://pub.dev/packages/fetch_client) using the `httpClientFactory` constructor option:
 
 ```dart
 import 'package:pocketbase/pocketbase.dart';
