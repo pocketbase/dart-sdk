@@ -61,7 +61,6 @@ class RecordModel implements Jsonable {
     // attach the dynamic json fields to the model"s `data`
     // ---
     final baseFields = <String>[
-      "id",
       "created",
       "updated",
       "collectionId",
