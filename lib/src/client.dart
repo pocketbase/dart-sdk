@@ -232,7 +232,7 @@ class PocketBase {
         responseData = responseStr;
       }
 
-      if (response.statusCode >= 400) {
+      if (response.statusCode >= 400 || [301, 308].contains(response.statusCode)) {
         throw ClientException(
           url: url,
           statusCode: response.statusCode,
