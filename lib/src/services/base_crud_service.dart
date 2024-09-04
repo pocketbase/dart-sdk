@@ -76,17 +76,12 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["skipTotal"] ??= skipTotal;
 
     return client
-        .send(
-      baseCrudPath,
-      query: enrichedQuery,
-      headers: headers,
-    )
-        .then((data) {
-      return ResultList<M>.fromJson(
-        assertAs(data, {}),
-        itemFactoryFunc,
-      );
-    });
+        .send<Map<String, dynamic>>(
+          baseCrudPath,
+          query: enrichedQuery,
+          headers: headers,
+        )
+        .then((data) => ResultList<M>.fromJson(data, itemFactoryFunc));
   }
 
   /// Returns single item by its id.
@@ -116,12 +111,12 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCrudPath/${Uri.encodeComponent(id)}",
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(assertAs(data, {})));
+        .then(itemFactoryFunc);
   }
 
   /// Returns the first found list item by the specified filter.
@@ -175,7 +170,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           baseCrudPath,
           method: "POST",
           body: body,
@@ -183,7 +178,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           files: files,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(assertAs(data, {})));
+        .then(itemFactoryFunc);
   }
 
   /// Updates an single item by its id.
@@ -201,7 +196,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCrudPath/${Uri.encodeComponent(id)}",
           method: "PATCH",
           body: body,
@@ -209,7 +204,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           files: files,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(assertAs(data, {})));
+        .then(itemFactoryFunc);
   }
 
   /// Deletes an single item by its id.

@@ -195,7 +195,10 @@ class PocketBase {
   /// and the provided options.
   ///
   /// All response errors are normalized and wrapped in [ClientException].
-  Future<dynamic> send(
+  Future<T> send<T extends dynamic>(
+    // ignore: lines_longer_than_80_chars
+    // note: the optional generic type is to ensure that the expected response data type is returned
+    //       the extends is to explicitly infer by default to dynamic
     String path, {
     String method = "GET",
     Map<String, String> headers = const {},
@@ -258,7 +261,7 @@ class PocketBase {
         );
       }
 
-      return responseData;
+      return responseData as T;
     } catch (e) {
       // PocketBase API exception
       if (e is ClientException) {

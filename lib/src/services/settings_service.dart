@@ -14,13 +14,11 @@ class SettingsService extends BaseService {
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
-    return client
-        .send(
-          "/api/settings",
-          query: query,
-          headers: headers,
-        )
-        .then((data) => assertAs(data, {}));
+    return client.send<Map<String, dynamic>>(
+      "/api/settings",
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Bulk updates app settings.
@@ -29,15 +27,13 @@ class SettingsService extends BaseService {
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
-    return client
-        .send(
-          "/api/settings",
-          method: "PATCH",
-          body: body,
-          query: query,
-          headers: headers,
-        )
-        .then((data) => assertAs(data, {}));
+    return client.send<Map<String, dynamic>>(
+      "/api/settings",
+      method: "PATCH",
+      body: body,
+      query: query,
+      headers: headers,
+    );
   }
 
   /// Performs a S3 storage connection test.
@@ -86,7 +82,7 @@ class SettingsService extends BaseService {
   }
 
   /// Generates a new Apple OAuth2 client secret.
-  Future<void> generateAppleClientSecret(
+  Future<AppleClientSecret> generateAppleClientSecret(
     String clientId,
     String teamId,
     String keyId,
@@ -104,13 +100,13 @@ class SettingsService extends BaseService {
     enrichedBody["duration"] ??= duration;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "/api/settings/apple/generate-client-secret",
           method: "POST",
           body: enrichedBody,
           query: query,
           headers: headers,
         )
-        .then((data) => AppleClientSecret.fromJson(assertAs(data, {})));
+        .then(AppleClientSecret.fromJson);
   }
 }

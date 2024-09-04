@@ -46,14 +46,13 @@ class FileService extends BaseService {
     Map<String, String> headers = const {},
   }) {
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "/api/files/token",
           method: "POST",
           body: body,
           query: query,
           headers: headers,
         )
-        .then((data) => assertAs<String>(
-            assertAs<Map<String, dynamic>>(data, {})["token"], ""));
+        .then((data) => data["token"] as String);
   }
 }

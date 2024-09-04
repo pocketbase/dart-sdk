@@ -62,7 +62,7 @@ class BatchService extends BaseService {
     enrichedBody["requests"] = jsonBody;
 
     return client
-        .send(
+        .send<List<dynamic>>(
           "/api/batch",
           method: "POST",
           files: files,
@@ -70,8 +70,9 @@ class BatchService extends BaseService {
           query: query,
           body: enrichedBody,
         )
-        .then((data) => assertAs<List<dynamic>>(data, [])
-            .map((elem) => BatchResult.fromJson(assertAs(elem, {})))
+        .then((data) => data
+            .map((elem) =>
+                BatchResult.fromJson(elem as Map<String, dynamic>? ?? {}))
             .toList());
   }
 }

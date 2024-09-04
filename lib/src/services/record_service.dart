@@ -190,12 +190,12 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedQuery["fields"] ??= "mfa,otp,password,oauth2";
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/auth-methods",
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => AuthMethodsList.fromJson(assertAs(data, {})));
+        .then(AuthMethodsList.fromJson);
   }
 
   /// Authenticate an auth record by its username/email and password
@@ -220,14 +220,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/auth-with-password",
           method: "POST",
           body: enrichedBody,
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(assertAs(data, {})));
+        .then(_authResponse);
   }
 
   /// Authenticate an auth record with an OAuth2 client provider and returns
@@ -258,14 +258,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/auth-with-oauth2",
           method: "POST",
           body: enrichedBody,
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(assertAs(data, {})));
+        .then(_authResponse);
   }
 
   /// Authenticate a single auth collection record with OAuth2
@@ -396,14 +396,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/auth-refresh",
           method: "POST",
           body: body,
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(assertAs(data, {})));
+        .then(_authResponse);
   }
 
   /// Sends auth record password reset request.
@@ -580,14 +580,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedBody["email"] ??= email;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/request-otp",
           method: "POST",
           body: enrichedBody,
           query: query,
           headers: headers,
         )
-        .then((data) => OTPResponse.fromJson(assertAs(data, {})));
+        .then(OTPResponse.fromJson);
   }
 
   /// Authenticate an auth record via OTP.
@@ -611,14 +611,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     enrichedQuery["fields"] ??= fields;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/auth-with-otp",
           method: "POST",
           body: enrichedBody,
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(assertAs(data, {})));
+        .then(_authResponse);
   }
 
   /// Impersonate authenticates with the specified recordId and
@@ -656,14 +656,14 @@ class RecordService extends BaseCrudService<RecordModel> {
     );
 
     final authData = await tempClient
-        .send(
+        .send<Map<String, dynamic>>(
           "$baseCollectionPath/impersonate/${Uri.encodeComponent(recordId)}",
           method: "POST",
           body: enrichedBody,
           query: enrichedQuery,
           headers: enrichedHeaders,
         )
-        .then((data) => RecordAuth.fromJson(data as Map<String, dynamic>));
+        .then(RecordAuth.fromJson);
 
     tempClient.authStore.save(authData.token, authData.record);
     // ---

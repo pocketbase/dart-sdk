@@ -17,13 +17,14 @@ class BackupService extends BaseService {
     Map<String, String> headers = const {},
   }) {
     return client
-        .send(
+        .send<List<dynamic>>(
           "/api/backups",
           query: query,
           headers: headers,
         )
-        .then((data) => assertAs<List<dynamic>>(data, [])
-            .map((item) => BackupFileInfo.fromJson(assertAs(item, {})))
+        .then((data) => data
+            .map((item) =>
+                BackupFileInfo.fromJson(item as Map<String, dynamic>? ?? {}))
             .toList());
   }
 

@@ -50,7 +50,7 @@ class CollectionService extends BaseCrudService<CollectionModel> {
     Map<String, String> headers = const {},
   }) {
     return client
-        .send(
+        .send<Map<String, dynamic>>(
       "$baseCrudPath/meta/scaffolds",
       body: body,
       query: query,
@@ -59,8 +59,9 @@ class CollectionService extends BaseCrudService<CollectionModel> {
         .then((data) {
       final result = <String, CollectionModel>{};
 
-      assertAs<Map<String, dynamic>>(data, {}).forEach((key, value) {
-        result[key] = CollectionModel.fromJson(assertAs(value, {}));
+      data.forEach((key, value) {
+        result[key] =
+            CollectionModel.fromJson(value as Map<String, dynamic>? ?? {});
       });
 
       return result;

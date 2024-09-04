@@ -15,11 +15,11 @@ class HealthService extends BaseService {
     Map<String, String> headers = const {},
   }) {
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "/api/health",
           query: query,
           headers: headers,
         )
-        .then((data) => HealthCheck.fromJson(assertAs(data, {})));
+        .then(HealthCheck.fromJson);
   }
 }

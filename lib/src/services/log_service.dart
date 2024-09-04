@@ -28,15 +28,12 @@ class LogService extends BaseService {
     params["sort"] ??= sort;
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "/api/logs",
           query: params,
           headers: headers,
         )
-        .then((data) => ResultList<LogModel>.fromJson(
-              assertAs(data, {}),
-              LogModel.fromJson,
-            ));
+        .then((data) => ResultList<LogModel>.fromJson(data, LogModel.fromJson));
   }
 
   /// Returns a single log by its id.
@@ -58,12 +55,12 @@ class LogService extends BaseService {
     }
 
     return client
-        .send(
+        .send<Map<String, dynamic>>(
           "/api/logs/${Uri.encodeComponent(id)}",
           query: query,
           headers: headers,
         )
-        .then((data) => LogModel.fromJson(assertAs(data, {})));
+        .then(LogModel.fromJson);
   }
 
   /// Returns request logs statistics.
@@ -72,13 +69,15 @@ class LogService extends BaseService {
     Map<String, String> headers = const {},
   }) {
     return client
-        .send(
+        .send<List<dynamic>>(
           "/api/logs/stats",
           query: query,
           headers: headers,
         )
-        .then((data) => assertAs<List<dynamic>>(data, [])
-            .map((item) => LogStat.fromJson(assertAs(item, {})))
+        .then((data) => data
+            .map(
+              (item) => LogStat.fromJson(item as Map<String, dynamic>? ?? {}),
+            )
             .toList());
   }
 }
