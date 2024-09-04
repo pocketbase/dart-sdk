@@ -11,14 +11,14 @@ part "record_auth.g.dart";
 @JsonSerializable(explicitToJson: true)
 class RecordAuth implements Jsonable {
   String token;
-  RecordModel? record;
+  RecordModel record;
   Map<String, dynamic> meta;
 
   RecordAuth({
     this.token = "",
-    this.record,
     this.meta = const {},
-  });
+    RecordModel? record,
+  }) : record = record ?? RecordModel();
 
   static RecordAuth fromJson(Map<String, dynamic> json) =>
       _$RecordAuthFromJson(json);

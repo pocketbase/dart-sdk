@@ -29,8 +29,12 @@ class FileService extends BaseService {
       params["download"] = "";
     }
 
+    final collectionIdOrName = record.collectionId.isEmpty
+        ? record.collectionName
+        : record.collectionId;
+
     return client.buildUrl(
-      "/api/files/${Uri.encodeComponent(record.collectionId)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
+      "/api/files/${Uri.encodeComponent(collectionIdOrName)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
       params,
     );
   }
@@ -49,7 +53,7 @@ class FileService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then(
-            (data) => (data as Map<String, dynamic>? ?? {})["token"] as String);
+        .then((data) => assertAs<String>(
+            assertAs<Map<String, dynamic>>(data, {})["token"], ""));
   }
 }

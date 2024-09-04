@@ -22,12 +22,9 @@ class BackupService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) =>
-            (data as List<dynamic>?)
-                ?.map((item) =>
-                    BackupFileInfo.fromJson(item as Map<String, dynamic>))
-                .toList() ??
-            const []);
+        .then((data) => assertAs<List<dynamic>>(data, [])
+            .map((item) => BackupFileInfo.fromJson(assertAs(item, {})))
+            .toList());
   }
 
   /// Initializes a new backup.

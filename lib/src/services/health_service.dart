@@ -20,7 +20,6 @@ class HealthService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) =>
-            HealthCheck.fromJson(data as Map<String, dynamic>? ?? {}));
+        .then((data) => HealthCheck.fromJson(assertAs(data, {})));
   }
 }

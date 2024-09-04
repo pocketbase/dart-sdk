@@ -9,10 +9,10 @@ part of 'result_list.dart';
 ResultList<M> _$ResultListFromJson<M extends Jsonable>(
         Map<String, dynamic> json) =>
     ResultList<M>(
-      page: json['page'] as int? ?? 0,
-      perPage: json['perPage'] as int? ?? 0,
-      totalItems: json['totalItems'] as int? ?? 0,
-      totalPages: json['totalPages'] as int? ?? 0,
+      page: (json['page'] as num?)?.toInt() ?? 0,
+      perPage: (json['perPage'] as num?)?.toInt() ?? 0,
+      totalItems: (json['totalItems'] as num?)?.toInt() ?? 0,
+      totalPages: (json['totalPages'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ResultListToJson<M extends Jsonable>(

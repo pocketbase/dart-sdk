@@ -58,5 +58,44 @@ void main() {
         },
       );
     });
+
+    test("getScaffolds()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "GET");
+        expect(request.body, jsonEncode({"test_body": 123}));
+        expect(
+          request.url.toString(),
+          "/base/api/collections/meta/scaffolds?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode({
+            "test1": CollectionModel(id: "id1").toJson(),
+            "test2": CollectionModel(id: "id2").toJson(),
+          }),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      final result = await client.collections.getScaffolds(
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+
+      expect(result.length, 2);
+      expect(result["test1"]?.id, "id1");
+      expect(result["test2"]?.id, "id2");
+    });
   });
 }

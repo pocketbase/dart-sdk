@@ -1,7 +1,6 @@
 import "dart:convert";
 
 import "auth_store.dart";
-import "dtos/admin_model.dart";
 import "dtos/record_model.dart";
 import "sync_queue.dart";
 
@@ -55,11 +54,11 @@ class AsyncAuthStore extends AuthStore {
   @override
   void save(
     String newToken,
-    dynamic /* RecordModel|AdminModel|null */ newModel,
+    RecordModel? newRecord,
   ) {
-    super.save(newToken, newModel);
+    super.save(newToken, newRecord);
 
-    final encoded = jsonEncode({_tokenKey: token, _modelKey: model});
+    final encoded = jsonEncode({_tokenKey: token, _modelKey: record});
 
     _queue.enqueue(() => saveFunc(encoded));
   }
@@ -92,18 +91,9 @@ class AsyncAuthStore extends AuthStore {
 
     final token = decoded[_tokenKey] as String? ?? "";
 
-    final rawModel = decoded[_modelKey] as Map<String, dynamic>? ?? {};
+    final record =
+        RecordModel.fromJson(decoded[_modelKey] as Map<String, dynamic>? ?? {});
 
-    dynamic model;
-    if (rawModel.containsKey("collectionId") ||
-        rawModel.containsKey("collectionName") ||
-        rawModel.containsKey("verified") ||
-        rawModel.containsKey("emailVisibility")) {
-      model = RecordModel.fromJson(rawModel);
-    } else if (rawModel.containsKey("id")) {
-      model = AdminModel.fromJson(rawModel);
-    }
-
-    save(token, model);
+    save(token, record);
   }
 }

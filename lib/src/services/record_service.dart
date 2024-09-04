@@ -3,14 +3,16 @@ import "dart:convert";
 
 import "package:http/http.dart" as http;
 
+import "../client.dart";
 import "../client_exception.dart";
 import "../dtos/auth_method_provider.dart";
 import "../dtos/auth_methods_list.dart";
-import "../dtos/external_auth_model.dart";
+import "../dtos/otp_response.dart";
 import "../dtos/record_auth.dart";
 import "../dtos/record_model.dart";
 import "../dtos/record_subscription_event.dart";
 import "base_crud_service.dart";
+import "base_service.dart";
 import "realtime_service.dart";
 
 /// The definition of a realtime record subscription callback function.
@@ -96,7 +98,7 @@ class RecordService extends BaseCrudService<RecordModel> {
 
   /// Updates a single record model by its id.
   ///
-  /// If the current AuthStore.model matches with the updated id, then
+  /// If the current AuthStore.record matches with the updated id, then
   /// on success the client AuthStore will be updated with the result model.
   @override
   Future<RecordModel> update(
@@ -119,12 +121,11 @@ class RecordService extends BaseCrudService<RecordModel> {
       fields: fields,
     )
         .then((item) {
-      if (client.authStore.model != null &&
-          client.authStore.model is RecordModel &&
-          (client.authStore.model as RecordModel).id == item.id &&
+      if (client.authStore.record != null &&
+          (client.authStore.record as RecordModel).id == item.id &&
           [
-            (client.authStore.model as RecordModel).collectionId,
-            (client.authStore.model as RecordModel).collectionName,
+            (client.authStore.record as RecordModel).collectionId,
+            (client.authStore.record as RecordModel).collectionName,
           ].contains(_collectionIdOrName)) {
         client.authStore.save(client.authStore.token, item);
       }
@@ -135,7 +136,7 @@ class RecordService extends BaseCrudService<RecordModel> {
 
   /// Deletes a single record model by its id.
   ///
-  /// If the current AuthStore.model matches with the deleted id,
+  /// If the current AuthStore.record matches with the deleted id,
   /// then on success the client AuthStore will be also cleared.
   @override
   Future<void> delete(
@@ -152,12 +153,11 @@ class RecordService extends BaseCrudService<RecordModel> {
       headers: headers,
     )
         .then((_) {
-      if (client.authStore.model != null &&
-          client.authStore.model is RecordModel &&
-          (client.authStore.model as RecordModel).id == id &&
+      if (client.authStore.record != null &&
+          (client.authStore.record as RecordModel).id == id &&
           [
-            (client.authStore.model as RecordModel).collectionId,
-            (client.authStore.model as RecordModel).collectionName,
+            (client.authStore.record as RecordModel).collectionId,
+            (client.authStore.record as RecordModel).collectionName,
           ].contains(_collectionIdOrName)) {
         client.authStore.clear();
       }
@@ -181,17 +181,21 @@ class RecordService extends BaseCrudService<RecordModel> {
 
   /// Returns all available application auth methods.
   Future<AuthMethodsList> listAuthMethods({
+    String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
+    // @todo remove after deleting the pre v0.23 API response fields
+    final enrichedQuery = Map<String, dynamic>.of(query);
+    enrichedQuery["fields"] ??= "mfa,otp,password,oauth2";
+
     return client
         .send(
           "$baseCollectionPath/auth-methods",
-          query: query,
+          query: enrichedQuery,
           headers: headers,
         )
-        .then((data) =>
-            AuthMethodsList.fromJson(data as Map<String, dynamic>? ?? {}));
+        .then((data) => AuthMethodsList.fromJson(assertAs(data, {})));
   }
 
   /// Authenticate an auth record by its username/email and password
@@ -223,7 +227,7 @@ class RecordService extends BaseCrudService<RecordModel> {
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+        .then((data) => _authResponse(assertAs(data, {})));
   }
 
   /// Authenticate an auth record with an OAuth2 client provider and returns
@@ -261,7 +265,7 @@ class RecordService extends BaseCrudService<RecordModel> {
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+        .then((data) => _authResponse(assertAs(data, {})));
   }
 
   /// Authenticate a single auth collection record with OAuth2
@@ -298,8 +302,8 @@ class RecordService extends BaseCrudService<RecordModel> {
 
     final AuthMethodProvider provider;
     try {
-      provider =
-          authMethods.authProviders.firstWhere((p) => p.name == providerName);
+      provider = authMethods.oauth2.providers
+          .firstWhere((p) => p.name == providerName);
     } catch (_) {
       throw ClientException(
         originalError: Exception("missing provider $providerName"),
@@ -399,7 +403,7 @@ class RecordService extends BaseCrudService<RecordModel> {
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => _authResponse(data as Map<String, dynamic>? ?? {}));
+        .then((data) => _authResponse(assertAs(data, {})));
   }
 
   /// Sends auth record password reset request.
@@ -494,14 +498,13 @@ class RecordService extends BaseCrudService<RecordModel> {
       final payload = jsonDecode(utf8.decode(base64Decode(payloadPart)))
           as Map<String, dynamic>;
 
-      if (client.authStore.model != null &&
-          client.authStore.model is RecordModel &&
-          !(client.authStore.model as RecordModel).getBoolValue("verified") &&
-          (client.authStore.model as RecordModel).id == payload["id"] &&
-          (client.authStore.model as RecordModel).collectionId ==
+      if (client.authStore.record != null &&
+          !(client.authStore.record as RecordModel).get<bool>("verified") &&
+          (client.authStore.record as RecordModel).id == payload["id"] &&
+          (client.authStore.record as RecordModel).collectionId ==
               payload["collectionId"]) {
-        (client.authStore.model as RecordModel).data["verified"] = true;
-        client.authStore.save(client.authStore.token, client.authStore.model);
+        (client.authStore.record as RecordModel).data["verified"] = true;
+        client.authStore.save(client.authStore.token, client.authStore.record);
       }
     });
   }
@@ -527,7 +530,7 @@ class RecordService extends BaseCrudService<RecordModel> {
 
   /// Confirms auth record new email address.
   ///
-  /// If the current AuthStore.model matches with the record from the token,
+  /// If the current AuthStore.record matches with the record from the token,
   /// then on success the client AuthStore will be also cleared.
   Future<void> confirmEmailChange(
     String emailChangeToken,
@@ -558,52 +561,113 @@ class RecordService extends BaseCrudService<RecordModel> {
       final payload = jsonDecode(utf8.decode(base64Decode(payloadPart)))
           as Map<String, dynamic>;
 
-      if (client.authStore.model != null &&
-          client.authStore.model is RecordModel &&
-          (client.authStore.model as RecordModel).id == payload["id"] &&
-          (client.authStore.model as RecordModel).collectionId ==
-              payload["collectionId"]) {
+      if (client.authStore.record != null &&
+          client.authStore.record?.id == payload["id"] &&
+          client.authStore.record?.collectionId == payload["collectionId"]) {
         client.authStore.clear();
       }
     });
   }
 
-  /// Lists all linked external auth providers for the specified record.
-  Future<List<ExternalAuthModel>> listExternalAuths(
-    String recordId, {
-    Map<String, dynamic> query = const {},
-    Map<String, String> headers = const {},
-  }) {
-    return client
-        .send(
-      "$baseCrudPath/${Uri.encodeComponent(recordId)}/external-auths",
-      query: query,
-      headers: headers,
-    )
-        .then((data) {
-      return (data as List<dynamic>)
-          .map((item) =>
-              ExternalAuthModel.fromJson(item as Map<String, dynamic>))
-          .toList()
-          .cast<ExternalAuthModel>();
-    });
-  }
-
-  /// Unlinks a single external auth provider relation from the
-  /// specified record.
-  Future<void> unlinkExternalAuth(
-    String recordId,
-    String provider, {
+  /// Sends auth record OTP request to the provided email.
+  Future<OTPResponse> requestOTP(
+    String email, {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
   }) {
-    return client.send(
-      "$baseCrudPath/${Uri.encodeComponent(recordId)}/external-auths/${Uri.encodeComponent(provider)}",
-      method: "DELETE",
-      query: query,
-      body: body,
-      headers: headers,
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["email"] ??= email;
+
+    return client
+        .send(
+          "$baseCollectionPath/request-otp",
+          method: "POST",
+          body: enrichedBody,
+          query: query,
+          headers: headers,
+        )
+        .then((data) => OTPResponse.fromJson(assertAs(data, {})));
+  }
+
+  /// Authenticate an auth record via OTP.
+  ///
+  /// On success this method automatically updates the client's AuthStore.
+  Future<RecordAuth> authWithOTP(
+    String otpId,
+    String password, {
+    String? expand,
+    String? fields,
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["otpId"] ??= otpId;
+    enrichedBody["password"] ??= password;
+
+    final enrichedQuery = Map<String, dynamic>.of(query);
+    enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
+
+    return client
+        .send(
+          "$baseCollectionPath/auth-with-otp",
+          method: "POST",
+          body: enrichedBody,
+          query: enrichedQuery,
+          headers: headers,
+        )
+        .then((data) => _authResponse(assertAs(data, {})));
+  }
+
+  /// Impersonate authenticates with the specified recordId and
+  /// returns a new client with the received auth token in a memory store.
+  ///
+  /// If `duration` is 0 the generated auth token will fallback
+  /// to the default collection auth token duration.
+  ///
+  /// This action currently requires superusers privileges.
+  Future<PocketBase> impersonate(
+    String recordId,
+    num duration, {
+    String? expand,
+    String? fields,
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) async {
+    final enrichedBody = Map<String, dynamic>.of(body);
+    enrichedBody["duration"] ??= duration;
+
+    final enrichedQuery = Map<String, dynamic>.of(query);
+    enrichedQuery["expand"] ??= expand;
+    enrichedQuery["fields"] ??= fields;
+
+    final enrichedHeaders = Map<String, String>.of(headers);
+    enrichedHeaders["Authorization"] ??= client.authStore.token;
+
+    // create a new client loaded with the impersonated auth state
+    // ---
+    final tempClient = PocketBase(
+      client.baseUrl,
+      httpClientFactory: client.httpClientFactory,
+      lang: client.lang,
     );
+
+    final authData = await tempClient
+        .send(
+          "$baseCollectionPath/impersonate/${Uri.encodeComponent(recordId)}",
+          method: "POST",
+          body: enrichedBody,
+          query: enrichedQuery,
+          headers: enrichedHeaders,
+        )
+        .then((data) => RecordAuth.fromJson(data as Map<String, dynamic>));
+
+    tempClient.authStore.save(authData.token, authData.record);
+    // ---
+
+    return tempClient;
   }
 }

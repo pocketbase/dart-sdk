@@ -20,7 +20,7 @@ class SettingsService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) => data as Map<String, dynamic>? ?? {});
+        .then((data) => assertAs(data, {}));
   }
 
   /// Bulk updates app settings.
@@ -37,7 +37,7 @@ class SettingsService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) => data as Map<String, dynamic>? ?? {});
+        .then((data) => assertAs(data, {}));
   }
 
   /// Performs a S3 storage connection test.
@@ -111,7 +111,6 @@ class SettingsService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) =>
-            AppleClientSecret.fromJson(data as Map<String, dynamic>? ?? {}));
+        .then((data) => AppleClientSecret.fromJson(assertAs(data, {})));
   }
 }

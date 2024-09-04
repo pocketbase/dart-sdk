@@ -88,7 +88,7 @@ pb.collection('example').create(
   ],
 ).then((record) {
   print(record.id);
-  print(record.getStringValue('title'));
+  print(record.get<String>('title'));
 });
 ```
 
@@ -101,12 +101,13 @@ but below is an example how to access and cast record data values:
 ```dart
 final record = await pb.collection('example').getOne('RECORD_ID');
 
-final options = record.getDataValue<List<String>>('options');
-final email   = record.getDataValue<String>('email');
-final status  = record.getDataValue<bool>('status');
-final total   = record.getDataValue<int>('total');
-final price   = record.getDataValue<double>('price');
-final nested  = record.getDataValue<String>('a.b.c', 'missing');
+final options  = record.get<List<String>>('options');
+final email    = record.get<String>('email');
+final status   = record.get<bool>('status');
+final total    = record.get<int>('total');
+final price    = record.get<double>('price');
+final nested1  = record.get<RecordModel>('expand.user', null);
+final nested2  = record.get<String>('expand.user.title', 'N/A');
 ```
 
 Alternatively, you can also create your own typed DTO data classes and use for example the `record.toJson()` to populate your object, eg:
@@ -178,19 +179,19 @@ ClientException {
 
 #### AuthStore
 
-The SDK keeps track of the authenticated token and auth model for you via the `pb.authStore` service.
+The SDK keeps track of the authenticated token and auth record for you via the `pb.authStore` service.
 The default `AuthStore` class has the following public members that you could use:
 
 ```dart
 AuthStore {
-    token:    String                      // Getter for the stored auth token
-    model:    RecordModel|AdminModel|null // Getter for the stored auth RecordModel or AdminModel
-    isValid   bool                        // Getter to loosely check if the store has an existing and unexpired token
-    onChange  Stream                      // Stream that gets triggered on each auth store change
+    token:    String           // Getter for the stored auth token
+    record:   RecordModel|null // Getter for the stored auth RecordModel or AdminModel
+    isValid   bool             // Getter to loosely check if the store has an existing and unexpired token
+    onChange  Stream           // Stream that gets triggered on each auth store change
 
     // methods
-    save(token, model)             // update the store with the new auth data
-    clear()                        // clears the current auth store state
+    save(token, record)        // update the store with the new auth data
+    clear()                    // clears the current auth store state
 }
 ```
 
@@ -200,7 +201,7 @@ To _"listen"_ for changes in the auth store, you can _listen_ to the `onChange` 
 ```dart
 pb.authStore.onChange.listen((e) {
   print(e.token);
-  print(e.model);
+  print(e.record);
 });
 ```
 
@@ -296,6 +297,9 @@ The supported placeholder parameter values are:
 // Returns all available application auth methods.
 🔓 pb.collection(collectionIdOrName).listAuthMethods({query, headers});
 
+// Refreshes the current authenticated record model and auth token.
+🔐 pb.collection(collectionIdOrName).authRefresh({expand?, fields?, query, body, headers});
+
 // Authenticates a record with their username/email and password.
 🔓 pb.collection(collectionIdOrName).authWithPassword(usernameOrEmail, password, {expand?, fields?, query, body, headers});
 
@@ -305,8 +309,11 @@ The supported placeholder parameter values are:
 // Authenticates a record with OAuth2 code.
 🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectUrl, {createData?, expand?, fields?, query, body, headers});
 
-// Refreshes the current authenticated record model and auth token.
-🔐 pb.collection(collectionIdOrName).authRefresh({expand?, fields?, query, body, headers});
+// Sends auth record OTP request to the provided email.
+🔓 pb.collection(collectionIdOrName).requestOTP(email, {query, body, headers});
+
+// Authenticates a record with OTP (email code).
+🔓 pb.collection(collectionIdOrName).authWithOTP(otpId, password, {expand?, fields?, query, body, headers});
 
 // Sends a user password reset email.
 🔓 pb.collection(collectionIdOrName).requestPasswordReset(email, {query, body, headers});
@@ -325,12 +332,6 @@ The supported placeholder parameter values are:
 
 // Confirms record new email address.
 🔓 pb.collection(collectionIdOrName).confirmEmailChange(emailChangeToken, userPassword, {expand?, fields?, query, body, headers});
-
-// Lists all linked external auth providers for the specified record.
-🔐 pb.collection(collectionIdOrName).listExternalAuths(recordId, {query, headers});
-
-// Unlinks a single external auth provider relation from the specified record.
-🔐 pb.collection(collectionIdOrName).unlinkExternalAuth(recordId, provider, {query, body headers});
 ```
 
 ---
@@ -343,45 +344,6 @@ The supported placeholder parameter values are:
 
 // Requests a new private file access token for the current auth model (admin or record).
 🔐 pb.files.getToken({query, body, headers});
-```
-
----
-
-#### AdminService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/AdminService-class.html), [API docs](https://pocketbase.io/docs/api-admins))
-
-```dart
-// Authenticates an admin account by its email and password.
-🔓 pb.admins.authWithPassword(email, password, {query, body, headers});
-
-// Refreshes the current admin authenticated model and token.
-🔐 pb.admins.authRefresh({query, body, headers});
-
-// Sends an admin password reset email.
-🔓 pb.admins.requestPasswordReset(email, {query, body, headers});
-
-// Confirms an admin password reset request.
-🔓 pb.admins.confirmPasswordReset(resetToken, newPassword, newPasswordConfirm, {query, body, headers});
-
-// Returns a paginated admins list.
-🔐 pb.admins.getList({page = 1, perPage = 30, filter?, sort?, query, headers});
-
-// Returns a list with all admins batch fetched at once.
-🔐 pb.admins.getFullList({batch = 100, filter?, sort?, query, headers});
-
-// Returns the first found admin matching the specified filter.
-🔐 pb.admins.getFirstListItem(filter, {query, headers});
-
-// Returns a single admin by their id.
-🔐 pb.admins.getOne(id, {query, headers});
-
-// Creates a new admin.
-🔐 pb.admins.create({body, files, query, headers});
-
-// Updates an existing admin by their id.
-🔐 pb.admins.update(id, {body, files, query, headers});
-
-// Deletes a single admin by their id.
-🔐 pb.admins.delete(id, {query, body, headers});
 ```
 
 ---
@@ -412,6 +374,10 @@ The supported placeholder parameter values are:
 
 // Imports the provided collections.
 🔐 pb.collections.import(collections, {deleteMissing=false, query, body, headers});
+
+
+// Returns type indexed map with scaffolded collection models populated with their default field values.
+🔐 pb.collections.getScaffolds({query, body, headers});
 ```
 
 ---
@@ -524,6 +490,8 @@ void main() {
   final pb = PocketBase(
     'http://127.0.0.1:8090',
     // load the fetch_client only for web, otherwise - fallback to the default http.Client()
+    //
+    // (note: if you want to be able to complite both for web and mobile you may have to import the FetchClient conditionally)
     httpClientFactory: kIsWeb ? () => FetchClient(mode: RequestMode.cors) : null,
   );
 

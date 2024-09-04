@@ -10,7 +10,7 @@ LogModel _$LogModelFromJson(Map<String, dynamic> json) => LogModel(
       id: json['id'] as String? ?? "",
       created: json['created'] as String? ?? "",
       updated: json['updated'] as String? ?? "",
-      level: json['level'] as int? ?? 0,
+      level: (json['level'] as num?)?.toInt() ?? 0,
       message: json['message'] as String? ?? "",
       data: json['data'] as Map<String, dynamic>? ?? const {},
     );

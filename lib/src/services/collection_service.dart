@@ -1,6 +1,7 @@
 import "../client.dart";
 import "../dtos/collection_model.dart";
 import "base_crud_service.dart";
+import "base_service.dart";
 
 /// The service that handles the **Collection APIs**.
 ///
@@ -39,5 +40,30 @@ class CollectionService extends BaseCrudService<CollectionModel> {
       query: query,
       headers: headers,
     );
+  }
+
+  /// Returns type indexed map with scaffolded collection models
+  /// populated with their default field values.
+  Future<Map<String, CollectionModel>> getScaffolds({
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client
+        .send(
+      "$baseCrudPath/meta/scaffolds",
+      body: body,
+      query: query,
+      headers: headers,
+    )
+        .then((data) {
+      final result = <String, CollectionModel>{};
+
+      assertAs<Map<String, dynamic>>(data, {}).forEach((key, value) {
+        result[key] = CollectionModel.fromJson(assertAs(value, {}));
+      });
+
+      return result;
+    });
   }
 }

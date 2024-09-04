@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
@@ -5,40 +7,49 @@ import "package:json_annotation/json_annotation.dart";
 import "../caster.dart" as caster;
 import "jsonable.dart";
 
-part "record_model.g.dart";
+part "record_model.g.dart"; // not actually used
 
 /// Response DTO of a single record model.
-@JsonSerializable(explicitToJson: true)
+@JsonSerializable()
 class RecordModel implements Jsonable {
-  String id;
-  String created;
-  String updated;
-  String collectionId;
-  String collectionName;
+  String get id => get<String>("id", "");
+  set id(String val) => data["id"] = val;
 
-  @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
-  Map<String, List<RecordModel>> expand;
+  String get collectionId => get<String>("collectionId");
 
-  @JsonKey(includeToJson: false, includeFromJson: false) // manually serialized
+  String get collectionName => get<String>("collectionName");
+
+  @Deprecated(
+    "created is no longer mandatory field; use get<String>('created')",
+  )
+  String get created => get<String>("created");
+
+  @Deprecated(
+    "updated is no longer mandatory field; use get<String>('updated')",
+  )
+  String get updated => get<String>("updated");
+
   Map<String, dynamic> data;
+
+  @Deprecated("""
+This field is superseded by the more generic get<T>(keyPath) method.
+You can access the expanded record models and fields using dot-notation similar to the regular record fields:
+record.get<String>("expand.user.email");
+record.get<RecordModel>("expand.user");
+record.get<List<RecordModel>>("expand.products");
+  """)
+  Map<String, List<RecordModel>> expand = {};
 
   final List<String> _singleExpandKeys = [];
   final List<String> _multiExpandKeys = [];
 
-  RecordModel({
-    this.id = "",
-    this.created = "",
-    this.updated = "",
-    this.collectionId = "",
-    this.collectionName = "",
-    Map<String, List<RecordModel>>? expand,
-    Map<String, dynamic>? data,
-  })  : expand = expand ?? {},
-        data = data ?? {};
+  RecordModel([Map<String, dynamic>? data]) : data = data ?? {};
 
   static RecordModel fromJson(Map<String, dynamic> json) {
-    final model = _$RecordModelFromJson(json)..expand = {};
+    final model = RecordModel(json);
 
+    // @todo remove with the expand field removal
+    //
     // resolve and normalize the expand item(s) recursively
     (json["expand"] as Map<String, dynamic>? ?? {}).forEach((key, value) {
       final result = <RecordModel>[];
@@ -58,26 +69,16 @@ class RecordModel implements Jsonable {
       model.expand[key] = result;
     });
 
-    // attach the dynamic json fields to the model"s `data`
-    // ---
-    final baseFields = <String>[
-      "id",
-      "created",
-      "updated",
-      "collectionId",
-      "collectionName",
-      "expand",
-    ];
-
-    final rest = Map<String, dynamic>.from(json)
-      ..removeWhere((key, value) => baseFields.contains(key));
-
-    model.data = rest;
-
     return model;
   }
 
-  /// Extracts a single value from [data] by a dot-notation path
+  @override
+  Map<String, dynamic> toJson() => Map<String, dynamic>.from(data);
+
+  @override
+  String toString() => jsonEncode(data);
+
+  /// Extracts a single model value by a dot-notation path
   /// and tries to cast it to the specified generic type.
   ///
   /// If explicitly set, returns [defaultValue] on missing path.
@@ -89,60 +90,42 @@ class RecordModel implements Jsonable {
   ///
   /// ```dart
   /// final data = {"a": {"b": [{"b1": 1}, {"b2": 2}, {"b3": 3}]}};
-  /// final record = RecordModel(data: data);
-  /// final result0 = record.getDataValue<int>("a.b.c", "missing"); // "missing"
-  /// final result1 = record.getDataValue<int>("a.b.2.b3"); // 3
-  /// final result2 = record.getDataValue<String>("a.b.2.b3"); // "3"
+  /// final record = RecordModel(data);
+  /// final result0 = record.get<int>("a.b.c", 999); // 999
+  /// final result1 = record.get<int>("a.b.2.b3"); // 3
+  /// final result2 = record.get<String>("a.b.2.b3"); // "3"
   /// ```
+  T get<T>(String fieldNameOrPath, [T? defaultValue]) {
+    return caster.extract<T>(data, fieldNameOrPath, defaultValue);
+  }
+
+  @Deprecated("use get<T>(...)")
   T getDataValue<T>(String fieldNameOrPath, [T? defaultValue]) {
     return caster.extract<T>(data, fieldNameOrPath, defaultValue);
   }
 
-  /// An alias for [getDataValue<String>()].
+  /// An alias for [get<String>()].
   String getStringValue(String fieldNameOrPath, [String? defaultValue]) {
-    return getDataValue<String>(fieldNameOrPath, defaultValue);
+    return get<String>(fieldNameOrPath, defaultValue);
   }
 
-  /// An alias for [getDataValue<List<T>>()].
+  /// An alias for [get<List<T>>()].
   List<T> getListValue<T>(String fieldNameOrPath, [List<T>? defaultValue]) {
-    return getDataValue<List<T>>(fieldNameOrPath, defaultValue);
+    return get<List<T>>(fieldNameOrPath, defaultValue);
   }
 
-  /// An alias for [getDataValue<bool>()].
+  /// An alias for [get<bool>()].
   bool getBoolValue(String fieldNameOrPath, [bool? defaultValue]) {
-    return getDataValue<bool>(fieldNameOrPath, defaultValue);
+    return get<bool>(fieldNameOrPath, defaultValue);
   }
 
-  /// An alias for [getDataValue<int>()].
+  /// An alias for [get<int>()].
   int getIntValue(String fieldNameOrPath, [int? defaultValue]) {
-    return getDataValue<int>(fieldNameOrPath, defaultValue);
+    return get<int>(fieldNameOrPath, defaultValue);
   }
 
-  /// An alias for [getDataValue<double>()].
+  /// An alias for [get<double>()].
   double getDoubleValue(String fieldNameOrPath, [double? defaultValue]) {
-    return getDataValue<double>(fieldNameOrPath, defaultValue);
+    return get<double>(fieldNameOrPath, defaultValue);
   }
-
-  @override
-  Map<String, dynamic> toJson() {
-    final json = _$RecordModelToJson(this);
-
-    // revert the expand format to the original
-    json["expand"] = expand.map((k, v) {
-      if (_singleExpandKeys.contains(k)) {
-        return MapEntry(k, v.isEmpty ? null : v.first.toJson());
-      }
-      return MapEntry(k, v.map((e) => e.toJson()).toList());
-    });
-
-    // flatten the data map
-    data.forEach((key, value) {
-      json[key] = value;
-    });
-
-    return json;
-  }
-
-  @override
-  String toString() => jsonEncode(toJson());
 }

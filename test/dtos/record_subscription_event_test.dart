@@ -13,7 +13,7 @@ void main() {
           "collectionId": "test_collectionId",
           "collectionName": "test_collectionName",
           "expand": {
-            "test": RecordModel(id: "123").toJson(),
+            "test": RecordModel({"id": "123"}).toJson(),
           },
           "a": 1,
         },

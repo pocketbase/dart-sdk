@@ -34,7 +34,7 @@ class LogService extends BaseService {
           headers: headers,
         )
         .then((data) => ResultList<LogModel>.fromJson(
-              data as Map<String, dynamic>? ?? {},
+              assertAs(data, {}),
               LogModel.fromJson,
             ));
   }
@@ -63,7 +63,7 @@ class LogService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) => LogModel.fromJson(data as Map<String, dynamic>? ?? {}));
+        .then((data) => LogModel.fromJson(assertAs(data, {})));
   }
 
   /// Returns request logs statistics.
@@ -77,10 +77,8 @@ class LogService extends BaseService {
           query: query,
           headers: headers,
         )
-        .then((data) =>
-            (data as List<dynamic>?)
-                ?.map((item) => LogStat.fromJson(item as Map<String, dynamic>))
-                .toList() ??
-            []);
+        .then((data) => assertAs<List<dynamic>>(data, [])
+            .map((item) => LogStat.fromJson(assertAs(item, {})))
+            .toList());
   }
 }

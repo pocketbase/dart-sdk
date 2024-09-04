@@ -7,7 +7,7 @@ part of 'health_check.dart';
 // **************************************************************************
 
 HealthCheck _$HealthCheckFromJson(Map<String, dynamic> json) => HealthCheck(
-      code: json['code'] as int? ?? 0,
+      code: (json['code'] as num?)?.toInt() ?? 0,
       message: json['message'] as String? ?? "",
       data: json['data'] as Map<String, dynamic>? ?? const {},
     );

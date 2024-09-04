@@ -27,7 +27,60 @@ CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      options: json['options'] as Map<String, dynamic>? ?? const {},
+      viewQuery: json['viewQuery'] as String?,
+      authRule: json['authRule'] as String?,
+      manageRule: json['manageRule'] as String?,
+      oauth2: json['oauth2'] == null
+          ? null
+          : OAuth2Config.fromJson(json['oauth2'] as Map<String, dynamic>),
+      passwordAuth: json['passwordAuth'] == null
+          ? null
+          : PasswordAuthConfig.fromJson(
+              json['passwordAuth'] as Map<String, dynamic>),
+      mfa: json['mfa'] == null
+          ? null
+          : MFAConfig.fromJson(json['mfa'] as Map<String, dynamic>),
+      otp: json['otp'] == null
+          ? null
+          : OTPConfig.fromJson(json['otp'] as Map<String, dynamic>),
+      authToken: json['authToken'] == null
+          ? null
+          : TokenConfig.fromJson(json['authToken'] as Map<String, dynamic>),
+      passwordResetToken: json['passwordResetToken'] == null
+          ? null
+          : TokenConfig.fromJson(
+              json['passwordResetToken'] as Map<String, dynamic>),
+      emailChangeToken: json['emailChangeToken'] == null
+          ? null
+          : TokenConfig.fromJson(
+              json['emailChangeToken'] as Map<String, dynamic>),
+      verificationToken: json['verificationToken'] == null
+          ? null
+          : TokenConfig.fromJson(
+              json['verificationToken'] as Map<String, dynamic>),
+      fileToken: json['fileToken'] == null
+          ? null
+          : TokenConfig.fromJson(json['fileToken'] as Map<String, dynamic>),
+      verificationTemplate: json['verificationTemplate'] == null
+          ? null
+          : EmailTemplateConfig.fromJson(
+              json['verificationTemplate'] as Map<String, dynamic>),
+      resetPasswordTemplate: json['resetPasswordTemplate'] == null
+          ? null
+          : EmailTemplateConfig.fromJson(
+              json['resetPasswordTemplate'] as Map<String, dynamic>),
+      confirmEmailChangeTemplate: json['confirmEmailChangeTemplate'] == null
+          ? null
+          : EmailTemplateConfig.fromJson(
+              json['confirmEmailChangeTemplate'] as Map<String, dynamic>),
+      otpTemplate: json['otpTemplate'] == null
+          ? null
+          : EmailTemplateConfig.fromJson(
+              json['otpTemplate'] as Map<String, dynamic>),
+      loginAlertTemplate: json['loginAlertTemplate'] == null
+          ? null
+          : EmailTemplateConfig.fromJson(
+              json['loginAlertTemplate'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
@@ -45,5 +98,22 @@ Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
       'deleteRule': instance.deleteRule,
       'schema': instance.schema.map((e) => e.toJson()).toList(),
       'indexes': instance.indexes,
-      'options': instance.options,
+      'viewQuery': instance.viewQuery,
+      'authRule': instance.authRule,
+      'manageRule': instance.manageRule,
+      'oauth2': instance.oauth2?.toJson(),
+      'passwordAuth': instance.passwordAuth?.toJson(),
+      'mfa': instance.mfa?.toJson(),
+      'otp': instance.otp?.toJson(),
+      'authToken': instance.authToken?.toJson(),
+      'passwordResetToken': instance.passwordResetToken?.toJson(),
+      'emailChangeToken': instance.emailChangeToken?.toJson(),
+      'verificationToken': instance.verificationToken?.toJson(),
+      'fileToken': instance.fileToken?.toJson(),
+      'verificationTemplate': instance.verificationTemplate?.toJson(),
+      'resetPasswordTemplate': instance.resetPasswordTemplate?.toJson(),
+      'confirmEmailChangeTemplate':
+          instance.confirmEmailChangeTemplate?.toJson(),
+      'otpTemplate': instance.otpTemplate?.toJson(),
+      'loginAlertTemplate': instance.loginAlertTemplate?.toJson(),
     };

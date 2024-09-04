@@ -12,6 +12,7 @@ void main() {
         "codeChallenge": "test_codeChallenge",
         "codeChallengeMethod": "test_codeChallengeMethod",
         "authUrl": "test_authUrl",
+        "pkce": null,
       };
 
       final model = AuthMethodProvider.fromJson(json);

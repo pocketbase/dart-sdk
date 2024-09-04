@@ -26,14 +26,13 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test456", data: {"test": "a"}, collectionId: "test"),
+        RecordModel({"id": "test456", "test": "a", "collectionId": "test"}),
       );
 
       await client.collection("test").update("test123");
 
-      expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "a");
+      expect(client.authStore.record, isNotNull);
+      expect(client.authStore.record?.data["test"], "a");
     });
 
     test("update() with matching AuthStore model id but mismatched collection",
@@ -49,14 +48,13 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test123", data: {"test": "a"}, collectionId: "test2"),
+        RecordModel({"id": "test123", "test": "a", "collectionId": "test2"}),
       );
 
       await client.collection("test").update("test123");
 
-      expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "a");
+      expect(client.authStore.record, isNotNull);
+      expect(client.authStore.record?.data["test"], "a");
     });
 
     test("update() with matching AuthStore model id and collection", () async {
@@ -71,14 +69,13 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test123", collectionId: "test"),
+        RecordModel({"id": "test123", "collectionId": "test"}),
       );
 
       await client.collection("test").update("test123");
 
-      expect(client.authStore.model, isNotNull);
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.data["test"], "b");
+      expect(client.authStore.record, isNotNull);
+      expect(client.authStore.record?.data["test"], "b");
     });
 
     test("delete() with matching AuthStore model id and collection", () async {
@@ -90,12 +87,12 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test123", collectionName: "test"),
+        RecordModel({"id": "test123", "collectionName": "test"}),
       );
 
       await client.collection("test").delete("test123");
 
-      expect(client.authStore.model, isNull);
+      expect(client.authStore.record, isNull);
     });
 
     test("delete() with mismatched AuthStore model id", () async {
@@ -107,12 +104,12 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test456", collectionName: "test"),
+        RecordModel({"id": "test456", "collectionName": "test"}),
       );
 
       await client.collection("test").delete("test123");
 
-      expect(client.authStore.model, isNotNull);
+      expect(client.authStore.record, isNotNull);
     });
 
     test("delete() with matching AuthStore model id but mismatched collection",
@@ -125,34 +122,46 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel(id: "test123", collectionName: "test2"),
+        RecordModel({"id": "test123", "collectionName": "test2"}),
       );
 
       await client.collection("test").delete("test123");
 
-      expect(client.authStore.model, isNotNull);
+      expect(client.authStore.record, isNotNull);
     });
 
     test("listAuthMethods()", () async {
+      final jsonResponse = {
+        "mfa": {
+          "duration": 10,
+          "enabled": false,
+        },
+        "otp": {
+          "duration": 20,
+          "enabled": true,
+        },
+        "password": {
+          "enabled": true,
+          "identityFields": ["a", "b"],
+        },
+        "oauth2": {
+          "enabled": true,
+          "providers": [
+            AuthMethodProvider(name: "test1").toJson(),
+            AuthMethodProvider(name: "test2").toJson(),
+          ],
+        },
+      };
+
       final mock = MockClient((request) async {
         expect(request.method, "GET");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/auth-methods?a=1&a=2&b=%40demo",
+          "/base/api/collections/test/auth-methods?a=1&a=2&b=%40demo&fields=mfa%2Cotp%2Cpassword%2Coauth2",
         );
         expect(request.headers["test"], "789");
 
-        return http.Response(
-          jsonEncode({
-            "usernamePassword": true,
-            "emailPassword": true,
-            "authProviders": [
-              {"name": "p1"},
-              {"name": "p2"},
-            ],
-          }),
-          200,
-        );
+        return http.Response(jsonEncode(jsonResponse), 200);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
@@ -167,11 +176,7 @@ void main() {
         },
       );
 
-      expect(result.usernamePassword, true);
-      expect(result.emailPassword, true);
-      expect(result.authProviders.length, 2);
-      expect(result.authProviders[0].name, "p1");
-      expect(result.authProviders[1].name, "p2");
+      expect(result.toJson(), jsonResponse);
     });
 
     test("authWithPassword()", () async {
@@ -222,11 +227,9 @@ void main() {
       );
 
       expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
+      expect(result.record.id, "test_id");
       expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect(client.authStore.record?.id, "test_id");
     });
 
     test("authWithOAuth2Code()", () async {
@@ -285,12 +288,10 @@ void main() {
       );
 
       expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
+      expect(result.record.id, "test_id");
       expect(result.meta, equals({"a": 123}));
       expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect(client.authStore.record?.id, "test_id");
     });
 
     test("authRefresh()", () async {
@@ -330,11 +331,9 @@ void main() {
       );
 
       expect(result.token, "test_token");
-      expect(result.record?.id, "test_id");
+      expect(result.record.id, "test_id");
       expect(client.authStore.token, "test_token");
-      expect(client.authStore.model, isA<RecordModel>());
-      // ignore: avoid_dynamic_calls
-      expect(client.authStore.model.id, "test_id");
+      expect(client.authStore.record?.id, "test_id");
     });
 
     test("requestPasswordReset()", () async {
@@ -476,7 +475,7 @@ void main() {
 
       client.authStore.save(
         "auth_token",
-        RecordModel(id: "123", collectionId: "456"),
+        RecordModel({"id": "123", "collectionId": "456"}),
       );
 
       await client.collection("test").confirmVerification(
@@ -493,7 +492,7 @@ void main() {
         },
       );
 
-      expect((client.authStore.model as RecordModel).data["verified"], true);
+      expect((client.authStore.record as RecordModel).data["verified"], true);
     });
 
     test("confirmVerification() with mismatched AuthStore model id", () async {
@@ -523,7 +522,7 @@ void main() {
 
       client.authStore.save(
         "auth_token",
-        RecordModel(id: "123", collectionId: "789"),
+        RecordModel({"id": "123", "collectionId": "789"}),
       );
 
       await client.collection("test").confirmVerification(
@@ -539,7 +538,7 @@ void main() {
           "test": "789",
         },
       );
-      expect((client.authStore.model as RecordModel).data["verified"], null);
+      expect((client.authStore.record as RecordModel).data["verified"], null);
     });
 
     test("requestEmailChange()", () async {
@@ -606,7 +605,7 @@ void main() {
 
       client.authStore.save(
         "auth_token",
-        RecordModel(id: "123", collectionId: "456"),
+        RecordModel({"id": "123", "collectionId": "456"}),
       );
 
       await client.collection("test").confirmEmailChange(
@@ -653,7 +652,7 @@ void main() {
 
       client.authStore.save(
         "auth_token",
-        RecordModel(id: "123", collectionId: "789"),
+        RecordModel({"id": "123", "collectionId": "789"}),
       );
 
       await client
@@ -663,65 +662,29 @@ void main() {
       expect(client.authStore.token, "auth_token");
     });
 
-    test("listExternalAuths()", () async {
+    test("requestOTP()", () async {
       final mock = MockClient((request) async {
-        expect(request.method, "GET");
+        expect(request.method, "POST");
         expect(
           request.url.toString(),
-          "/base/api/collections/test/records/%40test_userId/external-auths?a=1&a=2&b=%40demo",
-        );
-        expect(request.headers["test"], "789");
-
-        return http.Response(
-          jsonEncode([
-            {"id": "1", "provider": "google"},
-            {"id": "2", "provider": "github"},
-          ]),
-          200,
-        );
-      });
-
-      final client = PocketBase("/base", httpClientFactory: () => mock);
-
-      final result = await client.collection("test").listExternalAuths(
-        "@test_userId",
-        query: {
-          "a": ["1", null, 2],
-          "b": "@demo",
-        },
-        headers: {
-          "test": "789",
-        },
-      );
-
-      expect(result.length, 2);
-      expect(result[0].provider, "google");
-      expect(result[1].provider, "github");
-    });
-
-    test("unlinkExternalAuth()", () async {
-      final mock = MockClient((request) async {
-        expect(request.method, "DELETE");
-        expect(
-          request.url.toString(),
-          "/base/api/collections/test/records/%40test_userId/external-auths/%40test_provider?a=1&a=2&b=%40demo",
+          "/base/api/collections/test/request-otp?a=1&a=2&b=%40demo",
         );
         expect(
           request.body,
           jsonEncode({
             "test_body": 123,
+            "email": "test_email",
           }),
         );
         expect(request.headers["test"], "789");
 
-        return http.Response("", 204);
+        return http.Response(jsonEncode({"otpId": "test_id"}), 200);
       });
 
       final client = PocketBase("/base", httpClientFactory: () => mock);
 
-      await client.collection("test").unlinkExternalAuth(
-        "@test_userId",
-        "@test_provider",
+      final result = await client.collection("test").requestOTP(
+        "test_email",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
@@ -733,6 +696,113 @@ void main() {
           "test": "789",
         },
       );
+
+      expect(result.otpId, "test_id");
+    });
+
+    test("authWithOTP()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+          request.url.toString(),
+          "/base/api/collections/test/auth-with-otp?a=1&a=2&b=%40demo&expand=rel&fields=a",
+        );
+        expect(
+          request.body,
+          jsonEncode({
+            "test_body": 123,
+            "otpId": "test_id",
+            "password": "test_password",
+          }),
+        );
+        expect(request.headers["test"], "789");
+        expect(request.headers["Authorization"], "test");
+
+        return http.Response(
+          jsonEncode({
+            "token": "test_token",
+            "record": {"id": "test_id"},
+          }),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      final result = await client.collection("test").authWithOTP(
+        "test_id",
+        "test_password",
+        expand: "rel",
+        fields: "a",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+          "Authorization": "test",
+        },
+      );
+
+      expect(result.token, "test_token");
+      expect(result.record.id, "test_id");
+      expect(client.authStore.token, "test_token");
+      expect(client.authStore.record?.id, "test_id");
+    });
+
+    test("impersonate()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "POST");
+        expect(
+          request.url.toString(),
+          "/base/api/collections/test/impersonate/%40test_record?a=1&a=2&b=%40demo&expand=rel&fields=a",
+        );
+        expect(
+          request.body,
+          jsonEncode({
+            "test_body": 123,
+            "duration": 456,
+          }),
+        );
+        expect(request.headers["test"], "789");
+        expect(request.headers["Authorization"], "test_token1");
+
+        return http.Response(
+          jsonEncode({
+            "token": "test_token2",
+            "record": {"id": "test_id"},
+          }),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      client.authStore.save("test_token1", null);
+
+      final result = await client.collection("test").impersonate(
+        "@test_record",
+        456,
+        expand: "rel",
+        fields: "a",
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+
+      expect(client.authStore.token, "test_token1");
+      expect(result.authStore.token, "test_token2");
+      expect(result.authStore.record?.id, "test_id");
     });
   });
 }

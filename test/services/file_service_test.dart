@@ -10,7 +10,7 @@ void main() {
     test("blank uri on missing filename", () {
       final client = PocketBase("/base/");
       final result = client.files.getUrl(
-        RecordModel(id: "@r123", collectionId: "@c123"),
+        RecordModel({"id": "@r123", "collectionId": "@c123"}),
         "",
         query: {
           "demo": [1, null, "@test"],
@@ -23,7 +23,7 @@ void main() {
     test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");
       final result = client.files.getUrl(
-        RecordModel(id: "@r123", collectionId: "@c123"),
+        RecordModel({"id": "@r123", "collectionId": "@c123"}),
         "@f123.png",
         query: {
           "demo": [1, null, "@test"],

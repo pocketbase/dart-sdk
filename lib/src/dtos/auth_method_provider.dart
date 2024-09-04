@@ -16,6 +16,7 @@ class AuthMethodProvider implements Jsonable {
   String codeChallenge;
   String codeChallengeMethod;
   String authUrl;
+  bool? pkce;
 
   AuthMethodProvider({
     this.name = "",
@@ -25,6 +26,7 @@ class AuthMethodProvider implements Jsonable {
     this.codeChallenge = "",
     this.codeChallengeMethod = "",
     this.authUrl = "",
+    this.pkce,
   });
 
   static AuthMethodProvider fromJson(Map<String, dynamic> json) =>

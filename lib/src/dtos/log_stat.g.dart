@@ -7,7 +7,7 @@ part of 'log_stat.dart';
 // **************************************************************************
 
 LogStat _$LogStatFromJson(Map<String, dynamic> json) => LogStat(
-      total: json['total'] as int? ?? 0,
+      total: (json['total'] as num?)?.toInt() ?? 0,
       date: json['date'] as String? ?? "",
     );
 

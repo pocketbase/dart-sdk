@@ -4,27 +4,17 @@ import "package:pocketbase/pocketbase.dart";
 import "package:test/test.dart";
 
 void main() {
-  group("AuthStore.token", () {
-    test("can be read", () {
+  group("AuthStore.token and AuthStore.model", () {
+    test("read getters", () {
       final store = AuthStore();
 
       expect(store.token, isEmpty);
+      expect(store.record, isNull);
 
-      store.save("test_token", null);
+      store.save("test_token", RecordModel({"id": "test"}));
 
       expect(store.token, "test_token");
-    });
-  });
-
-  group("AuthStore.model", () {
-    test("can be read", () {
-      final store = AuthStore();
-
-      expect(store.model, isNull);
-
-      store.save("test_token", 123);
-
-      expect(store.model, 123);
+      expect(store.record?.id, "test");
     });
   });
 
@@ -62,36 +52,37 @@ void main() {
     test("saves new token and model", () async {
       final store = AuthStore();
       const testToken = "test_token";
-      const testModel = 123;
+      final testModel = RecordModel({"id": "test"});
 
       store.onChange.listen(expectAsync1((e) {
         expect(e.token, testToken);
-        expect(e.model, testModel);
+        expect(e.record, testModel);
       }));
 
       store.save(testToken, testModel);
 
       expect(store.token, testToken);
-      expect(store.model, testModel);
+      expect(store.record, testModel);
     });
   });
 
   group("AuthStore.clear()", () {
     test("clears the stored token and model", () async {
-      final store = AuthStore()..save("test_token", 123);
+      final store = AuthStore()
+        ..save("test_token", RecordModel({"id": "test"}));
 
       expect(store.token, "test_token");
-      expect(store.model, 123);
+      expect(store.record?.id, "test");
 
       store.onChange.listen(expectAsync1((e) {
         expect(e.token, isEmpty);
-        expect(e.model, isNull);
+        expect(e.record, isNull);
       }));
 
       store.clear();
 
       expect(store.token, isEmpty);
-      expect(store.model, isNull);
+      expect(store.record, isNull);
     });
   });
 }

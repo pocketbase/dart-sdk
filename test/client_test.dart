@@ -19,7 +19,6 @@ void main() {
       expect(client.authStore, isA<AuthStore>());
 
       // services
-      expect(client.admins, isA<AdminService>());
       expect(client.collections, isA<CollectionService>());
       expect(client.realtime, isA<RealtimeService>());
       expect(client.settings, isA<SettingsService>());
@@ -107,7 +106,7 @@ void main() {
     test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");
       final result = client.getFileUrl(
-        RecordModel(id: "@r123", collectionId: "@c123"),
+        RecordModel({"id": "@r123", "collectionId": "@c123"}),
         "@f123.png",
         query: {
           "demo": [1, null, "@test"],
@@ -353,40 +352,6 @@ void main() {
       await client.send("");
     });
 
-    test("with valid admin authStore model", () async {
-      final mock = MockClient((request) async {
-        expect(
-          request.headers["Authorization"],
-          contains("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."),
-        );
-        return http.Response("", 200);
-      });
-
-      final client = PocketBase("/base", httpClientFactory: () => mock);
-      client.authStore.save(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4OTM0NTI0NjF9.yVr-4JxMz6qUf1MIlGx8iW2ktUrQaFecjY_TMm7Bo4o",
-        AdminModel(),
-      );
-
-      await client.send("");
-    });
-
-    test("with invalid admin authStore", () async {
-      final mock = MockClient((request) async {
-        expect(request.headers["Authorization"], isNull);
-        return http.Response("", 200);
-      });
-
-      final client = PocketBase("/base", httpClientFactory: () => mock);
-      client.authStore.save(
-        // expired
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDA5OTE2NjF9.TxZjXz_Ks665Hju0FkZSGqHFCYBbgBmMGOLnIzkg9Dg",
-        AdminModel(),
-      );
-
-      await client.send("");
-    });
-
     test("with custom Authorization header", () async {
       final mock = MockClient((request) async {
         expect(request.headers["Authorization"], "test_custom");
@@ -396,7 +361,7 @@ void main() {
       final client = PocketBase("/base", httpClientFactory: () => mock);
       client.authStore.save(
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4OTM0NTI0NjF9.yVr-4JxMz6qUf1MIlGx8iW2ktUrQaFecjY_TMm7Bo4o",
-        AdminModel(),
+        RecordModel(),
       );
 
       await client.send("", headers: {"Authorization": "test_custom"});

@@ -5,20 +5,25 @@ void main() {
   group("AuthMethodsList", () {
     test("fromJson() and toJson()", () {
       final json = {
-        "usernamePassword": true,
-        "emailPassword": true,
-        "onlyVerified": true,
-        "authProviders": [
-          {
-            "name": "test_name",
-            "displayName": "test_displayName",
-            "state": "test_state",
-            "codeVerifier": "test_codeVerifier",
-            "codeChallenge": "test_codeChallenge",
-            "codeChallengeMethod": "test_codeChallengeMethod",
-            "authUrl": "test_authUrl",
-          },
-        ],
+        "mfa": {
+          "duration": 10,
+          "enabled": false,
+        },
+        "otp": {
+          "duration": 20,
+          "enabled": true,
+        },
+        "password": {
+          "enabled": true,
+          "identityFields": ["a", "b"],
+        },
+        "oauth2": {
+          "enabled": true,
+          "providers": [
+            AuthMethodProvider(name: "test1").toJson(),
+            AuthMethodProvider(name: "test2").toJson(),
+          ],
+        },
       };
 
       final model = AuthMethodsList.fromJson(json);

@@ -9,7 +9,7 @@ part of 'backup_file_info.dart';
 BackupFileInfo _$BackupFileInfoFromJson(Map<String, dynamic> json) =>
     BackupFileInfo(
       key: json['key'] as String? ?? "",
-      size: json['size'] as int? ?? 0,
+      size: (json['size'] as num?)?.toInt() ?? 0,
       modified: json['modified'] as String? ?? "",
     );
 

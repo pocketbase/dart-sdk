@@ -17,7 +17,7 @@ void main() {
             "collectionId": "test_collectionId",
             "collectionName": "test_collectionName",
             "expand": {
-              "test": RecordModel(id: "1").toJson(),
+              "test": RecordModel({"id": "1"}).toJson(),
             },
             "a": 1,
             "b": "test",

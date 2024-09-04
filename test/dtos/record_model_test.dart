@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import "package:pocketbase/pocketbase.dart";
 import "package:test/test.dart";
 
@@ -11,13 +13,13 @@ void main() {
         "collectionId": "test_collectionId",
         "collectionName": "test_collectionName",
         "expand": {
-          "one": RecordModel(id: "1").toJson(),
+          "one": RecordModel({"id": "1"}).toJson(),
           "many": [
-            RecordModel(id: "2").toJson(),
+            RecordModel({"id": "2"}).toJson(),
             RecordModel.fromJson({
               "id": "3",
               "expand": {
-                "recursive": RecordModel(id: "4").toJson(),
+                "recursive": RecordModel({"id": "4"}).toJson(),
               },
             }).toJson(),
           ],
@@ -29,12 +31,12 @@ void main() {
 
       final model = RecordModel.fromJson(json);
 
+      expect(model.data, json);
       expect(model.id, "test_id");
       expect(model.created, "test_created");
       expect(model.updated, "test_updated");
       expect(model.collectionId, "test_collectionId");
       expect(model.collectionName, "test_collectionName");
-      expect(model.data, {"a": 1, "b": "test", "c": true});
       expect(model.expand["one"]?.length, 1);
       expect(model.expand["one"]?[0].id, "1");
       expect(model.expand["many"]?.length, 2);
@@ -48,7 +50,7 @@ void main() {
     });
 
     test("getDataValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b": 1.5,
         "c": "test",
@@ -69,7 +71,7 @@ void main() {
     });
 
     test("getStringValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b": 1,
         "c": "test",
@@ -86,7 +88,7 @@ void main() {
     });
 
     test("getListValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b": 1,
         "c": "test",
@@ -104,7 +106,7 @@ void main() {
     });
 
     test("getBoolValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b1": 1,
         "b2": 0,
@@ -135,7 +137,7 @@ void main() {
     });
 
     test("getIntValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b1": 1,
         "b2": 2.4,
@@ -166,7 +168,7 @@ void main() {
     });
 
     test("getDoubleValue()", () {
-      final model = RecordModel(data: {
+      final model = RecordModel({
         "a": null,
         "b1": 1,
         "b2": 2.4,

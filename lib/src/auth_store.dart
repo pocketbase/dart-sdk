@@ -1,29 +1,38 @@
 import "dart:async";
 import "dart:convert";
 
+import "./dtos/record_model.dart";
+
 /// Event object that holds an AuthStore state.
 class AuthStoreEvent {
-  AuthStoreEvent(this.token, this.model);
+  AuthStoreEvent(this.token, this.record);
 
   final String token;
-  final dynamic /* RecordModel|AdminModel|null */ model;
+  final RecordModel? record;
+
+  @Deprecated("use record")
+  dynamic get model => record as dynamic;
 
   @override
-  String toString() => "token: $token\nmodel: $model";
+  String toString() => "token: $token\nrecord: $record";
 }
 
 /// Base authentication store management service that keep tracks of
 /// the authenticated User/Admin model and its token.
 class AuthStore {
-  String _token = "";
-  dynamic /* RecordModel|AdminModel|null */ _model;
   final _onChangeController = StreamController<AuthStoreEvent>.broadcast();
+
+  String _token = "";
+  RecordModel? _record;
 
   /// Returns the saved auth token (if any).
   String get token => _token;
 
-  /// Returns the saved auth model (if any).
-  dynamic /* RecordModel|AdminModel|null */ get model => _model;
+  /// Returns the saved auth record (if any).
+  RecordModel? get record => _record;
+
+  @Deprecated("use record")
+  dynamic get model => record as dynamic;
 
   /// Stream that gets triggered on each auth store change
   /// (aka. on [save()] and [clear()] call).
@@ -48,22 +57,19 @@ class AuthStore {
     return exp > (DateTime.now().millisecondsSinceEpoch / 1000);
   }
 
-  /// Saves the provided [newToken] and [newModel] auth data into the store.
-  void save(
-    String newToken,
-    dynamic /* RecordModel|AdminModel|null */ newModel,
-  ) {
+  /// Saves the provided [newToken] and [newRecord] auth data into the store.
+  void save(String newToken, RecordModel? newRecord) {
     _token = newToken;
-    _model = newModel;
+    _record = newRecord;
 
-    _onChangeController.add(AuthStoreEvent(token, model));
+    _onChangeController.add(AuthStoreEvent(token, newRecord));
   }
 
-  /// Clears the previously stored [token] and [model] auth data.
+  /// Clears the previously stored [token] and [record] auth data.
   void clear() {
     _token = "";
-    _model = null;
+    _record = null;
 
-    _onChangeController.add(AuthStoreEvent(token, model));
+    _onChangeController.add(AuthStoreEvent(token, record));
   }
 }

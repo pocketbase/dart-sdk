@@ -2,7 +2,10 @@ import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
 
-import "auth_method_provider.dart";
+import "auth_method_mfa.dart";
+import "auth_method_oauth2.dart";
+import "auth_method_otp.dart";
+import "auth_method_password.dart";
 import "jsonable.dart";
 
 part "auth_methods_list.g.dart";
@@ -10,17 +13,20 @@ part "auth_methods_list.g.dart";
 /// Response DTO of the allowed authentication methods.
 @JsonSerializable(explicitToJson: true)
 class AuthMethodsList implements Jsonable {
-  bool usernamePassword;
-  bool emailPassword;
-  bool onlyVerified;
-  List<AuthMethodProvider> authProviders;
+  AuthMethodMFA mfa;
+  AuthMethodOTP otp;
+  AuthMethodPassword password;
+  AuthMethodOAuth2 oauth2;
 
   AuthMethodsList({
-    this.usernamePassword = false,
-    this.emailPassword = false,
-    this.onlyVerified = false,
-    this.authProviders = const [],
-  });
+    AuthMethodMFA? mfa,
+    AuthMethodOTP? otp,
+    AuthMethodPassword? password,
+    AuthMethodOAuth2? oauth2,
+  })  : mfa = mfa ?? AuthMethodMFA(),
+        otp = otp ?? AuthMethodOTP(),
+        password = password ?? AuthMethodPassword(),
+        oauth2 = oauth2 ?? AuthMethodOAuth2();
 
   static AuthMethodsList fromJson(Map<String, dynamic> json) =>
       _$AuthMethodsListFromJson(json);

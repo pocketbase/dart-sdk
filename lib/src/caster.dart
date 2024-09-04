@@ -1,3 +1,5 @@
+import "./dtos/record_model.dart";
+
 /// Extracts a single value from [data] by a dot-notation path
 /// and tries to cast it to the specified generic type.
 ///
@@ -27,6 +29,8 @@ T extract<T>(
     case const (num):
     case const (double):
       return toDouble(rawValue) as T;
+    case const (RecordModel):
+      return toRecordModel(rawValue) as T;
     case const (List<dynamic>):
       return toList(rawValue) as T;
     case const (List<String>):
@@ -39,6 +43,8 @@ T extract<T>(
       return toList<double>(rawValue) as T;
     case const (List<num>):
       return toList<num>(rawValue) as T;
+    case const (List<RecordModel>):
+      return toList<RecordModel>(rawValue) as T;
     default:
       if (rawValue is T) {
         return rawValue;
@@ -195,6 +201,38 @@ double toDouble(dynamic rawValue) {
   }
 
   return 0;
+}
+
+RecordModel toRecordModel(dynamic rawValue) {
+  if (rawValue is RecordModel) {
+    return rawValue;
+  }
+
+  if (rawValue is Map<String, dynamic>) {
+    return RecordModel.fromJson(rawValue);
+  }
+
+  return RecordModel();
+}
+
+List<RecordModel> toRecordModels(dynamic rawValue) {
+  if (rawValue is List<RecordModel>) {
+    return rawValue;
+  }
+
+  if (rawValue is RecordModel) {
+    return [rawValue];
+  }
+
+  if (rawValue is List) {
+    return rawValue.map(toRecordModel).toList();
+  }
+
+  if (rawValue is Map<String, dynamic>) {
+    return [RecordModel.fromJson(rawValue)];
+  }
+
+  return [];
 }
 
 dynamic _extractNestedValue(

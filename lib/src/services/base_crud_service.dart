@@ -83,7 +83,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     )
         .then((data) {
       return ResultList<M>.fromJson(
-        data as Map<String, dynamic>? ?? {},
+        assertAs(data, {}),
         itemFactoryFunc,
       );
     });
@@ -121,7 +121,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           query: enrichedQuery,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(data as Map<String, dynamic>? ?? {}));
+        .then((data) => itemFactoryFunc(assertAs(data, {})));
   }
 
   /// Returns the first found list item by the specified filter.
@@ -183,7 +183,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           files: files,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(data as Map<String, dynamic>? ?? {}));
+        .then((data) => itemFactoryFunc(assertAs(data, {})));
   }
 
   /// Updates an single item by its id.
@@ -209,7 +209,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           files: files,
           headers: headers,
         )
-        .then((data) => itemFactoryFunc(data as Map<String, dynamic>? ?? {}));
+        .then((data) => itemFactoryFunc(assertAs(data, {})));
   }
 
   /// Deletes an single item by its id.

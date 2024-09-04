@@ -11,7 +11,7 @@ void main() {
         "system": true,
         "required": false,
         "presentable": true,
-        "options": {"a": 123},
+        "example": {"a": 123},
       };
 
       final model = SchemaField.fromJson(json);

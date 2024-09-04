@@ -27,8 +27,40 @@ void main() {
         "createRule": "test_createRule",
         "updateRule": "",
         "deleteRule": "test_deleteRule",
-        "options": {"b": 123},
         "indexes": ["a", "b"],
+        "viewQuery": "test_viewQuery",
+        "authRule": null,
+        "manageRule": null,
+        "oauth2": {
+          "enabled": true,
+          "mappedFields": {"a": "b"},
+          "providers": {
+            "test": {"name": "a"}
+          },
+        },
+        "passwordAuth": {
+          "enabled": true,
+          "identityFields": ["a", "b"],
+        },
+        "mfa": {
+          "duration": 100,
+          "enabled": false,
+        },
+        "otp": {
+          "duration": 100,
+          "enabled": true,
+          "length": 10,
+        },
+        "authToken": {"duration": 100, "secret": "test"},
+        "passwordResetToken": {"duration": 100, "secret": "test"},
+        "emailChangeToken": {"duration": 100, "secret": "test"},
+        "verificationToken": {"duration": 100, "secret": "test"},
+        "fileToken": {"duration": 100, "secret": "test"},
+        "verificationTemplate": {"subject": "a", "body": "b"},
+        "resetPasswordTemplate": {"subject": "a", "body": "b"},
+        "confirmEmailChangeTemplate": {"subject": "a", "body": "b"},
+        "otpTemplate": {"subject": "a", "body": "b"},
+        "loginAlertTemplate": {"subject": "a", "body": "b"},
       };
 
       final model = CollectionModel.fromJson(json);

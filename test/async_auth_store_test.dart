@@ -16,26 +16,7 @@ void main() {
 
       expect(saveCalled, 0);
       expect(store.token, "");
-      expect(store.model, null);
-    });
-
-    test("load AdminModel initial", () async {
-      var saveCalled = 0;
-
-      final store = AsyncAuthStore(
-        save: (String data) async {
-          saveCalled++;
-
-          expect(data, contains('"token":"123"'));
-          expect(data, contains('"id":"456"'));
-        },
-        initial: '{"token":"123", "model":{"id": "456"}}',
-      );
-
-      expect(saveCalled, 1);
-      expect(store.token, "123");
-      expect(store.model, isA<AdminModel>());
-      expect((store.model as AdminModel).id, "456");
+      expect(store.record, null);
     });
 
     test("load RecordModel initial", () async {
@@ -53,8 +34,7 @@ void main() {
 
       expect(saveCalled, 1);
       expect(store.token, "123");
-      expect(store.model, isA<RecordModel>());
-      expect((store.model as RecordModel).id, "456");
+      expect(store.record?.id, "456");
     });
 
     test("async save()", () async {

@@ -1,3 +1,107 @@
+## 0.19.0-WIP
+
+**⚠️ This release introduces some breaking changes and works only with PocketBase v0.23.0+.**
+
+- Added support for sending batch/transactional create/updated/delete/**upsert** requests with the new batch Web APIs.
+    ```dart
+    final batch = pb.createBatch();
+
+    batch.collection('example1').create(body: { ... });
+    batch.collection('example2').update('RECORD_ID', body: { ... });
+    batch.collection('example3').delete('RECORD_ID');
+    batch.collection('example4').upsert(body: { ... });
+
+    final result = await batch.send();
+    ```
+
+- Added support for authenticating with OTP (email code):
+    ```dart
+    final result = await pb.collection('users').requestOTP('test@example.com');
+
+    // ... show a modal for users to check their email and to enter the received code ...
+
+    await pb.collection('users').authWithOTP(result.otpId, "EMAIL_CODE");
+    ```
+
+    Note that PocketBase v0.23.0 comes also with Multi-factor authentication (MFA) support.
+    When enabled from the dashboard, the first auth attempt will result in 401 response and a `mfaId` response,
+    that will have to be submitted with the second auth request. For example:
+    ```dart
+    try {
+      await pb.collection('users').authWithPassword('test@example.com', '1234567890');
+    } on ClientException catch (e) {
+      final mfaId = e.response["mfaId"];
+      if (mfaId == null) {
+        throw e; // not mfa -> rethrow
+      }
+
+      // the user needs to authenticate again with another auth method, for example OTP
+      final result = await pb.collection('users').requestOTP('test@example.com');
+      // ... show a modal for users to check their email and to enter the received code ...
+      await pb.collection('users').authWithOTP(result.otpId, "EMAIL_CODE", query: { "mfaId": mfaId });
+    }
+    ```
+
+- Added "impersonate" support for superusers to create a non-refreshable auth token for any other auth record:
+    ```dart
+    // authenticate as superuser
+    await pb.collection('_superusers').authWithPassword('test@example.com', '1234567890');
+
+    // create a new auth token for the specified user loaded in a new PocketBase client
+    final userClient = pb.collection('users').impersonate('RECORD_ID');
+
+    // send the request as the impersonated user
+    final result = await userClient.collection('example').getFullList();
+    ```
+
+- Added `pb.collections.getScaffolds()` method to return a collection type indexed map with blank collection models loaded with their type specific defaults.
+
+- ⚠️ Soft-deprecated and aliased `pb.admins` because with PockeBase v0.23+ admins are now stored as regular `_superusers` collection records.
+    ```dart
+    // before   ->  after
+    pb.admins.* ->  pb.collection('_superusers').*
+    ```
+
+- Since there is no longer `AdminModel`, `pb.authStore.model` is superseeded by `pb.authStore.record`.
+
+- ⚠️ Changes to the `RecordModel`:
+    - Simplified constructor - `RecordModel([Map<String, dynamic>? data])`.
+    - Simplified new accessor method `get<T>(key, fallback)`.
+      It works with all record data, including nested `expand` properties, not just the regular record fields!
+      ```dart
+      final price     = record.get<double>('price');
+      final user      = record.get<RecordModel>('expand.user', null);
+      final userEmail = record.get<String>('expand.user.email', 'N/A');
+      ```
+
+- ⚠️ Flatten the `CollectionModel` model fields, aka. there is no longer
+  the dynamic `CollectionModel.options` map and every Collection type field is added as member to the class.
+
+- ⚠️ Changed `AuthMethodsList` fields to accomodate the new auth methods and `listAuthMethods()` response.
+    ```
+    {
+      "mfa": {
+        "duration": 100,
+        "enabled": true
+      },
+      "otp": {
+        "duration": 0,
+        "enabled": false
+      },
+      "password": {
+        "enabled": true,
+        "identityFields": ["email", "username"]
+      },
+      "oauth2": {
+        "enabled": true,
+        "providers": [{"name": "gitlab", ...}, {"name": "google", ...}]
+      }
+    }
+    ```
+
+- ⚠️ Soft-deprecated the OAuth2 success auth `meta["avatarUrl"]` response field in favour of `meta["avatarURL"]` for consistency with the Go conventions.
+
+
 ## 0.18.1
 
 - Manually update the verified state of the current matching `AuthStore` model on successful "confirm-verification" call.

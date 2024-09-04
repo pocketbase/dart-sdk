@@ -7,14 +7,15 @@ part of 'schema_field.dart';
 // **************************************************************************
 
 SchemaField _$SchemaFieldFromJson(Map<String, dynamic> json) => SchemaField(
-      id: json['id'] as String? ?? "",
-      name: json['name'] as String? ?? "",
-      type: json['type'] as String? ?? "",
-      system: json['system'] as bool? ?? false,
-      required: json['required'] as bool? ?? false,
-      presentable: json['presentable'] as bool? ?? false,
-      options: json['options'] as Map<String, dynamic>? ?? const {},
-    );
+      json['data'] as Map<String, dynamic>?,
+    )
+      ..id = json['id'] as String
+      ..name = json['name'] as String
+      ..type = json['type'] as String
+      ..system = json['system'] as bool
+      ..required = json['required'] as bool
+      ..presentable = json['presentable'] as bool
+      ..hidden = json['hidden'] as bool;
 
 Map<String, dynamic> _$SchemaFieldToJson(SchemaField instance) =>
     <String, dynamic>{
@@ -24,5 +25,6 @@ Map<String, dynamic> _$SchemaFieldToJson(SchemaField instance) =>
       'system': instance.system,
       'required': instance.required,
       'presentable': instance.presentable,
-      'options': instance.options,
+      'hidden': instance.hidden,
+      'data': instance.data,
     };

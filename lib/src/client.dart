@@ -7,8 +7,8 @@ import "auth_store.dart";
 import "client_exception.dart";
 import "dtos/record_model.dart";
 import "multipart_request.dart";
-import "services/admin_service.dart";
 import "services/backup_service.dart";
+import "services/batch_service.dart";
 import "services/collection_service.dart";
 import "services/file_service.dart";
 import "services/health_service.dart";
@@ -31,8 +31,8 @@ class PocketBase {
   /// An instance of the local [AuthStore] service.
   late final AuthStore authStore;
 
-  /// An instance of the service that handles the **Admin APIs**.
-  late final AdminService admins;
+  @Deprecated("use collection('_superusers')")
+  RecordService get admins => collection("_superusers");
 
   /// An instance of the service that handles the **Collection APIs**.
   late final CollectionService collections;
@@ -76,7 +76,6 @@ class PocketBase {
     this.authStore = authStore ?? AuthStore();
     this.httpClientFactory = httpClientFactory ?? http.Client.new;
 
-    admins = AdminService(this);
     collections = CollectionService(this);
     files = FileService(this);
     realtime = RealtimeService(this);
@@ -171,6 +170,25 @@ class PocketBase {
     return Uri.parse(url).replace(
       queryParameters: query.isNotEmpty ? query : null,
     );
+  }
+
+  /// Creates a new batch handler for sending multiple transactional
+  /// create/update/upsert/delete collection requests in one network call.
+  ///
+  /// Example:
+  ///
+  /// ```dart
+  /// final result = await pb.createBatch();
+  ///
+  /// batch.collection('example1').create(body: { ... });
+  /// batch.collection('example2').update('RECORD_ID', body: { ... });
+  /// batch.collection('example3').delete('RECORD_ID');
+  /// batch.collection('example4').upsert(body: { ... });
+  ///
+  /// await batch.send();
+  /// ```
+  BatchService createBatch() {
+    return BatchService(this);
   }
 
   /// Sends a single HTTP request built with the current client configuration

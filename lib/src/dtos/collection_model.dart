@@ -2,8 +2,14 @@ import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
 
+import "email_template_config.dart";
 import "jsonable.dart";
+import "mfa_config.dart";
+import "oauth2_config.dart";
+import "otp_config.dart";
+import "password_auth_config.dart";
 import "schema_field.dart";
+import "token_config.dart";
 
 part "collection_model.g.dart";
 
@@ -23,7 +29,29 @@ class CollectionModel implements Jsonable {
   String? deleteRule;
   List<SchemaField> schema;
   List<String> indexes;
-  Map<String, dynamic> options;
+
+  // view fields
+  // ---
+  String? viewQuery;
+
+  // auth fields
+  // ---
+  String? authRule;
+  String? manageRule;
+  OAuth2Config? oauth2;
+  PasswordAuthConfig? passwordAuth;
+  MFAConfig? mfa;
+  OTPConfig? otp;
+  TokenConfig? authToken;
+  TokenConfig? passwordResetToken;
+  TokenConfig? emailChangeToken;
+  TokenConfig? verificationToken;
+  TokenConfig? fileToken;
+  EmailTemplateConfig? verificationTemplate;
+  EmailTemplateConfig? resetPasswordTemplate;
+  EmailTemplateConfig? confirmEmailChangeTemplate;
+  EmailTemplateConfig? otpTemplate;
+  EmailTemplateConfig? loginAlertTemplate;
 
   CollectionModel({
     this.id = "",
@@ -39,7 +67,23 @@ class CollectionModel implements Jsonable {
     this.deleteRule,
     this.schema = const [],
     this.indexes = const [],
-    this.options = const {},
+    this.viewQuery,
+    this.authRule,
+    this.manageRule,
+    this.oauth2,
+    this.passwordAuth,
+    this.mfa,
+    this.otp,
+    this.authToken,
+    this.passwordResetToken,
+    this.emailChangeToken,
+    this.verificationToken,
+    this.fileToken,
+    this.verificationTemplate,
+    this.resetPasswordTemplate,
+    this.confirmEmailChangeTemplate,
+    this.otpTemplate,
+    this.loginAlertTemplate,
   });
 
   static CollectionModel fromJson(Map<String, dynamic> json) =>

@@ -10,7 +10,7 @@ SseMessage _$SseMessageFromJson(Map<String, dynamic> json) => SseMessage(
       id: json['id'] as String? ?? "",
       event: json['event'] as String? ?? "message",
       data: json['data'] as String? ?? "",
-      retry: json['retry'] as int? ?? 0,
+      retry: (json['retry'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$SseMessageToJson(SseMessage instance) =>
