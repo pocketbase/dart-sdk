@@ -101,6 +101,15 @@
 
 - ⚠️ Soft-deprecated the OAuth2 success auth `meta["avatarUrl"]` response field in favour of `meta["avatarURL"]` for consistency with the Go conventions.
 
+- ⚠️ Removed `RecordService.listExternalAuths()` and `RecordService.unlinkExternalAuth()` methods because `_externalAuths` is now a regular collection:
+    ```dart
+    // old: pb.collection('users').listExternalAuths("RECORD_ID")
+    pb.collection("_externalAuths").getFullList()
+
+    // old: pb.collection('users').unlinkExternalAuth("RECORD_ID", "provider")
+    pb.collection("_externalAuths").delete("EXTERNAL_AUTH_RECORD_ID")
+    ```
+
 
 ## 0.18.1
 
