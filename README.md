@@ -336,7 +336,7 @@ The supported placeholder parameter values are:
 
 ---
 
-##### FileService
+##### FileService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/FileService-class.html))
 
 ```js
 // Builds and returns an absolute record file url for the provided filename.
@@ -469,6 +469,24 @@ The supported placeholder parameter values are:
 ```dart
 // Checks the health status of the api.
 🔓 pb.health.check({query, headers});
+```
+
+---
+
+#### BatchService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/BatchService-class.html), [API docs](https://pocketbase.io/docs/api-bach))
+
+```dart
+// create a new batch instance
+final batch = pb.createBatch();
+
+// register create/update/delete/upsert requests to the created batch
+batch.collection('example1').create(body: { ... });
+batch.collection('example2').update('RECORD_ID', body: { ... });
+batch.collection('example3').delete('RECORD_ID');
+batch.collection('example4').upsert(body: { ... });
+
+// send the batch request
+final result = await batch.send()
 ```
 
 

@@ -178,7 +178,7 @@ class PocketBase {
   /// Example:
   ///
   /// ```dart
-  /// final result = await pb.createBatch();
+  /// final batch = await pb.createBatch();
   ///
   /// batch.collection('example1').create(body: { ... });
   /// batch.collection('example2').update('RECORD_ID', body: { ... });
