@@ -1,14 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'otp_config.dart';
+part of 'auth_alert_config.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-OTPConfig _$OTPConfigFromJson(Map<String, dynamic> json) => OTPConfig(
-      duration: json['duration'] as num? ?? 0,
-      length: json['length'] as num? ?? 0,
+AuthAlertConfig _$AuthAlertConfigFromJson(Map<String, dynamic> json) =>
+    AuthAlertConfig(
       enabled: json['enabled'] as bool? ?? false,
       emailTemplate: json['emailTemplate'] == null
           ? null
@@ -16,9 +15,8 @@ OTPConfig _$OTPConfigFromJson(Map<String, dynamic> json) => OTPConfig(
               json['emailTemplate'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$OTPConfigToJson(OTPConfig instance) => <String, dynamic>{
-      'duration': instance.duration,
-      'length': instance.length,
+Map<String, dynamic> _$AuthAlertConfigToJson(AuthAlertConfig instance) =>
+    <String, dynamic>{
       'enabled': instance.enabled,
       'emailTemplate': instance.emailTemplate.toJson(),
     };

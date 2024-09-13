@@ -31,6 +31,10 @@ void main() {
         "viewQuery": "test_viewQuery",
         "authRule": null,
         "manageRule": null,
+        "authAlert": {
+          "enabled": true,
+          "emailTemplate": {"subject": "a", "body": "b"},
+        },
         "oauth2": {
           "enabled": true,
           "mappedFields": {"a": "b"},
@@ -50,6 +54,7 @@ void main() {
           "duration": 100,
           "enabled": true,
           "length": 10,
+          "emailTemplate": {"subject": "a", "body": "b"},
         },
         "authToken": {"duration": 100, "secret": "test"},
         "passwordResetToken": {"duration": 100, "secret": "test"},
@@ -59,8 +64,6 @@ void main() {
         "verificationTemplate": {"subject": "a", "body": "b"},
         "resetPasswordTemplate": {"subject": "a", "body": "b"},
         "confirmEmailChangeTemplate": {"subject": "a", "body": "b"},
-        "otpTemplate": {"subject": "a", "body": "b"},
-        "loginAlertTemplate": {"subject": "a", "body": "b"},
       };
 
       final model = CollectionModel.fromJson(json);

@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:json_annotation/json_annotation.dart";
 
+import "auth_alert_config.dart";
 import "email_template_config.dart";
 import "jsonable.dart";
 import "mfa_config.dart";
@@ -38,6 +39,7 @@ class CollectionModel implements Jsonable {
   // ---
   String? authRule;
   String? manageRule;
+  AuthAlertConfig? authAlert;
   OAuth2Config? oauth2;
   PasswordAuthConfig? passwordAuth;
   MFAConfig? mfa;
@@ -50,8 +52,6 @@ class CollectionModel implements Jsonable {
   EmailTemplateConfig? verificationTemplate;
   EmailTemplateConfig? resetPasswordTemplate;
   EmailTemplateConfig? confirmEmailChangeTemplate;
-  EmailTemplateConfig? otpTemplate;
-  EmailTemplateConfig? loginAlertTemplate;
 
   CollectionModel({
     this.id = "",
@@ -70,6 +70,7 @@ class CollectionModel implements Jsonable {
     this.viewQuery,
     this.authRule,
     this.manageRule,
+    this.authAlert,
     this.oauth2,
     this.passwordAuth,
     this.mfa,
@@ -82,8 +83,6 @@ class CollectionModel implements Jsonable {
     this.verificationTemplate,
     this.resetPasswordTemplate,
     this.confirmEmailChangeTemplate,
-    this.otpTemplate,
-    this.loginAlertTemplate,
   });
 
   static CollectionModel fromJson(Map<String, dynamic> json) =>

@@ -375,7 +375,6 @@ The supported placeholder parameter values are:
 // Imports the provided collections.
 🔐 pb.collections.import(collections, {deleteMissing=false, query, body, headers});
 
-
 // Returns type indexed map with scaffolded collection models populated with their default field values.
 🔐 pb.collections.getScaffolds({query, body, headers});
 ```

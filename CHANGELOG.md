@@ -20,7 +20,7 @@
 
     // ... show a modal for users to check their email and to enter the received code ...
 
-    await pb.collection('users').authWithOTP(result.otpId, "EMAIL_CODE");
+    await pb.collection('users').authWithOTP(result.otpId, 'EMAIL_CODE');
     ```
 
     Note that PocketBase v0.23.0 comes also with Multi-factor authentication (MFA) support.
@@ -30,7 +30,7 @@
     try {
       await pb.collection('users').authWithPassword('test@example.com', '1234567890');
     } on ClientException catch (e) {
-      final mfaId = e.response["mfaId"];
+      final mfaId = e.response['mfaId'];
       if (mfaId == null) {
         throw e; // not mfa -> rethrow
       }
@@ -38,7 +38,7 @@
       // the user needs to authenticate again with another auth method, for example OTP
       final result = await pb.collection('users').requestOTP('test@example.com');
       // ... show a modal for users to check their email and to enter the received code ...
-      await pb.collection('users').authWithOTP(result.otpId, "EMAIL_CODE", query: { "mfaId": mfaId });
+      await pb.collection('users').authWithOTP(result.otpId, 'EMAIL_CODE', query: { 'mfaId': mfaId });
     }
     ```
 

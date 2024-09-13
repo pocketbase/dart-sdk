@@ -30,6 +30,9 @@ CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
       viewQuery: json['viewQuery'] as String?,
       authRule: json['authRule'] as String?,
       manageRule: json['manageRule'] as String?,
+      authAlert: json['authAlert'] == null
+          ? null
+          : AuthAlertConfig.fromJson(json['authAlert'] as Map<String, dynamic>),
       oauth2: json['oauth2'] == null
           ? null
           : OAuth2Config.fromJson(json['oauth2'] as Map<String, dynamic>),
@@ -73,14 +76,6 @@ CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
           ? null
           : EmailTemplateConfig.fromJson(
               json['confirmEmailChangeTemplate'] as Map<String, dynamic>),
-      otpTemplate: json['otpTemplate'] == null
-          ? null
-          : EmailTemplateConfig.fromJson(
-              json['otpTemplate'] as Map<String, dynamic>),
-      loginAlertTemplate: json['loginAlertTemplate'] == null
-          ? null
-          : EmailTemplateConfig.fromJson(
-              json['loginAlertTemplate'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
@@ -101,6 +96,7 @@ Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
       'viewQuery': instance.viewQuery,
       'authRule': instance.authRule,
       'manageRule': instance.manageRule,
+      'authAlert': instance.authAlert?.toJson(),
       'oauth2': instance.oauth2?.toJson(),
       'passwordAuth': instance.passwordAuth?.toJson(),
       'mfa': instance.mfa?.toJson(),
@@ -114,6 +110,4 @@ Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
       'resetPasswordTemplate': instance.resetPasswordTemplate?.toJson(),
       'confirmEmailChangeTemplate':
           instance.confirmEmailChangeTemplate?.toJson(),
-      'otpTemplate': instance.otpTemplate?.toJson(),
-      'loginAlertTemplate': instance.loginAlertTemplate?.toJson(),
     };

@@ -5,28 +5,24 @@ import "package:json_annotation/json_annotation.dart";
 import "email_template_config.dart";
 import "jsonable.dart";
 
-part "otp_config.g.dart";
+part "auth_alert_config.g.dart";
 
-/// Response DTO of a single collection otp auth config.
+/// Response DTO of a single collection auth alert config.
 @JsonSerializable(explicitToJson: true)
-class OTPConfig implements Jsonable {
-  num duration;
-  num length;
+class AuthAlertConfig implements Jsonable {
   bool enabled;
   EmailTemplateConfig emailTemplate;
 
-  OTPConfig({
-    this.duration = 0,
-    this.length = 0,
+  AuthAlertConfig({
     this.enabled = false,
     EmailTemplateConfig? emailTemplate,
   }) : emailTemplate = emailTemplate ?? EmailTemplateConfig();
 
-  static OTPConfig fromJson(Map<String, dynamic> json) =>
-      _$OTPConfigFromJson(json);
+  static AuthAlertConfig fromJson(Map<String, dynamic> json) =>
+      _$AuthAlertConfigFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => _$OTPConfigToJson(this);
+  Map<String, dynamic> toJson() => _$AuthAlertConfigToJson(this);
 
   @override
   String toString() => jsonEncode(toJson());

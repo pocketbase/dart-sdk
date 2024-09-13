@@ -246,7 +246,7 @@ void main() {
             "codeVerifier": "customCodeVerifier",
             "provider": "test_provider",
             "code": "test_code",
-            "redirectUrl": "test_redirect_url",
+            "redirectURL": "test_redirect_url",
             "createData": {"c": 456},
           }),
         );
