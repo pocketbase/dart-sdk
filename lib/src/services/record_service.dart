@@ -12,7 +12,6 @@ import "../dtos/record_auth.dart";
 import "../dtos/record_model.dart";
 import "../dtos/record_subscription_event.dart";
 import "base_crud_service.dart";
-import "base_service.dart";
 import "realtime_service.dart";
 
 /// The definition of a realtime record subscription callback function.

@@ -1,7 +1,6 @@
 import "../client.dart";
 import "../dtos/collection_model.dart";
 import "base_crud_service.dart";
-import "base_service.dart";
 
 /// The service that handles the **Collection APIs**.
 ///
