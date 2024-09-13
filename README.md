@@ -409,7 +409,7 @@ The supported placeholder parameter values are:
 🔐 pb.settings.testS3({body, query, headers});
 
 // Sends a test email (verification, password-reset, email-change).
-🔐 pb.settings.testEmail(toEmail, template, {body, query, headers});
+🔐 pb.settings.testEmail(toEmail, template, {collection, body, query, headers});
 
 // Generates a new Apple OAuth2 client secret.
 🔐 pb.settings.generateAppleClientSecret(clientId, teamId, keyId, privateKey, duration, {body, query, headers});

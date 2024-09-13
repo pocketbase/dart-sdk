@@ -54,6 +54,8 @@
     final result = await userClient.collection('example').getFullList();
     ```
 
+- Added optional `collection` argument to `SettingsService.testEmail()` to allow target the email templates of a specific auth collection.
+
 - Added `pb.collections.getScaffolds()` method to return a collection type indexed map with blank collection models loaded with their type specific defaults.
 
 - ⚠️ Soft-deprecated and aliased `pb.admins` because with PockeBase v0.23+ admins are now stored as regular `_superusers` collection records.
@@ -109,7 +111,6 @@
     // old: pb.collection('users').unlinkExternalAuth("RECORD_ID", "provider")
     pb.collection("_externalAuths").delete("EXTERNAL_AUTH_RECORD_ID")
     ```
-
 
 ## 0.18.1
 

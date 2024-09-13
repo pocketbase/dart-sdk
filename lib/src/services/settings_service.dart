@@ -64,6 +64,7 @@ class SettingsService extends BaseService {
   Future<void> testEmail(
     String toEmail,
     String template, {
+    String? collection, // fallback to _superusers
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
@@ -71,6 +72,7 @@ class SettingsService extends BaseService {
     final enrichedBody = Map<String, dynamic>.of(body);
     enrichedBody["email"] ??= toEmail;
     enrichedBody["template"] ??= template;
+    enrichedBody["collection"] ??= collection;
 
     return client.send(
       "/api/settings/test/email",

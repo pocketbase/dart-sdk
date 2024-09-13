@@ -122,6 +122,7 @@ void main() {
               "test_body": 123,
               "email": "test@example.com",
               "template": "test_template",
+              "collection": "test_collection",
             }));
         expect(
           request.url.toString(),
@@ -137,6 +138,7 @@ void main() {
       await client.settings.testEmail(
         "test@example.com",
         "test_template",
+        collection: "test_collection",
         query: {
           "a": ["1", null, 2],
           "b": "@demo",
