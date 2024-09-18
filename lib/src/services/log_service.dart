@@ -44,7 +44,7 @@ class LogService extends BaseService {
   }) async {
     if (id.isEmpty) {
       throw ClientException(
-        url: client.buildUrl("/api/logs/"),
+        url: client.buildURL("/api/logs/"),
         statusCode: 404,
         response: <String, dynamic>{
           "code": 404,

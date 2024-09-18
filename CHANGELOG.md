@@ -101,7 +101,16 @@
     }
     ```
 
-- ⚠️ Soft-deprecated the OAuth2 success auth `meta["avatarUrl"]` response field in favour of `meta["avatarURL"]` for consistency with the Go conventions.
+- ⚠️ Soft-deprecated the OAuth2 success auth `meta["avatarUrl"]` response field in favour of `meta["avatarURL"]` for consistency with the JS SDK and the accepted Go API conventions.
+
+- ⚠️ Soft-deprecated and aliased `*Url()` -> `*URL()` fields and methods for consistency with the JS SDK and the accepted Go API conventions.
+    _The old methods still works but you may get a analyzer warnings to replace them because they will be removed in the future._
+    ```js
+    pb.baseUrl                  -> pb.baseURL
+    pb.buildUrl()               -> pb.buildURL()
+    pb.files.getUrl()           -> pb.files.getURL()
+    pb.backups.getDownloadUrl() -> pb.backups.getDownloadURL()
+    ```
 
 - ⚠️ Removed `RecordService.listExternalAuths()` and `RecordService.unlinkExternalAuth()` methods because `_externalAuths` is now a regular collection:
     ```dart

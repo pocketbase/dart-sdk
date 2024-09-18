@@ -9,8 +9,27 @@ import "base_service.dart";
 class FileService extends BaseService {
   FileService(super.client);
 
-  /// Builds and returns an absolute record file url.
+  // Legacy alias of getURL().
   Uri getUrl(
+    RecordModel record,
+    String filename, {
+    String? thumb,
+    String? token,
+    bool? download,
+    Map<String, dynamic> query = const {},
+  }) {
+    return getURL(
+      record,
+      filename,
+      thumb: thumb,
+      token: token,
+      download: download,
+      query: query,
+    );
+  }
+
+  /// Builds and returns an absolute record file url.
+  Uri getURL(
     RecordModel record,
     String filename, {
     String? thumb,
@@ -33,7 +52,7 @@ class FileService extends BaseService {
         ? record.collectionName
         : record.collectionId;
 
-    return client.buildUrl(
+    return client.buildURL(
       "/api/files/${Uri.encodeComponent(collectionIdOrName)}/${Uri.encodeComponent(record.id)}/${Uri.encodeComponent(filename)}",
       params,
     );

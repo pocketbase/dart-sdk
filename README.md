@@ -307,7 +307,7 @@ The supported placeholder parameter values are:
 🔓 pb.collection(collectionIdOrName).authWithOAuth2(provider, urlCallback {scopes, createData, expand?});
 
 // Authenticates a record with OAuth2 code.
-🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectUrl, {createData?, expand?, fields?, query, body, headers});
+🔓 pb.collection(collectionIdOrName).authWithOAuth2Code(provider, code, codeVerifier, redirectURL, {createData?, expand?, fields?, query, body, headers});
 
 // Sends auth record OTP request to the provided email.
 🔓 pb.collection(collectionIdOrName).requestOTP(email, {query, body, headers});
@@ -340,7 +340,7 @@ The supported placeholder parameter values are:
 
 ```js
 // Builds and returns an absolute record file url for the provided filename.
-🔓 pb.files.getUrl(record, filename, {thumb?, token?, query, body, headers});
+🔓 pb.files.getURL(record, filename, {thumb?, token?, query, body, headers});
 
 // Requests a new private file access token for the current auth model (admin or record).
 🔐 pb.files.getToken({query, body, headers});
@@ -458,7 +458,7 @@ The supported placeholder parameter values are:
 
 // Builds a download url for a single existing backup using an
 // admin file token and the backup file key.
-🔐 pb.backups.getDownloadUrl(token, key, {query});
+🔐 pb.backups.getDownloadURL(token, key, {query});
 ```
 
 ---

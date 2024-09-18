@@ -96,7 +96,7 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
   }) async {
     if (id.isEmpty) {
       throw ClientException(
-        url: client.buildUrl("$baseCrudPath/"),
+        url: client.buildURL("$baseCrudPath/"),
         statusCode: 404,
         response: <String, dynamic>{
           "code": 404,

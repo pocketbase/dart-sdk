@@ -103,7 +103,7 @@ class SubBatchService {
       method: "PUT",
       files: files,
       url: _batch.dummyClient
-          .buildUrl(
+          .buildURL(
             "/api/collections/${Uri.encodeComponent(_collectionIdOrName)}/records",
             enrichedQuery,
           )
@@ -132,7 +132,7 @@ class SubBatchService {
       method: "POST",
       files: files,
       url: _batch.dummyClient
-          .buildUrl(
+          .buildURL(
             "/api/collections/${Uri.encodeComponent(_collectionIdOrName)}/records",
             enrichedQuery,
           )
@@ -162,7 +162,7 @@ class SubBatchService {
       method: "PATCH",
       files: files,
       url: _batch.dummyClient
-          .buildUrl(
+          .buildURL(
             "/api/collections/${Uri.encodeComponent(_collectionIdOrName)}/records/${Uri.encodeComponent(recordId)}",
             enrichedQuery,
           )
@@ -184,7 +184,7 @@ class SubBatchService {
     final request = _BatchRequest(
       method: "DELETE",
       url: _batch.dummyClient
-          .buildUrl(
+          .buildURL(
             "/api/collections/${Uri.encodeComponent(_collectionIdOrName)}/records/${Uri.encodeComponent(recordId)}",
             query,
           )

@@ -17,7 +17,7 @@ import "realtime_service.dart";
 /// The definition of a realtime record subscription callback function.
 typedef RecordSubscriptionFunc = void Function(RecordSubscriptionEvent e);
 
-typedef OAuth2UrlCallbackFunc = void Function(Uri url);
+typedef OAuth2URLCallbackFunc = void Function(Uri url);
 
 /// The service that handles the **Record APIs**.
 ///
@@ -291,7 +291,7 @@ class RecordService extends BaseCrudService<RecordModel> {
   /// as redirect URL.
   Future<RecordAuth> authWithOAuth2(
     String providerName,
-    OAuth2UrlCallbackFunc urlCallback, {
+    OAuth2URLCallbackFunc urlCallback, {
     List<String> scopes = const [],
     Map<String, dynamic> createData = const {},
     String? expand,
@@ -309,7 +309,7 @@ class RecordService extends BaseCrudService<RecordModel> {
       );
     }
 
-    final redirectUrl = client.buildUrl("/api/oauth2-redirect");
+    final redirectURL = client.buildURL("/api/oauth2-redirect");
 
     final completer = Completer<RecordAuth>();
 
@@ -337,7 +337,7 @@ class RecordService extends BaseCrudService<RecordModel> {
             provider.name,
             code,
             provider.codeVerifier,
-            redirectUrl.toString(),
+            redirectURL.toString(),
             createData: createData,
             expand: expand,
             fields: fields,
@@ -357,9 +357,9 @@ class RecordService extends BaseCrudService<RecordModel> {
         }
       });
 
-      final authUrl = Uri.parse(provider.authUrl + redirectUrl.toString());
+      final authURL = Uri.parse(provider.authURL + redirectURL.toString());
 
-      final queryParameters = Map<String, String>.of(authUrl.queryParameters);
+      final queryParameters = Map<String, String>.of(authURL.queryParameters);
       queryParameters["state"] = client.realtime.clientId;
 
       // set custom scopes (if any)
@@ -367,7 +367,7 @@ class RecordService extends BaseCrudService<RecordModel> {
         queryParameters["scope"] = scopes.join(" ");
       }
 
-      urlCallback(authUrl.replace(queryParameters: queryParameters));
+      urlCallback(authURL.replace(queryParameters: queryParameters));
     } catch (err) {
       if (err is ClientException) {
         completer.completeError(err);
@@ -649,7 +649,7 @@ class RecordService extends BaseCrudService<RecordModel> {
     // create a new client loaded with the impersonated auth state
     // ---
     final tempClient = PocketBase(
-      client.baseUrl,
+      client.baseURL,
       httpClientFactory: client.httpClientFactory,
       lang: client.lang,
     );

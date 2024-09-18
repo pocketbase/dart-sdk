@@ -136,10 +136,10 @@ void main() {
       );
     });
 
-    test("getDownloadUrl()", () async {
+    test("getDownloadURL()", () async {
       final client = PocketBase("/base");
 
-      final url = client.backups.getDownloadUrl(
+      final url = client.backups.getDownloadURL(
         "@test_token",
         "@test_name",
         query: {

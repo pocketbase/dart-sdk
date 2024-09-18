@@ -103,11 +103,20 @@ class BackupService extends BaseService {
     );
   }
 
+  @Deprecated("use getDownloadURL")
+  Uri getDownloadUrl(
+    String token,
+    String key, {
+    Map<String, dynamic> query = const {},
+  }) {
+    return getDownloadURL(token, key, query: query);
+  }
+
   /// Builds a download url for a single existing backup using an
   /// admin file token and the backup file key.
   ///
   /// The file token can be generated via `pb.files.getToken()`.
-  Uri getDownloadUrl(
+  Uri getDownloadURL(
     String token,
     String key, {
     Map<String, dynamic> query = const {},
@@ -115,7 +124,7 @@ class BackupService extends BaseService {
     final params = Map<String, dynamic>.of(query);
     params["token"] ??= token;
 
-    return client.buildUrl(
+    return client.buildURL(
       "/api/backups/${Uri.encodeComponent(key)}",
       params,
     );

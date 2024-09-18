@@ -242,7 +242,7 @@ class RealtimeService extends BaseService {
 
     final completer = Completer<void>();
 
-    final url = client.buildUrl("/api/realtime").toString();
+    final url = client.buildURL("/api/realtime").toString();
 
     _sse = SseClient(
       url,

@@ -14,7 +14,7 @@ void main() {
     test("with defaults", () {
       final client = PocketBase("https://example.com");
 
-      expect(client.baseUrl, "https://example.com");
+      expect(client.baseURL, "https://example.com");
       expect(client.lang, "en-US");
       expect(client.authStore, isA<AuthStore>());
 
@@ -32,7 +32,7 @@ void main() {
         authStore: DummyAuthStore(),
       );
 
-      expect(client.baseUrl, "https://example.com");
+      expect(client.baseURL, "https://example.com");
       expect(client.lang, "test_lang");
       expect(client.authStore, isA<DummyAuthStore>());
     });
@@ -105,6 +105,7 @@ void main() {
   group("PocketBase.getFileUrl()", () {
     test("retrieve encoded record file url", () {
       final client = PocketBase("/base/");
+      // ignore: deprecated_member_use_from_same_package
       final result = client.getFileUrl(
         RecordModel({"id": "@r123", "collectionId": "@c123"}),
         "@f123.png",
@@ -120,32 +121,32 @@ void main() {
     });
   });
 
-  group("PocketBase.buildUrl()", () {
-    test("baseUrl with trailing slash", () {
+  group("PocketBase.buildURL()", () {
+    test("baseURL with trailing slash", () {
       final client = PocketBase("https://example.com/");
 
-      expect(client.buildUrl("test").toString(), "https://example.com/test");
-      expect(client.buildUrl("/test").toString(), "https://example.com/test");
+      expect(client.buildURL("test").toString(), "https://example.com/test");
+      expect(client.buildURL("/test").toString(), "https://example.com/test");
     });
 
-    test("baseUrl without trailing slash", () {
+    test("baseURL without trailing slash", () {
       final client = PocketBase("https://example.com");
 
-      expect(client.buildUrl("test").toString(), "https://example.com/test");
-      expect(client.buildUrl("/test").toString(), "https://example.com/test");
+      expect(client.buildURL("test").toString(), "https://example.com/test");
+      expect(client.buildURL("/test").toString(), "https://example.com/test");
     });
 
-    test("relative baseUrl", () {
+    test("relative baseURL", () {
       final client = PocketBase("/api");
 
-      expect(client.buildUrl("test").toString(), "/api/test");
-      expect(client.buildUrl("/test").toString(), "/api/test");
+      expect(client.buildURL("test").toString(), "/api/test");
+      expect(client.buildURL("/test").toString(), "/api/test");
     });
 
     test("with query parameters", () {
       final client = PocketBase("https://example.com/");
 
-      final url = client.buildUrl("/test", {
+      final url = client.buildURL("/test", {
         "a": null,
         "b": 123,
         "c": "123",

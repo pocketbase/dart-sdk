@@ -21,8 +21,14 @@ const bool isWeb = bool.fromEnvironment("dart.library.js_util");
 
 /// The main PocketBase API client.
 class PocketBase {
+  @Deprecated("use baseURL")
+  String get baseUrl => baseURL;
+
+  @Deprecated("use baseURL")
+  set baseUrl(String v) => baseURL = v;
+
   /// The PocketBase backend base url address (eg. 'http://127.0.0.1:8090').
-  String baseUrl;
+  String baseURL;
 
   /// Optional language code (default to `en-US`) that will be sent
   /// with the requests to the server as `Accept-Language` header.
@@ -67,7 +73,7 @@ class PocketBase {
   final _recordServices = <String, RecordService>{};
 
   PocketBase(
-    this.baseUrl, {
+    this.baseURL, {
     this.lang = "en-US",
     AuthStore? authStore,
     // used primarily for the unit tests
@@ -139,7 +145,7 @@ class PocketBase {
     return expr;
   }
 
-  /// Legacy alias of `pb.files.getUrl()`.
+  @Deprecated("use pb.files.getURL()")
   Uri getFileUrl(
     RecordModel record,
     String filename, {
@@ -147,7 +153,7 @@ class PocketBase {
     String? token,
     Map<String, dynamic> query = const {},
   }) {
-    return files.getUrl(
+    return files.getURL(
       record,
       filename,
       thumb: thumb,
@@ -156,10 +162,15 @@ class PocketBase {
     );
   }
 
+  @Deprecated("use pb.buildURL()")
+  Uri buildUrl(String path, [Map<String, dynamic> queryParameters = const {}]) {
+    return buildURL(path, queryParameters);
+  }
+
   /// Builds and returns a full request url by safely concatenating
   /// the provided path to the base url.
-  Uri buildUrl(String path, [Map<String, dynamic> queryParameters = const {}]) {
-    var url = baseUrl + (baseUrl.endsWith("/") ? "" : "/");
+  Uri buildURL(String path, [Map<String, dynamic> queryParameters = const {}]) {
+    var url = baseURL + (baseURL.endsWith("/") ? "" : "/");
 
     if (path.isNotEmpty) {
       url += path.startsWith("/") ? path.substring(1) : path;
@@ -208,7 +219,7 @@ class PocketBase {
   }) async {
     http.BaseRequest request;
 
-    final url = buildUrl(path, query);
+    final url = buildURL(path, query);
 
     if (files.isEmpty) {
       request = _jsonRequest(method, url, headers: headers, body: body);
