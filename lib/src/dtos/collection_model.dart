@@ -3,13 +3,13 @@ import "dart:convert";
 import "package:json_annotation/json_annotation.dart";
 
 import "auth_alert_config.dart";
+import "collection_field.dart";
 import "email_template_config.dart";
 import "jsonable.dart";
 import "mfa_config.dart";
 import "oauth2_config.dart";
 import "otp_config.dart";
 import "password_auth_config.dart";
-import "schema_field.dart";
 import "token_config.dart";
 
 part "collection_model.g.dart";
@@ -28,7 +28,7 @@ class CollectionModel implements Jsonable {
   String? createRule;
   String? updateRule;
   String? deleteRule;
-  List<SchemaField> schema;
+  List<CollectionField> fields;
   List<String> indexes;
 
   // view fields
@@ -65,7 +65,7 @@ class CollectionModel implements Jsonable {
     this.createRule,
     this.updateRule,
     this.deleteRule,
-    this.schema = const [],
+    this.fields = const [],
     this.indexes = const [],
     this.viewQuery,
     this.authRule,

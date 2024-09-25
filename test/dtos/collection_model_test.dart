@@ -10,11 +10,11 @@ void main() {
         "created": "test_created",
         "updated": "test_updated",
         "name": "test_name",
-        "schema": [
+        "fields": [
           {
-            "id": "schema_id",
-            "name": "schema_name",
-            "type": "schema_type",
+            "id": "fields_id",
+            "name": "fields_name",
+            "type": "fields_type",
             "system": true,
             "required": false,
             "presentable": false,

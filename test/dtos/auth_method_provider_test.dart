@@ -11,7 +11,7 @@ void main() {
         "codeVerifier": "test_codeVerifier",
         "codeChallenge": "test_codeChallenge",
         "codeChallengeMethod": "test_codeChallengeMethod",
-        "authUrl": "test_authUrl",
+        "authURL": "test_authUrl",
         "pkce": null,
       };
 

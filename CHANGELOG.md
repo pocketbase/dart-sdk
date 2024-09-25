@@ -121,6 +121,11 @@
     pb.collection("_externalAuths").delete("EXTERNAL_AUTH_RECORD_ID")
     ```
 
+- ⚠️ Renamed `CollectionModel.schema` to `CollectionModel.fields`.
+
+- ⚠️ Renamed class `SchemaField` to `CollectionField`.
+
+
 ## 0.18.1
 
 - Manually update the verified state of the current matching `AuthStore` model on successful "confirm-verification" call.

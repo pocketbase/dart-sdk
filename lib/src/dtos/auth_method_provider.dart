@@ -19,7 +19,11 @@ class AuthMethodProvider implements Jsonable {
   bool? pkce;
 
   @Deprecated("use authURL")
-  String authUrl;
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  String get authUrl => authURL;
+
+  @Deprecated("use authURL")
+  set authUrl(String url) => authURL = url;
 
   AuthMethodProvider({
     this.name = "",
@@ -28,7 +32,6 @@ class AuthMethodProvider implements Jsonable {
     this.codeVerifier = "",
     this.codeChallenge = "",
     this.codeChallengeMethod = "",
-    this.authUrl = "",
     this.authURL = "",
     this.pkce,
   });

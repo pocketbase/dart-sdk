@@ -5,11 +5,11 @@ import "package:json_annotation/json_annotation.dart";
 import "../caster.dart" as caster;
 import "jsonable.dart";
 
-part "schema_field.g.dart"; // not actually used
+part "collection_field.g.dart"; // not actually used
 
 /// Response DTO of a single collection schema field.
 @JsonSerializable(explicitToJson: true)
-class SchemaField implements Jsonable {
+class CollectionField implements Jsonable {
   String get id => get<String>("id", "");
   set id(String val) => data["id"] = val;
 
@@ -33,9 +33,10 @@ class SchemaField implements Jsonable {
 
   Map<String, dynamic> data = {};
 
-  SchemaField([Map<String, dynamic>? data]) : data = data ?? {};
+  CollectionField([Map<String, dynamic>? data]) : data = data ?? {};
 
-  static SchemaField fromJson(Map<String, dynamic> json) => SchemaField(json);
+  static CollectionField fromJson(Map<String, dynamic> json) =>
+      CollectionField(json);
 
   @override
   Map<String, dynamic> toJson() => Map<String, dynamic>.from(data);
@@ -55,7 +56,7 @@ class SchemaField implements Jsonable {
   ///
   /// ```dart
   /// final data = {"a": {"b": [{"b1": 1}, {"b2": 2}, {"b3": 3}]}};
-  /// final field = SchemaField(data);
+  /// final field = CollectionField(data);
   /// final result0 = field.get<int>("a.b.c", 999); // 999
   /// final result1 = field.get<int>("a.b.2.b3"); // 3
   /// final result2 = field.get<String>("a.b.2.b3"); // "3"

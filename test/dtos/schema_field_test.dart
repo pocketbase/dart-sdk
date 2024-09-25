@@ -2,7 +2,7 @@ import "package:pocketbase/pocketbase.dart";
 import "package:test/test.dart";
 
 void main() {
-  group("SchemaField", () {
+  group("CollectionField", () {
     test("fromJson() and toJson()", () {
       final json = {
         "id": "schema_id",
@@ -14,7 +14,7 @@ void main() {
         "example": {"a": 123},
       };
 
-      final model = SchemaField.fromJson(json);
+      final model = CollectionField.fromJson(json);
 
       expect(model.toJson(), json);
     });

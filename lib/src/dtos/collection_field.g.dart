@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'schema_field.dart';
+part of 'collection_field.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SchemaField _$SchemaFieldFromJson(Map<String, dynamic> json) => SchemaField(
+CollectionField _$CollectionFieldFromJson(Map<String, dynamic> json) =>
+    CollectionField(
       json['data'] as Map<String, dynamic>?,
     )
       ..id = json['id'] as String
@@ -17,7 +18,7 @@ SchemaField _$SchemaFieldFromJson(Map<String, dynamic> json) => SchemaField(
       ..presentable = json['presentable'] as bool
       ..hidden = json['hidden'] as bool;
 
-Map<String, dynamic> _$SchemaFieldToJson(SchemaField instance) =>
+Map<String, dynamic> _$CollectionFieldToJson(CollectionField instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

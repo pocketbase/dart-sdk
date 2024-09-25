@@ -14,7 +14,7 @@ AuthMethodProvider _$AuthMethodProviderFromJson(Map<String, dynamic> json) =>
       codeVerifier: json['codeVerifier'] as String? ?? "",
       codeChallenge: json['codeChallenge'] as String? ?? "",
       codeChallengeMethod: json['codeChallengeMethod'] as String? ?? "",
-      authUrl: json['authUrl'] as String? ?? "",
+      authURL: json['authURL'] as String? ?? "",
       pkce: json['pkce'] as bool?,
     );
 
@@ -26,6 +26,6 @@ Map<String, dynamic> _$AuthMethodProviderToJson(AuthMethodProvider instance) =>
       'codeVerifier': instance.codeVerifier,
       'codeChallenge': instance.codeChallenge,
       'codeChallengeMethod': instance.codeChallengeMethod,
-      'authUrl': instance.authUrl,
+      'authURL': instance.authURL,
       'pkce': instance.pkce,
     };

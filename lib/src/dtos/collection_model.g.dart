@@ -19,8 +19,8 @@ CollectionModel _$CollectionModelFromJson(Map<String, dynamic> json) =>
       createRule: json['createRule'] as String?,
       updateRule: json['updateRule'] as String?,
       deleteRule: json['deleteRule'] as String?,
-      schema: (json['schema'] as List<dynamic>?)
-              ?.map((e) => SchemaField.fromJson(e as Map<String, dynamic>))
+      fields: (json['fields'] as List<dynamic>?)
+              ?.map((e) => CollectionField.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       indexes: (json['indexes'] as List<dynamic>?)
@@ -91,7 +91,7 @@ Map<String, dynamic> _$CollectionModelToJson(CollectionModel instance) =>
       'createRule': instance.createRule,
       'updateRule': instance.updateRule,
       'deleteRule': instance.deleteRule,
-      'schema': instance.schema.map((e) => e.toJson()).toList(),
+      'fields': instance.fields.map((e) => e.toJson()).toList(),
       'indexes': instance.indexes,
       'viewQuery': instance.viewQuery,
       'authRule': instance.authRule,
