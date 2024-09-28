@@ -58,6 +58,8 @@
 
 - Added `pb.collections.getScaffolds()` method to return a collection type indexed map with blank collection models loaded with their type specific defaults.
 
+- Added `pb.collections.truncate(idOrName)` method to delete all records associated with the specified collection.
+
 - ⚠️ Soft-deprecated and aliased `pb.admins` because with PockeBase v0.23+ admins are now stored as regular `_superusers` collection records.
     ```dart
     // before   ->  after

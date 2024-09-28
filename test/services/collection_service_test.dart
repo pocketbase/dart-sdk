@@ -98,4 +98,37 @@ void main() {
       expect(result["test2"]?.id, "id2");
     });
   });
+
+  test("truncate()", () async {
+    final mock = MockClient((request) async {
+      expect(request.method, "DELETE");
+      expect(request.body, jsonEncode({"test_body": 123}));
+      expect(
+        request.url.toString(),
+        "/base/api/collections/test%3D/truncate?a=1&a=2&b=%40demo",
+      );
+      expect(request.headers["test"], "789");
+
+      return http.Response(
+        jsonEncode({"a": 1, "b": false, "c": "test"}),
+        200,
+      );
+    });
+
+    final client = PocketBase("/base", httpClientFactory: () => mock);
+
+    await client.collections.truncate(
+      "test=",
+      query: {
+        "a": ["1", null, 2],
+        "b": "@demo",
+      },
+      body: {
+        "test_body": 123,
+      },
+      headers: {
+        "test": "789",
+      },
+    );
+  });
 }

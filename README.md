@@ -360,17 +360,20 @@ The supported placeholder parameter values are:
 // Returns the first found collection matching the specified filter.
 🔐 pb.collections.getFirstListItem(filter, {query, headers});
 
-// Returns a single collection by its id.
-🔐 pb.collections.getOne(id, {query, headers});
+// Returns a single collection by its id or name.
+🔐 pb.collections.getOne(idOrName, {query, headers});
 
 // Creates (aka. register) a new collection.
 🔐 pb.collections.create({body, files, query, headers});
 
-// Updates an existing collection by its id.
-🔐 pb.collections.update(id, {body, files, query, headers});
+// Updates an existing collection by its id or name.
+🔐 pb.collections.update(idOrName, {body, files, query, headers});
 
-// Deletes a single collection by its id.
-🔐 pb.collections.delete(id, {query, body, headers});
+// Deletes a single collection by its id or name.
+🔐 pb.collections.delete(idOrName, {query, body, headers});
+
+// Deletes all records associated with the specified collection.
+🔐 pb.collections.truncate(idOrName, {query, body, headers});
 
 // Imports the provided collections.
 🔐 pb.collections.import(collections, {deleteMissing=false, query, body, headers});

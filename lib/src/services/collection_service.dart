@@ -66,4 +66,20 @@ class CollectionService extends BaseCrudService<CollectionModel> {
       return result;
     });
   }
+
+  /// Deletes all records associated with the specified collection.
+  Future<void> truncate(
+    String collectionIdOrName, {
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client.send(
+      "$baseCrudPath/${Uri.encodeComponent(collectionIdOrName)}/truncate",
+      method: "DELETE",
+      body: body,
+      query: query,
+      headers: headers,
+    );
+  }
 }
