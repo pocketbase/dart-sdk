@@ -1,4 +1,4 @@
-## 0.19.0-WIP
+## 0.19.0-rc
 
 **⚠️ This release introduces some breaking changes and works only with PocketBase v0.23.0+.**
 
