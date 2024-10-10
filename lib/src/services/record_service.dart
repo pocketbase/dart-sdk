@@ -121,12 +121,33 @@ class RecordService extends BaseCrudService<RecordModel> {
     )
         .then((item) {
       if (client.authStore.record != null &&
-          (client.authStore.record as RecordModel).id == item.id &&
-          [
-            (client.authStore.record as RecordModel).collectionId,
-            (client.authStore.record as RecordModel).collectionName,
-          ].contains(_collectionIdOrName)) {
-        client.authStore.save(client.authStore.token, item);
+              (client.authStore.record as RecordModel).id == item.id &&
+              [
+                (client.authStore.record as RecordModel).collectionId,
+                (client.authStore.record as RecordModel).collectionName,
+              ].contains(_collectionIdOrName)
+          // merge the response fields with the current auth record
+          ) {
+        final expand = (client.authStore.record as RecordModel).data["expand"]
+                as Map<String, dynamic>? ??
+            {};
+
+        final newExpand = item.data["expand"] as Map<String, dynamic>? ?? {};
+
+        final data = <String, dynamic>{}
+          ..addAll((client.authStore.record as RecordModel).data)
+          ..addAll(item.toJson());
+
+        // for now merge only top-level expand keys
+        if (expand.isNotEmpty) {
+          expand.addAll(newExpand);
+          data["expand"] = expand;
+        }
+
+        client.authStore.save(
+          client.authStore.token,
+          RecordModel.fromJson(data),
+        );
       }
 
       return item;

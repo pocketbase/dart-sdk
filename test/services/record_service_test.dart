@@ -60,7 +60,11 @@ void main() {
     test("update() with matching AuthStore model id and collection", () async {
       final mock = MockClient((request) async {
         return http.Response(
-          jsonEncode({"id": "test123", "test": "b"}),
+          jsonEncode({
+            "id": "test123",
+            "test": "b",
+            "expand": <String, dynamic>{"b": 3},
+          }),
           200,
         );
       });
@@ -69,13 +73,20 @@ void main() {
 
       client.authStore.save(
         "test_token",
-        RecordModel({"id": "test123", "collectionId": "test"}),
+        RecordModel({
+          "id": "test123",
+          "collectionId": "test",
+          "name": "abc",
+          "expand": <String, dynamic>{"a": 1, "b": 2},
+        }),
       );
 
       await client.collection("test").update("test123");
 
       expect(client.authStore.record, isNotNull);
+      expect(client.authStore.record?.data["collectionId"], "test");
       expect(client.authStore.record?.data["test"], "b");
+      expect(client.authStore.record?.data["expand"], {"a": 1, "b": 3});
     });
 
     test("delete() with matching AuthStore model id and collection", () async {
