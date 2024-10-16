@@ -511,7 +511,7 @@ void main() {
     'http://127.0.0.1:8090',
     // load the fetch_client only for web, otherwise - fallback to the default http.Client()
     //
-    // (note: if you want to be able to complite both for web and mobile you may have to import the FetchClient conditionally)
+    // (note: if you want to be able to compile both for web and mobile you may have to import the FetchClient conditionally)
     httpClientFactory: kIsWeb ? () => FetchClient(mode: RequestMode.cors) : null,
   );
 
