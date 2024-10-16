@@ -1,3 +1,10 @@
+## 0.19.0-rc3
+
+**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
+
+- Added `body`, `query`, `headers` optional arguments to `authWithOAuth2()` ([#62](https://github.com/pocketbase/dart-sdk/issues/62)).
+
+
 ## 0.19.0-rc2
 
 **⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**

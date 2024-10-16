@@ -2,7 +2,7 @@ name: pocketbase
 description: Multi-platform Dart SDK for PocketBase, an open source realtime backend in 1 file.
 repository: https://github.com/pocketbase/dart-sdk
 
-version: 0.19.0-rc2
+version: 0.19.0-rc3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

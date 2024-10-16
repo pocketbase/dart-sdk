@@ -315,6 +315,9 @@ class RecordService extends BaseCrudService<RecordModel> {
     OAuth2URLCallbackFunc urlCallback, {
     List<String> scopes = const [],
     Map<String, dynamic> createData = const {},
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
     String? expand,
     String? fields,
   }) async {
@@ -360,6 +363,9 @@ class RecordService extends BaseCrudService<RecordModel> {
             provider.codeVerifier,
             redirectURL.toString(),
             createData: createData,
+            body: body,
+            query: query,
+            headers: headers,
             expand: expand,
             fields: fields,
           );
