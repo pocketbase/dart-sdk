@@ -11,14 +11,14 @@ part "oauth2_config.g.dart";
 class OAuth2Config implements Jsonable {
   bool enabled;
   Map<String, String> mappedFields;
-  Map<String, dynamic> providers;
+  List<dynamic> providers;
 
   OAuth2Config({
     this.enabled = false,
     Map<String, String>? mappedFields,
-    Map<String, dynamic>? providers,
+    List<dynamic>? providers,
   })  : mappedFields = mappedFields ?? {},
-        providers = providers ?? {};
+        providers = providers ?? [];
 
   static OAuth2Config fromJson(Map<String, dynamic> json) =>
       _$OAuth2ConfigFromJson(json);

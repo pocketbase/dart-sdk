@@ -11,10 +11,12 @@ part "mfa_config.g.dart";
 class MFAConfig implements Jsonable {
   num duration;
   bool enabled;
+  String rule;
 
   MFAConfig({
     this.duration = 0,
     this.enabled = false,
+    this.rule = "",
   });
 
   static MFAConfig fromJson(Map<String, dynamic> json) =>

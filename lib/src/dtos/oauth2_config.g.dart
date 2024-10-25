@@ -11,7 +11,7 @@ OAuth2Config _$OAuth2ConfigFromJson(Map<String, dynamic> json) => OAuth2Config(
       mappedFields: (json['mappedFields'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
-      providers: json['providers'] as Map<String, dynamic>?,
+      providers: json['providers'] as List<dynamic>?,
     );
 
 Map<String, dynamic> _$OAuth2ConfigToJson(OAuth2Config instance) =>

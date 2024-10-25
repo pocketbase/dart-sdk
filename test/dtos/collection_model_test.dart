@@ -38,9 +38,9 @@ void main() {
         "oauth2": {
           "enabled": true,
           "mappedFields": {"a": "b"},
-          "providers": {
-            "test": {"name": "a"}
-          },
+          "providers": [
+            {"name": "a"}
+          ]
         },
         "passwordAuth": {
           "enabled": true,
@@ -49,6 +49,7 @@ void main() {
         "mfa": {
           "duration": 100,
           "enabled": false,
+          "rule": "abc",
         },
         "otp": {
           "duration": 100,
