@@ -49,7 +49,7 @@ void main() {
       expect(model.toJson(), json);
     });
 
-    test("getDataValue()", () {
+    test("get()", () {
       final model = RecordModel({
         "a": null,
         "b": 1.5,
@@ -59,15 +59,33 @@ void main() {
         "f": {"test": 123},
       });
 
-      expect(model.getDataValue<dynamic>("unknown"), null);
-      expect(model.getDataValue("unknown", "missing!"), "missing!");
-      expect(model.getDataValue<num>("b"), 1.5);
-      expect(model.getDataValue<int>("b"), 1);
-      expect(model.getDataValue<String>("c"), "test");
-      expect(model.getDataValue<List<String>>("e"), ["1", "2", "3"]);
-      expect(model.getDataValue<Map<String, dynamic>>("f"), {"test": 123});
-      expect(model.getDataValue<int>("f.test"), 123);
-      expect(model.getDataValue<int>("f.test2", -1), -1);
+      expect(model.get<dynamic>("unknown"), null);
+      expect(model.get("unknown", "missing!"), "missing!");
+      expect(model.get<num>("b"), 1.5);
+      expect(model.get<double>("b"), 1.5);
+      expect(model.get<int>("b"), 1);
+      expect(model.get<String>("c"), "test");
+      expect(model.get<List<String>>("e"), ["1", "2", "3"]);
+      expect(model.get<Map<String, dynamic>>("f"), {"test": 123});
+      expect(model.get<int>("f.test"), 123);
+      expect(model.get<int>("f.test_2", -1), -1);
+      expect(model.get<RecordModel>("f").toJson(), {"test": 123});
+      // existing field as nullable type
+      expect(model.get<num?>("b"), 1.5);
+      expect(model.get<String?>("c"), "test");
+      expect(model.get<bool?>("d"), false);
+      expect(model.get<List<String>?>("e"), ["1", "2", "3"]);
+      expect(model.get<Map<String, dynamic>?>("f"), {"test": 123});
+      expect(model.get<int?>("f.test"), 123);
+      expect(model.get<RecordModel?>("f")?.toJson(), {"test": 123});
+      // non-existing field as nullable type
+      expect(model.get<num?>("b_2"), null);
+      expect(model.get<String?>("c_2"), null);
+      expect(model.get<bool?>("d_2"), null);
+      expect(model.get<List<String>?>("e_2"), null);
+      expect(model.get<Map<String, dynamic>?>("f_2"), null);
+      expect(model.get<int?>("f.test_2"), null);
+      expect(model.get<RecordModel?>("f_2"), null);
     });
 
     test("getStringValue()", () {

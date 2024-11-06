@@ -332,6 +332,9 @@ The supported placeholder parameter values are:
 
 // Confirms record new email address.
 🔓 pb.collection(collectionIdOrName).confirmEmailChange(emailChangeToken, userPassword, {expand?, fields?, query, body, headers});
+
+// Impersonate authenticates with the specified recordId and returns a new client with the received auth token in a memory store.
+🔐 pb.collection(collectionIdOrName).impersonate(recordId, duration, {expand?, fields?, query, body, headers});
 ```
 
 ---

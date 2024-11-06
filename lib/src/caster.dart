@@ -1,5 +1,7 @@
 import "./dtos/record_model.dart";
 
+Type identityType<T>() => T;
+
 /// Extracts a single value from [data] by a dot-notation path
 /// and tries to cast it to the specified generic type.
 ///
@@ -48,6 +50,46 @@ T extract<T>(
     default:
       if (rawValue is T) {
         return rawValue;
+      }
+
+      // check against the nullable types
+      if (null is T) {
+        if (T == identityType<String?>()) {
+          return toString(rawValue) as T;
+        }
+        if (T == identityType<bool?>()) {
+          return toBool(rawValue) as T;
+        }
+        if (T == identityType<int?>()) {
+          return toInt(rawValue) as T;
+        }
+        if (T == identityType<num?>() || T == identityType<double?>()) {
+          return toDouble(rawValue) as T;
+        }
+        if (T == identityType<RecordModel?>()) {
+          return toRecordModel(rawValue) as T;
+        }
+        if (T == identityType<List<dynamic>?>()) {
+          return toList(rawValue) as T;
+        }
+        if (T == identityType<List<String>?>()) {
+          return toList<String>(rawValue) as T;
+        }
+        if (T == identityType<List<bool>?>()) {
+          return toList<bool>(rawValue) as T;
+        }
+        if (T == identityType<List<int>?>()) {
+          return toList<int>(rawValue) as T;
+        }
+        if (T == identityType<List<double>?>()) {
+          return toList<double>(rawValue) as T;
+        }
+        if (T == identityType<List<num>?>()) {
+          return toList<num>(rawValue) as T;
+        }
+        if (T == identityType<List<RecordModel>?>()) {
+          return toList<RecordModel>(rawValue) as T;
+        }
       }
 
       throw StateError("Invalid or unknown type value");

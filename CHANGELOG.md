@@ -1,3 +1,10 @@
+## 0.19.0-rc4
+
+**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
+
+- Added support for returning nullable types in `RecordModel.get<T>(field)` ([#63](https://github.com/pocketbase/dart-sdk/issues/63)).
+
+
 ## 0.19.0-rc3
 
 **⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
@@ -62,7 +69,7 @@
     await pb.collection('_superusers').authWithPassword('test@example.com', '1234567890');
 
     // create a new auth token for the specified user loaded in a new PocketBase client
-    final userClient = pb.collection('users').impersonate('RECORD_ID');
+    final userClient = pb.collection('users').impersonate('RECORD_ID', 0);
 
     // send the request as the impersonated user
     final result = await userClient.collection('example').getFullList();
