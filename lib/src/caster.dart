@@ -1,7 +1,5 @@
 import "./dtos/record_model.dart";
 
-Type identityType<T>() => T;
-
 /// Extracts a single value from [data] by a dot-notation path
 /// and tries to cast it to the specified generic type.
 ///
@@ -21,6 +19,13 @@ T extract<T>(
 ]) {
   final rawValue = _extractNestedValue(data, path, defaultValue);
 
+  return cast<T>(rawValue);
+}
+
+Type identityType<T>() => T;
+
+/// Attempts to cast the provided value into the specified type.
+T cast<T>(dynamic rawValue) {
   switch (T) {
     case const (String):
       return toString(rawValue) as T;
@@ -36,16 +41,22 @@ T extract<T>(
     case const (List<dynamic>):
       return toList(rawValue) as T;
     case const (List<String>):
+    case const (List<String?>):
       return toList<String>(rawValue) as T;
     case const (List<bool>):
+    case const (List<bool?>):
       return toList<bool>(rawValue) as T;
     case const (List<int>):
+    case const (List<int?>):
       return toList<int>(rawValue) as T;
     case const (List<double>):
+    case const (List<double?>):
       return toList<double>(rawValue) as T;
     case const (List<num>):
+    case const (List<num?>):
       return toList<num>(rawValue) as T;
     case const (List<RecordModel>):
+    case const (List<RecordModel?>):
       return toList<RecordModel>(rawValue) as T;
     default:
       if (rawValue is T) {
@@ -108,20 +119,24 @@ String toString(dynamic rawValue) {
   return rawValue is String ? rawValue : rawValue.toString();
 }
 
-/// Returns [rawValue] as **List<T>**.
+/// Casts and returns [rawValue] as **List<T>**.
 ///
-/// Non-List values that matches the generic type will be wrapped
-/// (eg. `toList<num>(1)` will be returned as `[1]`).
-///
-/// Returns an empty list if [rawValue] is a no list of type `T` or
-/// a single value of type `T`.
+/// Non-List values will be casted to T and returned as wrapped List<T>
+/// as long as the casted value is not null.
+/// For example `toList<num>(true)` will be returned as `[1]`, but
+/// `toList<num>(null)` will be returned as `[]`.
 List<T> toList<T>(dynamic rawValue) {
-  if (rawValue is List) {
-    return rawValue.cast<T>();
+  if (rawValue == null) {
+    return <T>[];
   }
 
-  if (rawValue is T) {
-    return <T>[rawValue];
+  if (rawValue is List) {
+    return rawValue.map((item) => cast<T>(item)).toList();
+  }
+
+  final casted = cast<T>(rawValue);
+  if (casted != null) {
+    return <T>[casted];
   }
 
   return <T>[];

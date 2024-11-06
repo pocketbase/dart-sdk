@@ -1,3 +1,10 @@
+## 0.19.0-rc5
+
+**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
+
+- Fixed `RecordModel.get<List<T>>` casts.
+
+
 ## 0.19.0-rc4
 
 **⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**

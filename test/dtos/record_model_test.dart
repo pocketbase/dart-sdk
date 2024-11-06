@@ -57,6 +57,9 @@ void main() {
         "d": false,
         "e": ["1", "2", "3"],
         "f": {"test": 123},
+        "g": [
+          {"test": 123}
+        ],
       });
 
       expect(model.get<dynamic>("unknown"), null);
@@ -70,6 +73,25 @@ void main() {
       expect(model.get<int>("f.test"), 123);
       expect(model.get<int>("f.test_2", -1), -1);
       expect(model.get<RecordModel>("f").toJson(), {"test": 123});
+      // lists
+      expect(model.get<List<RecordModel>>("missing"), <RecordModel>[]);
+      expect(model.get<List<int>>("b"), <int>[1]);
+      expect(model.get<List<int>>("d"), <int>[0]);
+      expect(model.get<List<int>>("missing"), <int>[]);
+      expect(model.get<List<int>>("e"), <int>[1, 2, 3]);
+      expect(
+          model.get<List<RecordModel>>("g").map((r) => r.toJson()).toList(), [
+        {"test": 123}
+      ]);
+      expect(
+          model.get<List<RecordModel?>>("g").map((r) => r?.toJson()).toList(), [
+        {"test": 123}
+      ]);
+      expect(
+          model.get<List<RecordModel>>("f").map((r) => r.toJson()).toList(), [
+        {"test": 123}
+      ]);
+      expect(model.get<List<int>>("d"), [0]);
       // existing field as nullable type
       expect(model.get<num?>("b"), 1.5);
       expect(model.get<String?>("c"), "test");
@@ -114,9 +136,9 @@ void main() {
         "e": ["1", 2, 3],
       });
       expect(model.getListValue<String>("a"), <String>[]); // invalid type
-      expect(model.getListValue<dynamic>("a"), [null]);
-      expect(model.getListValue<bool>("b"), <bool>[]); // invalid type
-      expect(model.getListValue<num>("b"), <num>[1]); // invalid type
+      expect(model.getListValue<dynamic>("a"), <dynamic>[]);
+      expect(model.getListValue<bool>("b"), <bool>[true]);
+      expect(model.getListValue<num>("b"), <num>[1]);
       expect(model.getListValue<dynamic>("b"), [1]);
       expect(model.getListValue<dynamic>("c"), ["test"]);
       expect(model.getListValue<dynamic>("d"), [false]);

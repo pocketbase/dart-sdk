@@ -27,6 +27,7 @@ void main() {
       expect(caster.extract<int>(data, "b"), 1);
       expect(caster.extract<String>(data, "c"), "test");
       expect(caster.extract<List<String>>(data, "e"), ["1", "2", "3"]);
+      expect(caster.extract<List<int>>(data, "e"), [1, 2, 3]);
       expect(caster.extract<List<dynamic>>(data, "f.a.b"), [
         {"b1": 1},
         {"b2": 2},
@@ -47,10 +48,13 @@ void main() {
     });
 
     test("toList()", () {
-      expect(caster.toList<String>(null), <String>[]); // invalid type
-      expect(caster.toList<dynamic>(null), [null]);
-      expect(caster.toList<bool>(1), <bool>[]); // invalid type
-      expect(caster.toList<num>(1), <num>[1]); // invalid type
+      expect(caster.toList<bool>(1), <bool>[true]);
+      expect(caster.toList<bool>(0), <bool>[false]);
+      expect(caster.toList<bool>(null), <bool>[]);
+      expect(caster.toList<num>(1), <num>[1]);
+      expect(caster.toList<int>(1.5), <int>[1]);
+      expect(caster.toList<String>(null), <String>[]);
+      expect(caster.toList<dynamic>(null), <dynamic>[]);
       expect(caster.toList<dynamic>(1), [1]);
       expect(caster.toList<dynamic>("test"), ["test"]);
       expect(caster.toList<dynamic>("false"), ["false"]);
