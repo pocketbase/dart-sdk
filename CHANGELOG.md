@@ -1,32 +1,4 @@
-## 0.19.0-rc5
-
-**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
-
-- Fixed `RecordModel.get<List<T>>` casts.
-
-
-## 0.19.0-rc4
-
-**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
-
-- Added support for returning nullable types in `RecordModel.get<T>(field)` ([#63](https://github.com/pocketbase/dart-sdk/issues/63)).
-
-
-## 0.19.0-rc3
-
-**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
-
-- Added `body`, `query`, `headers` optional arguments to `authWithOAuth2()` ([#62](https://github.com/pocketbase/dart-sdk/issues/62)).
-
-
-## 0.19.0-rc2
-
-**⚠️ This is a prerelease and works only with PocketBase v0.23.0+.**
-
-- Instead of replacing the entire `pb.authStore.record`, on auth record update we now only replace the available returned response record data ([pocketbase#5638](https://github.com/pocketbase/pocketbase/issues/5638)).
-
-
-## 0.19.0-rc
+## 0.19.0
 
 **⚠️ This release introduces some breaking changes and works only with PocketBase v0.23.0+.**
 
@@ -87,6 +59,10 @@
 - Added `pb.collections.getScaffolds()` method to return a collection type indexed map with blank collection models loaded with their type specific defaults.
 
 - Added `pb.collections.truncate(idOrName)` method to delete all records associated with the specified collection.
+
+- Added `body`, `query`, `headers` optional arguments to `authWithOAuth2()` ([#62](https://github.com/pocketbase/dart-sdk/issues/62)).
+
+- Instead of replacing the entire `pb.authStore.record`, on auth record update we now only replace the available returned response record data ([pocketbase#5638](https://github.com/pocketbase/pocketbase/issues/5638)).
 
 - ⚠️ Soft-deprecated and aliased `pb.admins` because with PockeBase v0.23+ admins are now stored as regular `_superusers` collection records.
     ```dart
