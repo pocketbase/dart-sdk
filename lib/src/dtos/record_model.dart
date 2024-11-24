@@ -7,7 +7,7 @@ import "package:json_annotation/json_annotation.dart";
 import "../caster.dart" as caster;
 import "jsonable.dart";
 
-part "record_model.g.dart"; // not actually used
+//part "record_model.g.dart"; // not actually used
 
 /// Response DTO of a single record model.
 @JsonSerializable()
