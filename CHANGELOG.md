@@ -2,7 +2,7 @@
 
 **⚠️ This release works only with PocketBase v0.23.0+.**
 
-- Added notation to exclude the deprecated `RecordModel.expand` key from the parent JSON serialization ([pocketbase#5946](https://github.com/pocketbase/pocketbase/issues/5946)).
+- Added annotation to exclude the deprecated `RecordModel.expand` key from the parent JSON serialization ([pocketbase#5946](https://github.com/pocketbase/pocketbase/issues/5946)).
 
 - Added `RecordModel.set` for consistency with `RecordModel.get`.
 
