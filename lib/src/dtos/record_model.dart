@@ -38,6 +38,7 @@ record.get<String>("expand.user.email");
 record.get<RecordModel>("expand.user");
 record.get<List<RecordModel>>("expand.products");
   """)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<String, List<RecordModel>> expand = {};
 
   final List<String> _singleExpandKeys = [];
@@ -97,6 +98,11 @@ record.get<List<RecordModel>>("expand.products");
   /// ```
   T get<T>(String fieldNameOrPath, [T? defaultValue]) {
     return caster.extract<T>(data, fieldNameOrPath, defaultValue);
+  }
+
+  // Updates a single Record field value.
+  void set(String fieldName, dynamic value) {
+    data[fieldName] = value;
   }
 
   @Deprecated("use get<T>(...)")

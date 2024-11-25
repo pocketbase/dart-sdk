@@ -49,6 +49,17 @@ void main() {
       expect(model.toJson(), json);
     });
 
+    test("set()", () {
+      final model = RecordModel({
+        "a": 123,
+      })
+        ..set("a", 456)
+        ..set("b", 789);
+
+      expect(model.data["a"], 456);
+      expect(model.data["b"], 789);
+    });
+
     test("get()", () {
       final model = RecordModel({
         "a": null,
