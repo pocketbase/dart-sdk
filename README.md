@@ -185,7 +185,7 @@ The default `AuthStore` class has the following public members that you could us
 ```dart
 AuthStore {
     token:    String           // Getter for the stored auth token
-    record:   RecordModel|null // Getter for the stored auth RecordModel or AdminModel
+    record:   RecordModel|null // Getter for the stored auth RecordModel
     isValid   bool             // Getter to loosely check if the store has an existing and unexpired token
     onChange  Stream           // Stream that gets triggered on each auth store change
 
@@ -195,7 +195,7 @@ AuthStore {
 }
 ```
 
-To _"logout"_ an authenticated record or admin, you can just call `pb.authStore.clear()`.
+To _"logout"_ an authenticated record, you can just call `pb.authStore.clear()`.
 
 To _"listen"_ for changes in the auth store, you can _listen_ to the `onChange` broadcast stream:
 ```dart
@@ -345,7 +345,7 @@ The supported placeholder parameter values are:
 // Builds and returns an absolute record file url for the provided filename.
 🔓 pb.files.getURL(record, filename, {thumb?, token?, query, body, headers});
 
-// Requests a new private file access token for the current auth model (admin or record).
+// Requests a new private file access token for the current auth record.
 🔐 pb.files.getToken({query, body, headers});
 ```
 
@@ -463,7 +463,7 @@ The supported placeholder parameter values are:
 🔐 pb.backups.restore(key, {body, query, headers});
 
 // Builds a download url for a single existing backup using an
-// admin file token and the backup file key.
+// superuser file token and the backup file key.
 🔐 pb.backups.getDownloadURL(token, key, {query});
 ```
 
