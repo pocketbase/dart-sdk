@@ -440,6 +440,15 @@ The supported placeholder parameter values are:
 
 // Unsubscribe from all subscriptions starting with the provided prefix.
 🔓 pb.realtime.unsubscribeByPrefix(subscriptionsPrefix);
+
+// An optional hook that is invoked when the realtime client disconnects
+// either when unsubscribing from all subscriptions or when the connection
+// was interrupted or closed by the server.
+//
+// Note that the realtime client autoreconnect on its own and this hook is
+// useful only for the cases where you want to apply a special behavior on
+// server error or after closing the realtime connection.
+pb.realtime.onDisconnect = (subscriptions) { ... }
 ```
 
 ---

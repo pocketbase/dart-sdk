@@ -21,8 +21,20 @@ class RealtimeService extends BaseService {
   String _clientId = "";
   final _subscriptions = <String, List<SubscriptionFunc>>{};
 
-  // Returns the established SSE connection client id (if any).
+  /// Returns the established SSE connection client id (if any).
   String get clientId => _clientId;
+
+  /// An optional hook that is invoked when the realtime client disconnects
+  /// either when unsubscribing from all subscriptions or when the
+  /// connection was interrupted or closed by the server.
+  ///
+  /// It receives the subscriptions map before the disconnect
+  /// (could be used to determine whether the disconnect was caused by
+  /// unsubscribing or network/server error).
+  ///
+  /// If you want to listen for the opposite, aka. when the client
+  /// connection is established, subscribe to the `PB_CONNECT` event.
+  void Function(Map<String, List<SubscriptionFunc>>)? onDisconnect;
 
   /// Register the subscription listener.
   ///
@@ -248,11 +260,21 @@ class RealtimeService extends BaseService {
       url,
       httpClientFactory: client.httpClientFactory,
       onClose: () {
+        if (_clientId.isNotEmpty && onDisconnect != null) {
+          onDisconnect?.call(_subscriptions);
+        }
+
         _disconnect();
 
         if (!completer.isCompleted) {
           completer
               .completeError(StateError("failed to establish SSE connection"));
+        }
+      },
+      onError: (err) {
+        if (_clientId.isNotEmpty && onDisconnect != null) {
+          _clientId = "";
+          onDisconnect?.call(_subscriptions);
         }
       },
     );

@@ -1,3 +1,9 @@
+## 0.20.0
+
+- Added optional `pb.realtime.onDisconnect` hook function.
+  _Note that the realtime client autoreconnect on its own and this hook is useful only for the cases where you want to apply a special behavior on server error or after closing the realtime connection._
+
+
 ## 0.19.1
 
 **⚠️ This release works only with PocketBase v0.23.0+.**
