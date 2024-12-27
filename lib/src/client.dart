@@ -10,6 +10,7 @@ import "multipart_request.dart";
 import "services/backup_service.dart";
 import "services/batch_service.dart";
 import "services/collection_service.dart";
+import "services/cron_service.dart";
 import "services/file_service.dart";
 import "services/health_service.dart";
 import "services/log_service.dart";
@@ -65,6 +66,9 @@ class PocketBase {
   /// The service that handles the **Backup and restore APIs**.
   late final BackupService backups;
 
+  /// The service that handles the **Cron APIs**.
+  late final CronService crons;
+
   /// The underlying http client that will be used to send the request.
   /// This is used primarily for the unit tests.
   late final http.Client Function() httpClientFactory;
@@ -89,6 +93,7 @@ class PocketBase {
     logs = LogService(this);
     health = HealthService(this);
     backups = BackupService(this);
+    crons = CronService(this);
   }
 
   /// Returns the RecordService associated to the specified collection.

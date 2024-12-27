@@ -453,7 +453,7 @@ pb.realtime.onDisconnect = (subscriptions) { ... }
 
 ---
 
-##### BackupService
+##### BackupService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/BackupService-class.html), [API docs](https://pocketbase.io/docs/api-backups))
 
 ```js
 // Returns list with all available backup files.
@@ -478,7 +478,19 @@ pb.realtime.onDisconnect = (subscriptions) { ... }
 
 ---
 
-##### HealthService
+##### CronService ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/CronService-class.html), [API docs](https://pocketbase.io/docs/api-crons))
+
+```js
+// Returns list with all registered app cron jobs.
+🔐 pb.crons.getFullList({query, headers});
+
+// Runs the specified cron job.
+🔐 pb.backups.run(jobId, {body, query, headers});
+```
+
+---
+
+##### HealthService  ([Detailed class reference](https://pub.dev/documentation/pocketbase/latest/pocketbase/HealthService-class.html), [API docs](https://pocketbase.io/docs/api-health))
 
 ```dart
 // Checks the health status of the api.

@@ -1,3 +1,8 @@
+## 0.21.0 (WIP)
+
+- Added `pb.crons` service to interact with the cron Web APIs.
+
+
 ## 0.20.0
 
 - Added optional `pb.realtime.onDisconnect` hook function.
