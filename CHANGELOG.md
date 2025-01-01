@@ -1,4 +1,4 @@
-## 0.21.0 (WIP)
+## 0.21.0
 
 - Added `pb.crons` service to interact with the cron Web APIs.
 
