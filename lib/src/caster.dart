@@ -107,10 +107,10 @@ T cast<T>(dynamic rawValue) {
   }
 }
 
-/// Returns [rawValue] as **String**.
+/// Returns [rawValue] as `String`.
 ///
 /// For `null` values empty string is returned.
-/// `toString()` is used for any other non-String value.
+/// `toString()` is used for any other non-`String` value.
 String toString(dynamic rawValue) {
   if (rawValue == null) {
     return "";
@@ -119,10 +119,10 @@ String toString(dynamic rawValue) {
   return rawValue is String ? rawValue : rawValue.toString();
 }
 
-/// Casts and returns [rawValue] as **List<T>**.
+/// Casts and returns [rawValue] as `List<T>`.
 ///
-/// Non-List values will be casted to T and returned as wrapped List<T>
-/// as long as the casted value is not null.
+/// Non-List values will be casted to `T` and returned as wrapped `List<T>`
+/// as long as the casted value is not `null`.
 /// For example `toList<num>(true)` will be returned as `[1]`, but
 /// `toList<num>(null)` will be returned as `[]`.
 List<T> toList<T>(dynamic rawValue) {

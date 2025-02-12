@@ -1,3 +1,9 @@
+## 0.22.0
+
+- Bumped `http` to min 1.3 to enable streamed responses on the web.
+  _If you have previously relied on `fetch_client` for the realtime subsctiptions, with this release it should no longer be necessary and the custom `httpClientFactory` instantiation can be removed._
+
+
 ## 0.21.0
 
 - Added `pb.crons` service to interact with the cron Web APIs.

@@ -521,27 +521,6 @@ final result = await batch.send()
 PocketBase Dart SDK is built on top of the standard `dart-lang/http` package and inherits some of its limitations:
 
 - Requests cancellation/abort is not supported yet - [dart-lang/http #424](https://github.com/dart-lang/http/issues/424)
-- Streamed responses (used by the realtime service and the "all-in-one" OAuth2 flow) are not supported on the web - [dart-lang/http #595](https://github.com/dart-lang/http/issues/595)
-
-One possible workaround for the latter is to provide a 3rd party `http.Client` implementation specific for the web like [`fetch_client`](https://pub.dev/packages/fetch_client) using the `httpClientFactory` constructor option:
-
-```dart
-import 'package:pocketbase/pocketbase.dart';
-import 'package:fetch_client/fetch_client.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-
-void main() {
-  final pb = PocketBase(
-    'http://127.0.0.1:8090',
-    // load the fetch_client only for web, otherwise - fallback to the default http.Client()
-    //
-    // (note: if you want to be able to compile both for web and mobile you may have to import the FetchClient conditionally)
-    httpClientFactory: kIsWeb ? () => FetchClient(mode: RequestMode.cors) : null,
-  );
-
-  // ...
-}
-```
 
 
 ## Development
