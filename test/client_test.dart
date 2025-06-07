@@ -1,4 +1,4 @@
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: lines_longer_than_80_chars, cascade_invocations
 
 import "dart:convert";
 
@@ -366,6 +366,56 @@ void main() {
       );
 
       await client.send("", headers: {"Authorization": "test_custom"});
+    });
+  });
+
+  group("HTTP client reuse", () {
+    test("without reuseHTTPClient", () async {
+      final mock = MockClient((request) async {
+        return http.Response(
+          jsonEncode({"test": 123}),
+          200,
+          headers: {"content-type": "application/json"},
+        );
+      });
+
+      final client = PocketBase(
+        "https://example.com/",
+        httpClientFactory: () => mock,
+      );
+
+      expect(await client.send("/test"), equals({"test": 123}));
+
+      // (should have no effect)
+      // invoke twice to make sure that multiple calls don't throw
+      client.close();
+      client.close();
+
+      expect(await client.send("/test"), equals({"test": 123}));
+    });
+
+    test("with reuseHTTPClient", () async {
+      final mock = MockClient((request) async {
+        return http.Response(
+          jsonEncode({"test": 123}),
+          200,
+          headers: {"content-type": "application/json"},
+        );
+      });
+
+      final client = PocketBase(
+        "https://example.com/",
+        httpClientFactory: () => mock,
+        reuseHTTPClient: true,
+      );
+
+      expect(await client.send("/test"), equals({"test": 123}));
+
+      // invoke twice to make sure that multiple calls don't throw
+      client.close();
+      client.close();
+
+      await expectLater(client.send("/test"), throwsA(isA<ClientException>()));
     });
   });
 }

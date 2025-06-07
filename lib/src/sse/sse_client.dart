@@ -32,7 +32,7 @@ import "sse_message.dart";
 /// sse.close();
 /// ```
 class SseClient {
-  // List with default stepped retry timeouts (in ms).
+  /// List with default stepped retry timeouts (in ms).
   static const List<int> defaultRetryTimeouts = [
     200,
     300,

@@ -1,3 +1,9 @@
+## 0.23.0
+
+- Added `reuseHTTPClient` `PocketBase` constructor parameter to initialize a single HTTP client and reuse it for all requests, in order to improve slightly the performance by keeping a persistent connection.
+  More details you can find in the ["Optional HTTP client reuse" section in the README](https://github.com/pocketbase/dart-sdk#optional-http-client-reuse).
+
+
 ## 0.22.0
 
 - Bumped `http` to min 1.3 to enable streamed responses on the web.

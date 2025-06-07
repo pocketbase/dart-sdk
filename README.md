@@ -10,6 +10,7 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
     - [Error handling](#error-handling)
     - [AuthStore](#authstore)
     - [Binding filter parameters](#binding-filter-parameters)
+    - [Optional HTTP client reuse](#optional-http-client-reuse)
 - [Services](#services)
 - [Limitations](#limitations)
 - [Development](#development)
@@ -242,6 +243,27 @@ The supported placeholder parameter values are:
 - `num`
 - `null`
 - everything else is converted to a string using `jsonEncode()`
+
+
+#### Optional HTTP client reuse
+
+Out of the box the SDK initializes a new one-off `dart-lang/http.Client` instance for each request and it takes care to close the established connection after processing the request.
+
+The defaults should work fine for most applications but in some situations you may benefit from utilizing persistent connections when sending requests to your PocketBase server _(~10% improvement on average when sending 100 requests)_.
+
+This could be enabled via the `reuseHTTPClient` constructor option. The main drawback of this option is that you'll have to call `pb.close()` when done dealing with the SDK instance (e.g. before app termination).
+
+```dart
+import 'package:pocketbase/pocketbase.dart';
+
+// enable the reuseHTTPClient option
+final pb = PocketBase('http://127.0.0.1:8090', reuseHTTPClient: true);
+
+...
+
+// after close() no further requests can be made with this instance
+pb.close();
+```
 
 
 ## Services

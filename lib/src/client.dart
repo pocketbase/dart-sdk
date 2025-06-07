@@ -76,15 +76,34 @@ class PocketBase {
   /// Cache of all created RecordService instances.
   final _recordServices = <String, RecordService>{};
 
+  /// The shared HTTP client instance that is used when the
+  /// `reuseHTTPClient` constructor argument is set.
+  http.Client? _sharedHTTPClient;
+
+  /// Holds the close state of the client.
+  bool _closed = false;
+
   PocketBase(
     this.baseURL, {
     this.lang = "en-US",
     AuthStore? authStore,
-    // used primarily for the unit tests
+
+    /// Initializes a single HTTP client and reuses it for all requests,
+    /// in order to improve the performance by keeping a persistent connection.
+    ///
+    /// NB! If enabled you'll need to call `pb.close()` once you are done
+    /// working with the client.
+    bool reuseHTTPClient = false,
+
+    /// Optional factory to load custom `http.Client` implementation.
     http.Client Function()? httpClientFactory,
   }) {
     this.authStore = authStore ?? AuthStore();
     this.httpClientFactory = httpClientFactory ?? http.Client.new;
+
+    if (reuseHTTPClient) {
+      _sharedHTTPClient = this.httpClientFactory();
+    }
 
     collections = CollectionService(this);
     files = FileService(this);
@@ -107,6 +126,25 @@ class PocketBase {
     }
 
     return service;
+  }
+
+  /// Note: this method needs to be called only when the PocketBase
+  /// client instance is created with the `reuseHTTPClient` option.
+  ///
+  /// Closes the shared HTTP client and cleans up any resources
+  /// associated with it.
+  ///
+  /// Once closed, the client instance should be discarded and no
+  /// further requests can be made with it.
+  ///
+  /// Calling [close] multiple times is allowed and does nothing.
+  /// If [close] is called while other asynchronous methods are running,
+  /// the behavior is undefined.
+  void close() {
+    if (!_closed && _sharedHTTPClient != null) {
+      _sharedHTTPClient?.close();
+      _closed = true;
+    }
   }
 
   /// Constructs a filter expression with placeholders populated from a map.
@@ -222,9 +260,16 @@ class PocketBase {
     Map<String, dynamic> body = const {},
     List<http.MultipartFile> files = const [],
   }) async {
-    http.BaseRequest request;
-
     final url = buildURL(path, query);
+
+    if (_closed) {
+      throw ClientException(
+        url: url,
+        originalError: StateError("Client is closed"),
+      );
+    }
+
+    http.BaseRequest request;
 
     if (files.isEmpty) {
       request = _jsonRequest(method, url, headers: headers, body: body);
@@ -255,7 +300,7 @@ class PocketBase {
       request.persistentConnection = false;
     }
 
-    final requestClient = httpClientFactory();
+    final requestClient = _sharedHTTPClient ?? httpClientFactory();
 
     try {
       final response = await requestClient.send(request);
@@ -297,7 +342,10 @@ class PocketBase {
       // anything else
       throw ClientException(url: url, originalError: e);
     } finally {
-      requestClient.close();
+      // shared clients must be closed manually
+      if (_sharedHTTPClient == null) {
+        requestClient.close();
+      }
     }
   }
 
