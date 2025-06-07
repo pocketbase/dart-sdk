@@ -247,7 +247,7 @@ The supported placeholder parameter values are:
 
 #### Optional HTTP client reuse
 
-Out of the box the SDK initializes a new one-off `dart-lang/http.Client` instance for each request and it takes care to close the established connection after processing the request.
+Out of the box the SDK initializes a new one-off `dart-lang/http.Client` instance for each request and it takes care to close the established connection after processing the response.
 
 The defaults should work fine for most applications but in some situations you may benefit from utilizing persistent connections when sending requests to your PocketBase server _(~10% improvement on average when sending 100 requests)_.
 
@@ -457,7 +457,7 @@ pb.close();
 // You can subscribe to the `PB_CONNECT` event if you want to listen to the realtime connection connect/reconnect events.
 🔓 pb.realtime.subscribe(subscription, callback, {filter?, expand?, fields?, query, headers});
 
-// Unsubscribe from a subscription (if empty - unsubscibe from all registered subscriptions).
+// Unsubscribe from a subscription (if empty - unsubscribe from all registered subscriptions).
 🔓 pb.realtime.unsubscribe([subscription = '']);
 
 // Unsubscribe from all subscriptions starting with the provided prefix.
