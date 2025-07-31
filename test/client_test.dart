@@ -81,7 +81,7 @@ void main() {
         "test5": 123,
         "test6": -123.45,
         "test7": 123.45,
-        "test8": DateTime(2023, 10, 18, 10, 11, 12),
+        "test8": DateTime.utc(2023, 10, 18, 10, 11, 12),
         "test9": [1, 2, 3, "test'123"],
         "test10": {"a": "test'123"},
       };
@@ -97,7 +97,7 @@ void main() {
 
       expect(
         client.filter(expr, params),
-        "test1='a\\'b\\'c\\'' || test2=null || test3=true || test4=false || test5=123 || test6=-123.45 || test7=123.45 || test8='2023-10-18 07:11:12.000Z' || test9='[1,2,3,\"test\\'123\"]' || test10='{\"a\":\"test\\'123\"}'",
+        "test1='a\\'b\\'c\\'' || test2=null || test3=true || test4=false || test5=123 || test6=-123.45 || test7=123.45 || test8='2023-10-18 10:11:12.000Z' || test9='[1,2,3,\"test\\'123\"]' || test10='{\"a\":\"test\\'123\"}'",
       );
     });
   });
