@@ -4,6 +4,7 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 
 import "auth_store.dart";
+import "cancel_token.dart";
 import "client_exception.dart";
 import "dtos/record_model.dart";
 import "multipart_request.dart";
@@ -71,10 +72,16 @@ class PocketBase {
 
   /// The underlying http client that will be used to send the request.
   /// This is used primarily for the unit tests.
-  late final http.Client Function() httpClientFactory;
+  late http.Client Function() httpClientFactory;
 
   /// Cache of all created RecordService instances.
   final _recordServices = <String, RecordService>{};
+
+  /// Map of active cancel tokens for auto-cancellation.
+  final _cancelTokens = <String, CancelToken>{};
+
+  /// Whether auto-cancellation of duplicate requests is enabled.
+  bool _enableAutoCancellation = true;
 
   /// The shared HTTP client instance that is used when the
   /// `reuseHTTPClient` constructor argument is set.
@@ -126,6 +133,37 @@ class PocketBase {
     }
 
     return service;
+  }
+
+  /// Globally enable or disable auto cancellation for pending duplicated 
+  /// requests.
+  /// 
+  /// When enabled (default), sending multiple requests to the same endpoint
+  /// will automatically cancel the previous pending requests.
+  void autoCancellation(bool enable) {
+    _enableAutoCancellation = enable;
+  }
+
+  /// Cancels a single request by its cancellation key.
+  /// 
+  /// The cancellation key is usually the HTTP method + path,
+  /// or a custom key specified in the request options.
+  void cancelRequest(String requestKey) {
+    final token = _cancelTokens[requestKey];
+    if (token != null && !token.isCancelled) {
+      token.cancel("Request was cancelled manually");
+      _cancelTokens.remove(requestKey);
+    }
+  }
+
+  /// Cancels all pending requests.
+  void cancelAllRequests() {
+    for (final token in _cancelTokens.values) {
+      if (!token.isCancelled) {
+        token.cancel("All requests were cancelled");
+      }
+    }
+    _cancelTokens.clear();
   }
 
   /// Note: this method needs to be called only when the PocketBase
@@ -249,6 +287,11 @@ class PocketBase {
   /// and the provided options.
   ///
   /// All response errors are normalized and wrapped in [ClientException].
+  /// 
+  /// [requestKey] can be used to control auto-cancellation:
+  /// - If not specified: use default auto-cancellation based on method+path
+  /// - If specified: use custom key for auto-cancellation
+  /// - If explicitly set to `null`: disable auto-cancellation for this request
   Future<T> send<T extends dynamic>(
     // ignore: lines_longer_than_80_chars
     // note: the optional generic type is to ensure that the expected response data type is returned
@@ -259,6 +302,8 @@ class PocketBase {
     Map<String, dynamic> query = const {},
     Map<String, dynamic> body = const {},
     List<http.MultipartFile> files = const [],
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(), // Use Object() as sentinel
   }) async {
     final url = buildURL(path, query);
 
@@ -267,6 +312,46 @@ class PocketBase {
         url: url,
         originalError: StateError("Client is closed"),
       );
+    }
+
+    // Handle auto-cancellation
+    var effectiveCancelToken = cancelToken;
+    
+    // Auto-cancellation logic:
+    // - If requestKey is explicitly null: disable auto-cancellation
+    // - If requestKey is provided (string): use custom key 
+    // - If requestKey is not specified: use default key if enabled
+    var shouldUseAutoCancellation = false;
+    String? autoCancelKey;
+    
+    if (requestKey == null) {
+      // Explicitly disabled auto-cancellation
+      shouldUseAutoCancellation = false;
+    } else if (requestKey is String) {
+      // Custom requestKey provided
+      shouldUseAutoCancellation = true;
+      autoCancelKey = requestKey;
+    } else if (_enableAutoCancellation) {
+      // Use default key (requestKey is the sentinel Object)
+      shouldUseAutoCancellation = true;
+      autoCancelKey = "$method $path";
+    }
+    
+    if (shouldUseAutoCancellation && autoCancelKey != null) {
+      // Cancel previous request with the same key
+      final existingToken = _cancelTokens[autoCancelKey];
+      if (existingToken != null && !existingToken.isCancelled) {
+        existingToken.cancel("Request was auto-cancelled");
+      }
+      
+      // Create new token for this request
+      final autoCancelToken = CancelToken();
+      _cancelTokens[autoCancelKey] = autoCancelToken;
+      
+      // Combine with user-provided token if any
+      effectiveCancelToken = cancelToken != null 
+          ? cancelToken.combine(autoCancelToken)
+          : autoCancelToken;
     }
 
     http.BaseRequest request;
@@ -303,7 +388,15 @@ class PocketBase {
     final requestClient = _sharedHTTPClient ?? httpClientFactory();
 
     try {
-      final response = await requestClient.send(request);
+      // Check for cancellation before sending
+      effectiveCancelToken?.throwIfCancelled();
+
+      final response = await _sendWithCancellation(
+        requestClient, 
+        request, 
+        effectiveCancelToken,
+      );
+      
       final responseStr = await response.stream.bytesToString();
 
       dynamic responseData;
@@ -323,6 +416,12 @@ class PocketBase {
       }
 
       return responseData as T;
+    } on CancellationException catch (e) {
+      throw ClientException(
+        url: url,
+        isAbort: true,
+        originalError: e,
+      );
     } catch (e) {
       // PocketBase API exception
       if (e is ClientException) {
@@ -342,11 +441,54 @@ class PocketBase {
       // anything else
       throw ClientException(url: url, originalError: e);
     } finally {
+      // Clean up cancel token if it was auto-generated
+      if (shouldUseAutoCancellation && autoCancelKey != null) {
+        _cancelTokens.remove(autoCancelKey);
+      }
+      
       // shared clients must be closed manually
       if (_sharedHTTPClient == null) {
         requestClient.close();
       }
     }
+  }
+
+  /// Sends an HTTP request with cancellation support.
+  Future<http.StreamedResponse> _sendWithCancellation(
+    http.Client client,
+    http.BaseRequest request,
+    CancelToken? cancelToken,
+  ) async {
+    if (cancelToken == null) {
+      return client.send(request);
+    }
+
+    final responseCompleter = Completer<http.StreamedResponse>();
+    late StreamSubscription<void> cancelSubscription;
+
+    // Set up cancellation listener
+    cancelSubscription = cancelToken.whenCancelled.asStream().listen((_) {
+      if (!responseCompleter.isCompleted) {
+        responseCompleter.completeError(
+          CancellationException(cancelToken.reason ?? "Request was cancelled"),
+        );
+      }
+    });
+
+    // Send the request
+    client.send(request).then((response) {
+      cancelSubscription.cancel();
+      if (!responseCompleter.isCompleted) {
+        responseCompleter.complete(response);
+      }
+    }).catchError((Object error) {
+      cancelSubscription.cancel();
+      if (!responseCompleter.isCompleted) {
+        responseCompleter.completeError(error);
+      }
+    }).ignore();
+
+    return responseCompleter.future;
   }
 
   http.Request _jsonRequest(

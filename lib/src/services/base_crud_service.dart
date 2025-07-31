@@ -1,5 +1,6 @@
 import "package:http/http.dart" as http;
 
+import "../cancel_token.dart";
 import "../client_exception.dart";
 import "../dtos/jsonable.dart";
 import "../dtos/result_list.dart";
@@ -26,6 +27,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     final result = <M>[];
 
@@ -40,6 +43,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
         expand: expand,
         query: query,
         headers: headers,
+        cancelToken: cancelToken,
+        requestKey: requestKey,
       ).then((list) {
         result.addAll(list.items);
 
@@ -65,6 +70,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["page"] = page;
@@ -80,6 +87,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           baseCrudPath,
           query: enrichedQuery,
           headers: headers,
+          cancelToken: cancelToken,
+          requestKey: requestKey,
         )
         .then((data) => ResultList<M>.fromJson(data, itemFactoryFunc));
   }
@@ -93,6 +102,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) async {
     if (id.isEmpty) {
       throw ClientException(
@@ -115,6 +126,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           "$baseCrudPath/${Uri.encodeComponent(id)}",
           query: enrichedQuery,
           headers: headers,
+          cancelToken: cancelToken,
+          requestKey: requestKey,
         )
         .then(itemFactoryFunc);
   }
@@ -131,6 +144,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     String? fields,
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     return getList(
       perPage: 1,
@@ -140,6 +155,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
       fields: fields,
       query: query,
       headers: headers,
+      cancelToken: cancelToken,
+      requestKey: requestKey,
     ).then((result) {
       if (result.items.isEmpty) {
         throw ClientException(
@@ -164,6 +181,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     Map<String, String> headers = const {},
     String? expand,
     String? fields,
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
@@ -177,6 +196,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           query: enrichedQuery,
           files: files,
           headers: headers,
+          cancelToken: cancelToken,
+          requestKey: requestKey,
         )
         .then(itemFactoryFunc);
   }
@@ -190,6 +211,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     Map<String, String> headers = const {},
     String? expand,
     String? fields,
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     final enrichedQuery = Map<String, dynamic>.of(query);
     enrichedQuery["expand"] ??= expand;
@@ -203,6 +226,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
           query: enrichedQuery,
           files: files,
           headers: headers,
+          cancelToken: cancelToken,
+          requestKey: requestKey,
         )
         .then(itemFactoryFunc);
   }
@@ -213,6 +238,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     return client.send(
       "$baseCrudPath/${Uri.encodeComponent(id)}",
@@ -220,6 +247,8 @@ abstract class BaseCrudService<M extends Jsonable> extends BaseService {
       body: body,
       query: query,
       headers: headers,
+      cancelToken: cancelToken,
+      requestKey: requestKey,
     );
   }
 }

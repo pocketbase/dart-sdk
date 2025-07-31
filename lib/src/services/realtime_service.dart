@@ -329,6 +329,7 @@ class RealtimeService extends BaseService {
         "clientId": _clientId,
         "subscriptions": _subscriptions.keys.toList(),
       },
+      requestKey: "realtime_$_clientId",
     );
   }
 }

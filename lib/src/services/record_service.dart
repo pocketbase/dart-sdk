@@ -3,6 +3,7 @@ import "dart:convert";
 
 import "package:http/http.dart" as http;
 
+import "../cancel_token.dart";
 import "../client.dart";
 import "../client_exception.dart";
 import "../dtos/auth_method_provider.dart";
@@ -108,6 +109,8 @@ class RecordService extends BaseCrudService<RecordModel> {
     Map<String, String> headers = const {},
     String? expand,
     String? fields,
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     return super
         .update(
@@ -118,6 +121,8 @@ class RecordService extends BaseCrudService<RecordModel> {
       headers: headers,
       expand: expand,
       fields: fields,
+      cancelToken: cancelToken,
+      requestKey: requestKey,
     )
         .then((item) {
       if (client.authStore.record != null &&
@@ -164,6 +169,8 @@ class RecordService extends BaseCrudService<RecordModel> {
     Map<String, dynamic> body = const {},
     Map<String, dynamic> query = const {},
     Map<String, String> headers = const {},
+    CancelToken? cancelToken,
+    Object? requestKey = const Object(),
   }) {
     return super
         .delete(
@@ -171,6 +178,8 @@ class RecordService extends BaseCrudService<RecordModel> {
       body: body,
       query: query,
       headers: headers,
+      cancelToken: cancelToken,
+      requestKey: requestKey,
     )
         .then((_) {
       if (client.authStore.record != null &&
