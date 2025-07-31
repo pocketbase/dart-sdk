@@ -1,6 +1,6 @@
 /// Multi-platform [Future]-based library for interacting with the
 /// [PocketBase API](https://pocketbase.io/docs/).
-library pocketbase;
+library;
 
 // main
 export "src/async_auth_store.dart";
