@@ -1,3 +1,8 @@
+## 0.23.0+1
+
+- Added [note in the README](https://github.com/pocketbase/dart-sdk#oauth2-and-android-15) about Android 15+ and the "All-in-one" OAuth2 flow.
+
+
 ## 0.23.0
 
 - Added `reuseHTTPClient` `PocketBase` constructor parameter to initialize a single HTTP client and reuse it for all requests, in order to improve slightly the performance by keeping a persistent connection.
