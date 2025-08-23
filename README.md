@@ -11,6 +11,7 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
     - [AuthStore](#authstore)
     - [Binding filter parameters](#binding-filter-parameters)
     - [Optional HTTP client reuse](#optional-http-client-reuse)
+    - [OAuth2 and Android 15+](#oauth2-and-android-15)
 - [Services](#services)
 - [Limitations](#limitations)
 - [Development](#development)
@@ -223,6 +224,7 @@ final store = AsyncAuthStore(
 final pb = PocketBase('http://example.com', authStore: store);
 ```
 
+
 #### Binding filter parameters
 
 The SDK comes with a helper `pb.filter(expr, params)` method to generate a filter string with placeholder parameters (`{:paramName}`) populated from a `Map`.
@@ -264,6 +266,13 @@ final pb = PocketBase('http://127.0.0.1:8090', reuseHTTPClient: true);
 // after close() no further requests can be made with this instance
 pb.close();
 ```
+
+
+#### OAuth2 and Android 15+
+
+Android 15+ introduced [major behavior changes](https://developer.android.com/about/versions/15/behavior-changes-all#background-network-access) and you may need to use a [Foreground Service](https://developer.android.com/develop/background-work/services/fgs) or [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) for the "All-in-one" OAuth2 flow (`authWithOAuth2`) to work because we rely on a realtime connection to remain active in the background while the user is authenticating in the OAuth2 provider's page.
+
+If that's  not feasible, you can always fallback to the "Manual code exchange" OAuth2 flow (`authWithOAuth2Code`) combined with a deep link.
 
 
 ## Services
