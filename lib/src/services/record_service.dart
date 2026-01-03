@@ -337,11 +337,12 @@ class RecordService extends BaseCrudService<RecordModel> {
 
     final completer = Completer<RecordAuth>();
 
-    Future<void> Function()? unsubscribeFunc;
+    // initialize a one-off realtime service
+    final realtime = RealtimeService(client);
 
     try {
-      unsubscribeFunc = await client.realtime.subscribe("@oauth2", (e) async {
-        final oldState = client.realtime.clientId;
+      await realtime.subscribe("@oauth2", (e) async {
+        final oldState = realtime.clientId;
 
         try {
           final eventData = e.jsonData();
@@ -371,23 +372,21 @@ class RecordService extends BaseCrudService<RecordModel> {
           );
 
           completer.complete(auth);
-
-          if (unsubscribeFunc != null) {
-            unawaited(unsubscribeFunc());
-          }
         } catch (err) {
           if (err is ClientException) {
             completer.completeError(err);
           } else {
             completer.completeError(ClientException(originalError: err));
           }
+        } finally {
+          unawaited(realtime.unsubscribe());
         }
       });
 
       final authURL = Uri.parse(provider.authURL + redirectURL.toString());
 
       final queryParameters = Map<String, String>.of(authURL.queryParameters);
-      queryParameters["state"] = client.realtime.clientId;
+      queryParameters["state"] = realtime.clientId;
 
       // set custom scopes (if any)
       if (scopes.isNotEmpty) {
@@ -396,6 +395,8 @@ class RecordService extends BaseCrudService<RecordModel> {
 
       urlCallback(authURL.replace(queryParameters: queryParameters));
     } catch (err) {
+      unawaited(realtime.unsubscribe());
+
       if (err is ClientException) {
         completer.completeError(err);
       } else {

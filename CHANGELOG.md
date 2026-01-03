@@ -1,3 +1,8 @@
+## 0.23.1
+
+- Fixed a bug with the "all-in-one" OAuth2 flow that prevented successfully authenticating second time after a failed/canceled attempt ([#76](https://github.com/pocketbase/dart-sdk/issues/76)).
+
+
 ## 0.23.0+1
 
 - Added [note in the README](https://github.com/pocketbase/dart-sdk#oauth2-and-android-15) about Android 15+ and the "All-in-one" OAuth2 flow.
@@ -12,7 +17,7 @@
 ## 0.22.0
 
 - Bumped `http` to min 1.3 to enable streamed responses on the web.
-  _If you have previously relied on `fetch_client` for the realtime subsctiptions, with this release it should no longer be necessary and the custom `httpClientFactory` instantiation can be removed._
+  _If you have previously relied on `fetch_client` for the realtime subscriptions, with this release it should no longer be necessary and the custom `httpClientFactory` instantiation can be removed._
 
 
 ## 0.21.0
