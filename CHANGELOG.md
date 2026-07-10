@@ -1,3 +1,8 @@
+## 0.24.0+1
+
+- Added [note in the README](https://github.com/pocketbase/dart-sdk#oauth2-all-in-one-and-dual-stack-ips-server-setup) about dual-stack server setup and the "All-in-one" OAuth2 flow.
+
+
 ## 0.24.0
 
 - Added `pb.sql.run(rawSQL)` handler for the upcoming PocketBase v0.39.0 "SQL console" debug endpoint ([pocketbase#2236](https://github.com/pocketbase/pocketbase/issues/2236)).

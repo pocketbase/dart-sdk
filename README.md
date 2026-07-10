@@ -12,6 +12,7 @@ Official Multi-platform Dart SDK for interacting with the [PocketBase Web API](h
     - [Binding filter parameters](#binding-filter-parameters)
     - [Optional HTTP client reuse](#optional-http-client-reuse)
     - [OAuth2 and Android 15+](#oauth2-and-android-15)
+    - [OAuth2 "all-in-one" and dual-stack IPs server setup](#oauth2-all-in-one-and-dual-stack-ips-server-setup)
 - [Services](#services)
 - [Limitations](#limitations)
 - [Development](#development)
@@ -270,9 +271,18 @@ pb.close();
 
 #### OAuth2 and Android 15+
 
-Android 15+ introduced [major behavior changes](https://developer.android.com/about/versions/15/behavior-changes-all#background-network-access) and you may need to use a [Foreground Service](https://developer.android.com/develop/background-work/services/fgs) or [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) for the "All-in-one" OAuth2 flow (`authWithOAuth2`) to work because we rely on a realtime connection to remain active in the background while the user is authenticating in the OAuth2 provider's page.
+Android 15+ introduced [major behavior changes](https://developer.android.com/about/versions/15/behavior-changes-all#background-network-access) and you may need to use a [Foreground Service](https://developer.android.com/develop/background-work/services/fgs) or [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) for the "All-in-one" OAuth2 flow (`authWithOAuth2`) to work because we rely on a realtime connection to remain active in the background while the user is authenticating in the OAuth2 provider's page _(see also [#71](https://github.com/pocketbase/dart-sdk/issues/71#issuecomment-3293570440))_.
 
 If that's  not feasible, you can always fallback to the "Manual code exchange" OAuth2 flow (`authWithOAuth2Code`) combined with a deep link.
+
+
+#### OAuth2 "all-in-one" and dual-stack IPs server setup
+
+With PocketBase v0.38.2+ we perform extra security checks and require each realtime connection to be bound to their initialized client IP.
+
+This unfortunatelly, when using dual-stack IPs server setup, can cause errors with the OAuth2 "all-in-one" flow _(it relies on maintaining a realtime connection under the hood)_ due to discrepencies between the DNS resolver of `dart:io` and the browsers/OS (see [pocketbase#7758](https://github.com/pocketbase/pocketbase/discussions/7758)).
+
+The easiest workaround for the time being is to allow only IPv4 support for your PocketBase server _(e.g. remove the IPv6 `AAAA` DNS record)_. Or if that's not an option for whatever reason, you can also always fallback to the "Manual code exchange" OAuth2 flow (`authWithOAuth2Code`) combined with a deep link.
 
 
 ## Services
