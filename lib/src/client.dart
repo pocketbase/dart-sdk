@@ -157,7 +157,7 @@ class PocketBase {
   /// Placeholder parameters are defined with the `{:paramName}` notation.
   ///
   /// The following parameter values are supported:
-  /// - `String` (_single quotes are autoescaped_)
+  /// - `String`
   /// - `num`
   /// - `bool`
   /// - `DateTime`
@@ -181,11 +181,17 @@ class PocketBase {
       if (value == null || value is num || value is bool) {
         value = value.toString();
       } else if (value is DateTime) {
-        value = "'${value.toUtc().toIso8601String().replaceFirst("T", " ")}'";
+        value =
+            jsonEncode(value.toUtc().toIso8601String().replaceFirst("T", " "));
       } else if (value is String) {
-        value = "'${value.replaceAll("'", "\\'")}'";
+        value = jsonEncode(value);
       } else {
-        value = "'${jsonEncode(value).replaceAll("'", "\\'")}'";
+        final stringified = jsonEncode(value);
+        if (stringified.startsWith("[") || stringified.startsWith("{")) {
+          value = jsonEncode(stringified);
+        } else {
+          value = stringified;
+        }
       }
       expr = expr.replaceAll("{:$key}", value.toString());
     });

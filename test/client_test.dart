@@ -9,6 +9,24 @@ import "package:test/test.dart";
 
 class DummyAuthStore extends AuthStore {}
 
+class CustomStringToJSON {
+  String toJson() {
+    return "a\"b";
+  }
+}
+
+class CustomArrayToJSON {
+  List<dynamic> toJson() {
+    return [1, true, "a\"b\n"];
+  }
+}
+
+class CustomObjectToJSON {
+  Map<String, dynamic> toJson() {
+    return {"a": "a\"b"};
+  }
+}
+
 void main() {
   group("PocketBase()", () {
     test("with defaults", () {
@@ -66,7 +84,7 @@ void main() {
 
       expect(
         client.filter(expr, {"test2": "hello"}),
-        "a > {:test1} && b = 'hello' || c = 'hello'",
+        'a > {:test1} && b = "hello" || c = "hello"',
       );
     });
 
@@ -74,7 +92,7 @@ void main() {
       final client = PocketBase("https://example.com/");
 
       final params = {
-        "test1": "a'b'c'",
+        "test1": "a'b'c\"d\n\\",
         "test2": null,
         "test3": true,
         "test4": false,
@@ -82,8 +100,11 @@ void main() {
         "test6": -123.45,
         "test7": 123.45,
         "test8": DateTime.utc(2023, 10, 18, 10, 11, 12),
-        "test9": [1, 2, 3, "test'123"],
-        "test10": {"a": "test'123"},
+        "test9": [1, 2, 3, "test'12\"3"],
+        "test10": {"a": "test'12\"3"},
+        "test11": CustomStringToJSON(),
+        "test12": CustomArrayToJSON(),
+        "test13": CustomObjectToJSON(),
       };
 
       var expr = "";
@@ -97,7 +118,7 @@ void main() {
 
       expect(
         client.filter(expr, params),
-        "test1='a\\'b\\'c\\'' || test2=null || test3=true || test4=false || test5=123 || test6=-123.45 || test7=123.45 || test8='2023-10-18 10:11:12.000Z' || test9='[1,2,3,\"test\\'123\"]' || test10='{\"a\":\"test\\'123\"}'",
+        'test1="a\'b\'c\\"d\\n\\\\" || test2=null || test3=true || test4=false || test5=123 || test6=-123.45 || test7=123.45 || test8="2023-10-18 10:11:12.000Z" || test9="[1,2,3,\\"test\'12\\\\\\"3\\"]" || test10="{\\"a\\":\\"test\'12\\\\\\"3\\"}" || test11="a\\"b" || test12="[1,true,\\"a\\\\\\"b\\\\n\\"]" || test13="{\\"a\\":\\"a\\\\\\"b\\"}"',
       );
     });
   });

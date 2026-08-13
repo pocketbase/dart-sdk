@@ -1,3 +1,8 @@
+## 0.24.1
+
+- Fixed `pb.filter()` to handle the case when a custom object with `toJSON` is passed as param value.
+
+
 ## 0.24.0+1
 
 - Added [note in the README](https://github.com/pocketbase/dart-sdk#oauth2-all-in-one-and-dual-stack-ips-server-setup) about dual-stack server setup and the "All-in-one" OAuth2 flow.
