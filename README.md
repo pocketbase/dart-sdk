@@ -445,6 +445,9 @@ The easiest workaround for the time being is to allow only IPv4 support for your
 
 // Returns logs statistics.
 🔐 pb.logs.getStats({query, headers});
+
+// Delete all logs.
+🔐 pb.logs.truncate({query, body, headers});
 ```
 
 ---

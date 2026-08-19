@@ -123,5 +123,37 @@ void main() {
       expect(result[0].total, 1);
       expect(result[1].total, 2);
     });
+
+    test("truncate()", () async {
+      final mock = MockClient((request) async {
+        expect(request.method, "DELETE");
+        expect(request.body, jsonEncode({"test_body": 123}));
+        expect(
+          request.url.toString(),
+          "/base/api/logs?a=1&a=2&b=%40demo",
+        );
+        expect(request.headers["test"], "789");
+
+        return http.Response(
+          jsonEncode({"a": 1, "b": false, "c": "test"}),
+          200,
+        );
+      });
+
+      final client = PocketBase("/base", httpClientFactory: () => mock);
+
+      await client.logs.truncate(
+        query: {
+          "a": ["1", null, 2],
+          "b": "@demo",
+        },
+        body: {
+          "test_body": 123,
+        },
+        headers: {
+          "test": "789",
+        },
+      );
+    });
   });
 }

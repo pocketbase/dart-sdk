@@ -1,3 +1,8 @@
+## 0.25.0
+
+- Added `pb.logs.truncate()` handler for the new logs delete endpoint in the upcoming PocketBase v0.40.0.
+
+
 ## 0.24.1
 
 - Fixed `pb.filter()` to handle the case when a custom object with `toJSON` is passed as param value.

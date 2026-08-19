@@ -80,4 +80,19 @@ class LogService extends BaseService {
             )
             .toList());
   }
+
+  /// Deletes all logs.
+  Future<void> truncate({
+    Map<String, dynamic> body = const {},
+    Map<String, dynamic> query = const {},
+    Map<String, String> headers = const {},
+  }) {
+    return client.send(
+      "/api/logs",
+      method: "DELETE",
+      body: body,
+      query: query,
+      headers: headers,
+    );
+  }
 }
