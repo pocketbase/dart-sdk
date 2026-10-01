@@ -4,14 +4,13 @@ import "dart:convert";
 import "package:http/http.dart" as http;
 
 import "../client_exception.dart";
-
 import "sse_message.dart";
 
 /// Very rudimentary streamed response http client wrapper compatible
 /// with the SSE message format.
 ///
-/// The client supports auto reconnect based on the `retry` event message value
-/// (default to max 5 attempts with 5s cool down in between).
+/// The client supports auto reconnect based on the `retry` event message
+/// or if not set fallbacks to [SseClient.defaultRetryTimeouts].
 ///
 /// Example usage:
 ///
@@ -143,60 +142,67 @@ class SseClient {
       await _responseStreamSubscription?.cancel();
 
       _responseStreamSubscription = response.stream
+          // https://github.com/pocketbase/dart-sdk/issues/80
+          .timeout(
+            const Duration(seconds: 315),
+            onTimeout: (sink) {
+              sink.addError(Exception("idle timeout"));
+            },
+          )
           .transform(const Utf8Decoder())
           .transform(const LineSplitter())
           .listen(
-        (line) {
-          // message end detected
-          if (line.isEmpty) {
-            _messageStreamController.add(sseMessage);
-            sseMessage = SseMessage(); // reset for the next chunk
-            return;
-          }
+            (line) {
+              // message end detected
+              if (line.isEmpty) {
+                _messageStreamController.add(sseMessage);
+                sseMessage = SseMessage(); // reset for the next chunk
+                return;
+              }
 
-          final match = _lineRegex.firstMatch(line);
-          if (match == null) {
-            // ignore invalid lines
-            // (some servers may send a different formatted line as a ping)
-            return;
-          }
+              final match = _lineRegex.firstMatch(line);
+              if (match == null) {
+                // ignore invalid lines
+                // (some servers may send a different formatted line as a ping)
+                return;
+              }
 
-          final field = match.group(1) ?? "";
-          final value = match.group(2) ?? "";
+              final field = match.group(1) ?? "";
+              final value = match.group(2) ?? "";
 
-          if (field == "id") {
-            sseMessage.id = value;
-            return;
-          }
+              if (field == "id") {
+                sseMessage.id = value;
+                return;
+              }
 
-          if (field == "event") {
-            sseMessage.event = value;
-            return;
-          }
+              if (field == "event") {
+                sseMessage.event = value;
+                return;
+              }
 
-          if (field == "retry") {
-            sseMessage.retry = int.tryParse(value) ?? 0;
-            return;
-          }
+              if (field == "retry") {
+                sseMessage.retry = int.tryParse(value) ?? 0;
+                return;
+              }
 
-          if (field == "data") {
-            sseMessage.data = value;
-            return;
-          }
-        },
-        onError: (dynamic err) {
-          // usually triggered on abruptly connection termination
-          // (eg. when the server goes down)
-          _onError?.call(err);
-          _reconnect(sseMessage.retry);
-        },
-        onDone: () {
-          // usually triggered on graceful connection termination
-          // (eg. when the server stops streaming in case on idle client)
-          _onError?.call(null);
-          _reconnect(sseMessage.retry);
-        },
-      );
+              if (field == "data") {
+                sseMessage.data = value;
+                return;
+              }
+            },
+            onError: (dynamic err) {
+              // usually triggered on abruptly connection termination
+              // (eg. when the server goes down)
+              _onError?.call(err);
+              _reconnect(sseMessage.retry);
+            },
+            onDone: () {
+              // usually triggered on graceful connection termination
+              // (eg. when the server stops streaming in case on idle client)
+              _onError?.call(null);
+              _reconnect(sseMessage.retry);
+            },
+          );
     } catch (err) {
       // most likely the client failed to establish a connection with the server
       _onError?.call(err);

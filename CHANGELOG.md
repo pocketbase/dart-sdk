@@ -1,3 +1,8 @@
+## 0.25.2
+
+- Added realtime client idle timeout (315sec) as a workaround for abruptly terminated network connections ([#80](https://github.com/pocketbase/dart-sdk/issues/80)).
+
+
 ## 0.25.1
 
 - Minor optimization and correctness fix for `pb.filter()` to execute in a single pass and avoid regex chaining issues.
