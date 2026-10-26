@@ -1,3 +1,7 @@
+**⚠️ The repo has moved to https://ganigeorgiev.com/pocketbase/dart-sdk.**
+
+---
+
 PocketBase Dart SDK [![Pub Package](https://img.shields.io/pub/v/pocketbase.svg)](https://pub.dev/packages/pocketbase)
 ======================================================================
 
